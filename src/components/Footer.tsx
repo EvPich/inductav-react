@@ -1,4 +1,5 @@
 import { Phone } from 'lucide-react';
+import Logo from './Logo';
 
 const platformLinks = ['Search MROs', 'Book Slots', 'Track Orders', 'Analytics'];
 const serviceLinks = ['General MRO', 'Engine Overhaul', 'Landing Gear', 'Painting'];
@@ -13,8 +14,8 @@ export default function Footer() {
         <div className="flex gap-16 mb-12">
           {/* Brand */}
           <div className="w-[280px] shrink-0">
-            <div className="w-[140px] h-8 bg-blue-500 rounded mb-4 flex items-center justify-center">
-              <span className="text-white font-bold text-base">InductAV</span>
+            <div className="mb-4">
+              <Logo />
             </div>
             <p className="text-sm leading-relaxed text-slate-400 w-[260px]">
               The world's leading aviation MRO marketplace. Connecting airlines with certified

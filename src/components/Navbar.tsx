@@ -1,3 +1,4 @@
+import Logo from './Logo';
 
 interface NavbarProps {
   transparent?: boolean;
@@ -12,9 +13,7 @@ export default function Navbar({ transparent = false }: NavbarProps) {
     >
       {/* Logo */}
       <div className="flex items-center gap-8">
-        <div className="w-[150px] h-[50px] bg-blue-600 rounded flex items-center justify-center">
-          <span className="text-white font-bold text-xl tracking-tight">InductAV</span>
-        </div>
+        <Logo />
         <div className="flex items-center gap-6">
           {['Services', 'MRO Network', 'How It Works', 'Pricing', 'About'].map((link) => (
             <a
