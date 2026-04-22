@@ -1,27 +1,16 @@
-import {
-  MapPin,
-  Wrench,
-  Plane,
-  Calendar,
-  Search,
-  Cog,
-  Disc3,
-  SlidersHorizontal,
-} from 'lucide-react';
+import { Plane, Cog, Disc3, SlidersHorizontal } from 'lucide-react';
 import Navbar from '../components/Navbar';
+import SearchBar from '../components/SearchBar';
 import MROCard from '../components/MROCard';
 import MROCardHorizontal from '../components/MROCardHorizontal';
 import Footer from '../components/Footer';
 
 const NAVY = '#1C2B4A';
-const TEAL = '#57A091';
-const TEAL_HOVER = '#478A7C';
 const BG_LIGHT = '#F5F7FA';
 const TEXT_PRIMARY = '#1E293B';
 const TEXT_SECONDARY = '#475569';
 const TEXT_MUTED = '#94A3B8';
 const GREEN = '#22C55E';
-const BORDER = '#E2E8F0';
 
 const categories = [
   { icon: <Plane size={32} color="#FFFFFF" />, label: 'Aircraft' },
@@ -117,40 +106,7 @@ export default function HomePage() {
           services across a global network of certified facilities — all in one platform.
         </p>
 
-        {/* Search bar */}
-        <div
-          className="flex items-center"
-          style={{ backgroundColor: '#FFFFFF', borderRadius: 12, padding: 8, width: 1100, maxWidth: '100%' }}
-        >
-          {[
-            { icon: <MapPin size={18} color={TEXT_MUTED} />, placeholder: 'Location' },
-            { icon: <Wrench size={18} color={TEXT_MUTED} />, placeholder: 'Service Type' },
-            { icon: <Plane size={18} color={TEXT_MUTED} />, placeholder: 'Aircraft Type' },
-            { icon: <Calendar size={18} color={TEXT_MUTED} />, placeholder: 'Date', last: true },
-          ].map(({ icon, placeholder, last }) => (
-            <div
-              key={placeholder}
-              className="flex items-center gap-2 flex-1 h-12 px-4"
-              style={last ? {} : { borderRight: `1px solid ${BORDER}` }}
-            >
-              {icon}
-              <input
-                placeholder={placeholder}
-                className="w-full text-sm outline-none bg-transparent"
-                style={{ color: TEXT_PRIMARY }}
-              />
-            </div>
-          ))}
-          <button
-            className="flex items-center gap-2 h-12 px-8 text-sm font-semibold text-white shrink-0 transition-colors"
-            style={{ backgroundColor: TEAL, borderRadius: 8 }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL)}
-          >
-            <Search size={18} />
-            Search
-          </button>
-        </div>
+        <SearchBar />
 
         {/* Category icons */}
         <div className="flex gap-5">
