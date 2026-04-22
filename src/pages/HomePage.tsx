@@ -13,174 +13,231 @@ import MROCard from '../components/MROCard';
 import MROCardHorizontal from '../components/MROCardHorizontal';
 import Footer from '../components/Footer';
 
+const NAVY = '#1C2B4A';
+const TEAL = '#57A091';
+const TEAL_HOVER = '#478A7C';
+const BG_LIGHT = '#F5F7FA';
+const TEXT_PRIMARY = '#1E293B';
+const TEXT_SECONDARY = '#475569';
+const TEXT_MUTED = '#94A3B8';
+const GREEN = '#22C55E';
+const BORDER = '#E2E8F0';
+
 const categories = [
-  { icon: <Plane size={32} className="text-white" />, label: 'Aircraft' },
-  { icon: <Cog size={32} className="text-white" />, label: 'Components\n& Parts' },
-  { icon: <Disc3 size={32} className="text-white" />, label: 'Wheels\n& Brakes' },
-  { icon: <SlidersHorizontal size={32} className="text-white" />, label: 'Configuration\n& Evaluation' },
+  { icon: <Plane size={32} color="#FFFFFF" />, label: 'Aircraft' },
+  { icon: <Cog size={32} color="#FFFFFF" />, label: 'Components\n& Parts' },
+  { icon: <Disc3 size={32} color="#FFFFFF" />, label: 'Wheels\n& Brakes' },
+  { icon: <SlidersHorizontal size={32} color="#FFFFFF" />, label: 'Configuration\n& Evaluation' },
 ];
 
-const immediateCards = [
-  { name: 'SR Technics', location: 'Zurich, Switzerland', serviceType: 'General MRO' },
-  { name: 'Air France Industries', location: 'Paris, France', serviceType: 'Engine MRO' },
-  { name: 'ST Engineering', location: 'Singapore', serviceType: 'General MRO' },
-  { name: 'Iberia MRO', location: 'Madrid, Spain', serviceType: 'Painting' },
-  { name: 'HAECO', location: 'Hong Kong', serviceType: 'Landing Gear' },
-  { name: 'Turkish Technic', location: 'Istanbul, Turkey', serviceType: 'APU Services' },
+const immediateRow1 = [
+  { name: 'Lufthansa Technik', location: 'Hamburg, Germany', serviceType: 'General MRO', available: true },
+  { name: 'ST Aerospace', location: 'Singapore', serviceType: 'Engine MRO', available: true },
+  { name: 'HAECO', location: 'Hong Kong, China', serviceType: 'Components', available: true },
 ];
 
-type CategorySection = { title: string; cards: { name: string; location: string }[] };
+const immediateRow2 = [
+  { name: 'AAR Corp', location: 'Miami, USA', serviceType: 'Landing Gear', available: false },
+  { name: 'Turkish Technic', location: 'Istanbul, Turkey', serviceType: 'Painting', available: true },
+  { name: 'Iberia Maintenance', location: 'Madrid, Spain', serviceType: 'APU Services', available: false },
+];
+
+type CategorySection = { title: string; bg: string; cards: { name: string; location: string }[] };
 
 const categorySections: CategorySection[] = [
   {
-    title: 'General MRO',
+    title: 'General MRO', bg: '#FFFFFF',
     cards: [
-      { name: 'SR Technics', location: 'Zurich, Switzerland' },
-      { name: 'Sabena technics', location: 'Brussels, Belgium' },
-      { name: 'Abu Dhabi Aviation', location: 'Abu Dhabi, UAE' },
-      { name: 'MRO Holdings', location: 'Dallas, TX, USA' },
-    ],
-  },
-  {
-    title: 'Landing Gear Shop',
-    cards: [
-      { name: 'Messier Services', location: 'Paris, France' },
       { name: 'Lufthansa Technik', location: 'Hamburg, Germany' },
-      { name: 'AAR Landing Gear', location: 'Indianapolis, USA' },
-      { name: 'BBA Aviation', location: 'London, UK' },
+      { name: 'Ameco Beijing', location: 'Beijing, China' },
+      { name: 'GAMECO', location: 'Guangzhou, China' },
+      { name: 'SIA Engineering', location: 'Singapore' },
     ],
   },
   {
-    title: 'Painting',
+    title: 'Landing Gear Shop', bg: BG_LIGHT,
     cards: [
-      { name: 'Coopesa', location: 'San Jose, Costa Rica' },
-      { name: 'AeroCentury', location: 'San Carlos, CA, USA' },
-      { name: 'Ducommun', location: 'Santa Ana, CA, USA' },
-      { name: 'AeroPaint Ltd', location: 'Manchester, UK' },
+      { name: 'Safran Landing', location: 'Gloucester, UK' },
+      { name: 'Liebherr Aerospace', location: 'Lindenberg, Germany' },
+      { name: 'Triumph Group', location: 'Cleveland, USA' },
+      { name: 'Messier-Bugatti', location: 'Vélizy, France' },
     ],
   },
   {
-    title: 'Engine MRO',
+    title: 'Painting', bg: '#FFFFFF',
     cards: [
-      { name: 'MTU Maintenance', location: 'Hannover, Germany' },
-      { name: 'GE Aviation', location: 'Cincinnati, OH, USA' },
-      { name: 'Pratt & Whitney MRO', location: 'East Hartford, CT, USA' },
-      { name: 'Rolls-Royce TotalCare', location: 'Derby, UK' },
+      { name: 'MAAS Aviation', location: 'Maastricht, NL' },
+      { name: 'IAC Painting', location: 'Shannon, Ireland' },
+      { name: 'Satys Aerospace', location: 'Toulouse, France' },
+      { name: 'Bombardier Paint', location: 'Montreal, Canada' },
     ],
   },
   {
-    title: 'APU Services',
+    title: 'Engine MRO', bg: BG_LIGHT,
     cards: [
-      { name: 'Duncan Aviation', location: 'Lincoln, NE, USA' },
-      { name: 'Honeywell APU', location: 'Phoenix, AZ, USA' },
-      { name: 'StandardAero', location: 'Scottsdale, AZ, USA' },
-      { name: 'FL Technics', location: 'Vilnius, Lithuania' },
+      { name: 'GE Aviation', location: 'Cincinnati, USA' },
+      { name: 'Rolls-Royce MRO', location: 'Derby, UK' },
+      { name: 'MTU Aero Engines', location: 'Munich, Germany' },
+      { name: 'Pratt & Whitney', location: 'East Hartford, USA' },
+    ],
+  },
+  {
+    title: 'APU Services', bg: '#FFFFFF',
+    cards: [
+      { name: 'Honeywell Aerospace', location: 'Phoenix, USA' },
+      { name: 'StandardAero', location: 'Scottsdale, USA' },
+      { name: 'Safran Power', location: 'Brussels, Belgium' },
+      { name: 'Chromalloy', location: 'San Antonio, USA' },
     ],
   },
 ];
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
+      <Navbar />
+
       {/* Hero */}
-      <div className="bg-slate-900 relative">
-        <Navbar transparent />
+      <section
+        className="flex flex-col items-center gap-8"
+        style={{ backgroundColor: NAVY, padding: '80px 120px 60px' }}
+      >
+        <h1
+          className="text-center font-extrabold m-0"
+          style={{ color: '#FFFFFF', fontSize: 56, lineHeight: 1.15, maxWidth: 900 }}
+        >
+          Secure MRO Slots in Minutes,<br />Not Weeks
+        </h1>
 
-        <div className="max-w-[1360px] mx-auto px-10 pt-20 pb-16">
-          <h1 className="text-[56px] font-extrabold text-white leading-tight max-w-[900px] mb-4">
-            Secure MRO Slots in Minutes,
-            <br />
-            Not Weeks
-          </h1>
-          <p className="text-lg text-slate-300 max-w-[700px] mb-10">
-            The world's leading aviation maintenance marketplace. Compare certified MRO facilities,
-            check real-time availability, and book slots instantly.
-          </p>
+        <p
+          className="text-center m-0"
+          style={{ color: TEXT_MUTED, fontSize: 18, lineHeight: 1.6, maxWidth: 700 }}
+        >
+          The world's leading aviation maintenance marketplace. Compare, book, and manage MRO
+          services across a global network of certified facilities — all in one platform.
+        </p>
 
-          {/* Search Bar */}
-          <div className="w-[1100px] max-w-full bg-white rounded-2xl shadow-xl flex items-center h-[64px] overflow-hidden">
-            <div className="flex items-center gap-2 px-5 flex-1 h-full border-r border-slate-200">
-              <MapPin size={18} className="text-slate-400 shrink-0" />
-              <input placeholder="Location" className="text-sm text-slate-700 outline-none w-full placeholder-slate-400" />
+        {/* Search bar */}
+        <div
+          className="flex items-center"
+          style={{ backgroundColor: '#FFFFFF', borderRadius: 12, padding: 8, width: 1100, maxWidth: '100%' }}
+        >
+          {[
+            { icon: <MapPin size={18} color={TEXT_MUTED} />, placeholder: 'Location' },
+            { icon: <Wrench size={18} color={TEXT_MUTED} />, placeholder: 'Service Type' },
+            { icon: <Plane size={18} color={TEXT_MUTED} />, placeholder: 'Aircraft Type' },
+            { icon: <Calendar size={18} color={TEXT_MUTED} />, placeholder: 'Date', last: true },
+          ].map(({ icon, placeholder, last }) => (
+            <div
+              key={placeholder}
+              className="flex items-center gap-2 flex-1 h-12 px-4"
+              style={last ? {} : { borderRight: `1px solid ${BORDER}` }}
+            >
+              {icon}
+              <input
+                placeholder={placeholder}
+                className="w-full text-sm outline-none bg-transparent"
+                style={{ color: TEXT_PRIMARY }}
+              />
             </div>
-            <div className="flex items-center gap-2 px-5 flex-1 h-full border-r border-slate-200">
-              <Wrench size={18} className="text-slate-400 shrink-0" />
-              <input placeholder="Service Type" className="text-sm text-slate-700 outline-none w-full placeholder-slate-400" />
-            </div>
-            <div className="flex items-center gap-2 px-5 flex-1 h-full border-r border-slate-200">
-              <Plane size={18} className="text-slate-400 shrink-0" />
-              <input placeholder="Aircraft Type" className="text-sm text-slate-700 outline-none w-full placeholder-slate-400" />
-            </div>
-            <div className="flex items-center gap-2 px-5 flex-1 h-full border-r border-slate-200">
-              <Calendar size={18} className="text-slate-400 shrink-0" />
-              <input placeholder="Date" className="text-sm text-slate-700 outline-none w-full placeholder-slate-400" />
-            </div>
-            <button className="flex items-center gap-2 px-6 h-full bg-blue-600 hover:bg-blue-700 text-white text-[15px] font-semibold transition-colors shrink-0">
-              <Search size={18} />
-              Search
-            </button>
-          </div>
-
-          {/* Category Icons */}
-          <div className="flex gap-4 mt-8">
-            {categories.map((cat) => (
-              <button
-                key={cat.label}
-                className="w-[170px] flex flex-col items-center justify-center gap-2 py-4 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] transition-colors cursor-pointer"
-              >
-                {cat.icon}
-                <span className="text-[13px] font-medium text-white text-center whitespace-pre-line">
-                  {cat.label}
-                </span>
-              </button>
-            ))}
-          </div>
+          ))}
+          <button
+            className="flex items-center gap-2 h-12 px-8 text-sm font-semibold text-white shrink-0 transition-colors"
+            style={{ backgroundColor: TEAL, borderRadius: 8 }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL)}
+          >
+            <Search size={18} />
+            Search
+          </button>
         </div>
-      </div>
+
+        {/* Category icons */}
+        <div className="flex gap-5">
+          {categories.map((cat) => (
+            <button
+              key={cat.label}
+              className="flex flex-col items-center gap-3 cursor-pointer transition-opacity hover:opacity-80"
+              style={{ backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 12, padding: '28px 20px', width: 170 }}
+            >
+              {cat.icon}
+              <span
+                className="text-[13px] font-medium text-center whitespace-pre-line"
+                style={{ color: '#FFFFFF' }}
+              >
+                {cat.label}
+              </span>
+            </button>
+          ))}
+        </div>
+      </section>
 
       {/* Immediate Availability */}
-      <section className="max-w-[1360px] mx-auto px-10 py-16">
-        <div className="flex items-center gap-3 mb-8">
-          <span className="w-3 h-3 rounded-full bg-emerald-500 inline-block" />
-          <h2 className="text-[32px] font-bold text-slate-900">Immediate Availability</h2>
+      <section className="flex flex-col gap-8" style={{ backgroundColor: '#FFFFFF', padding: '64px 80px' }}>
+        <div className="flex items-center gap-2.5">
+          <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: GREEN }} />
+          <h2 className="text-[32px] font-bold m-0" style={{ color: TEXT_PRIMARY }}>
+            Immediate Availability
+          </h2>
         </div>
-        <div className="grid grid-cols-3 gap-6">
-          {immediateCards.map((card) => (
-            <MROCard key={card.name} {...card} />
+        <div className="flex gap-6">
+          {immediateRow1.map((card) => (
+            <div key={card.name} className="flex-1"><MROCard {...card} /></div>
+          ))}
+        </div>
+        <div className="flex gap-6">
+          {immediateRow2.map((card) => (
+            <div key={card.name} className="flex-1"><MROCard {...card} /></div>
           ))}
         </div>
       </section>
 
       {/* World Map */}
-      <section className="bg-slate-900 py-16">
-        <div className="max-w-[1360px] mx-auto px-10">
-          <h2 className="text-[32px] font-bold text-white mb-2">Global MRO Network</h2>
-          <p className="text-base text-slate-400 mb-8">
-            Access certified maintenance facilities across 6 continents
-          </p>
-          <div className="w-[1200px] max-w-full h-[500px] bg-slate-800 rounded-2xl flex items-end justify-start p-6 relative overflow-hidden">
-            {/* Map placeholder */}
-            <div className="absolute inset-0 flex items-center justify-center text-slate-600 text-sm">
-              Interactive World Map
-            </div>
-            {/* Pill */}
-            <div className="relative z-10 flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-full">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[13px] font-semibold text-emerald-400">
-                142 Facilities Available Now
-              </span>
-            </div>
+      <section
+        className="flex flex-col items-center gap-6"
+        style={{ backgroundColor: BG_LIGHT, padding: '64px 80px' }}
+      >
+        <h2 className="text-[32px] font-bold text-center m-0" style={{ color: TEXT_PRIMARY }}>
+          Global MRO Network
+        </h2>
+        <p className="text-base text-center m-0" style={{ color: TEXT_SECONDARY }}>
+          Access certified maintenance facilities across 6 continents
+        </p>
+        <div
+          className="relative overflow-hidden"
+          style={{
+            width: 1200,
+            maxWidth: '100%',
+            height: 500,
+            borderRadius: 16,
+            backgroundImage: 'url(/world-map.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        >
+          <div
+            className="absolute flex items-center gap-1.5 px-4 py-2"
+            style={{ top: 24, left: 40, backgroundColor: GREEN, borderRadius: 20 }}
+          >
+            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.7)' }} />
+            <span className="text-[13px] font-semibold text-white">142 Facilities Available Now</span>
           </div>
         </div>
       </section>
 
-      {/* Category Sections */}
-      {categorySections.map((section) => (
-        <section key={section.title} className="max-w-[1360px] mx-auto px-10 py-12">
-          <h2 className="text-2xl font-bold text-slate-900 mb-6">{section.title}</h2>
-          <div className="flex gap-4 flex-wrap">
-            {section.cards.map((card) => (
-              <MROCardHorizontal key={card.name} name={card.name} location={card.location} />
+      {/* Category sections */}
+      {categorySections.map(({ title, bg, cards }) => (
+        <section
+          key={title}
+          className="flex flex-col gap-6"
+          style={{ backgroundColor: bg, padding: '48px 80px' }}
+        >
+          <h2 className="text-2xl font-bold m-0" style={{ color: TEXT_PRIMARY }}>{title}</h2>
+          <div className="flex gap-4">
+            {cards.map((card) => (
+              <div key={card.name} className="flex-1">
+                <MROCardHorizontal name={card.name} location={card.location} />
+              </div>
             ))}
           </div>
         </section>

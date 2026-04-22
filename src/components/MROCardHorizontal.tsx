@@ -7,6 +7,8 @@ export interface MROCardHorizontalProps {
   imageUrl?: string;
 }
 
+const GREEN = '#22C55E';
+
 export default function MROCardHorizontal({
   name = 'Facility Name',
   location = 'Location',
@@ -14,29 +16,32 @@ export default function MROCardHorizontal({
   imageUrl,
 }: MROCardHorizontalProps) {
   return (
-    <div className="w-[290px] h-[120px] rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow flex">
-      {/* Thumb */}
+    <div
+      className="rounded-xl overflow-hidden flex"
+      style={{ height: 120, border: '1px solid #E2E8F0', backgroundColor: '#FFFFFF', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}
+    >
       <div
-        className="w-[120px] h-full shrink-0 bg-slate-200"
-        style={
-          imageUrl
-            ? { backgroundImage: `url(${imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }
-            : {}
-        }
+        className="shrink-0"
+        style={{
+          width: 120,
+          height: '100%',
+          backgroundColor: '#CBD5E1',
+          ...(imageUrl ? { backgroundImage: `url(${imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}),
+        }}
       />
 
-      {/* Info */}
       <div className="flex flex-col justify-center gap-2 p-3 flex-1 min-w-0">
-        <span className="text-sm font-semibold text-slate-900 truncate">{name}</span>
+        <span className="text-sm font-semibold truncate" style={{ color: '#1E293B' }}>{name}</span>
         <div className="flex items-center gap-1">
-          <MapPin size={12} className="text-slate-400 shrink-0" />
-          <span className="text-xs text-slate-500 truncate">{location}</span>
+          <MapPin size={12} color="#94A3B8" />
+          <span className="text-xs truncate" style={{ color: '#475569' }}>{location}</span>
         </div>
         <div className="flex items-center gap-1.5">
           <span
-            className={`w-[7px] h-[7px] rounded-full shrink-0 ${available ? 'bg-emerald-500' : 'bg-slate-400'}`}
+            className="w-[7px] h-[7px] rounded-full shrink-0"
+            style={{ backgroundColor: available ? GREEN : '#94A3B8' }}
           />
-          <span className="text-xs font-medium text-slate-600">
+          <span className="text-xs font-medium" style={{ color: available ? GREEN : '#94A3B8' }}>
             {available ? 'Available' : 'Unavailable'}
           </span>
         </div>

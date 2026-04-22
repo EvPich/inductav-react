@@ -1,29 +1,21 @@
 import Logo from './Logo';
 
-interface NavbarProps {
-  transparent?: boolean;
-}
+const navLinks = ['Services', 'MRO Network', 'How It Works', 'Pricing', 'About'];
 
-export default function Navbar({ transparent = false }: NavbarProps) {
+export default function Navbar() {
   return (
     <nav
-      className={`w-full h-[72px] flex items-center justify-between px-10 ${
-        transparent ? 'bg-transparent' : 'bg-white border-b border-slate-200'
-      }`}
+      className="w-full h-[72px] flex items-center justify-between px-12"
+      style={{ backgroundColor: '#1C2B4A' }}
     >
-      {/* Logo */}
       <div className="flex items-center gap-8">
         <Logo />
-        <div className="flex items-center gap-6">
-          {['Services', 'MRO Network', 'How It Works', 'Pricing', 'About'].map((link) => (
+        <div className="flex items-center gap-8">
+          {navLinks.map((link) => (
             <a
               key={link}
               href="#"
-              className={`text-sm font-medium transition-colors ${
-                transparent
-                  ? 'text-white/90 hover:text-white'
-                  : 'text-slate-700 hover:text-blue-600'
-              }`}
+              className="text-sm font-medium text-white/90 hover:text-white transition-colors"
             >
               {link}
             </a>
@@ -31,17 +23,16 @@ export default function Navbar({ transparent = false }: NavbarProps) {
         </div>
       </div>
 
-      {/* Right */}
       <div className="flex items-center gap-4">
-        <a
-          href="#"
-          className={`text-sm font-medium ${
-            transparent ? 'text-white/90 hover:text-white' : 'text-slate-700 hover:text-blue-600'
-          }`}
-        >
+        <a href="#" className="text-sm font-medium text-white/90 hover:text-white transition-colors">
           Log In
         </a>
-        <button className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+        <button
+          className="px-6 py-[10px] text-sm font-semibold text-white rounded-[6px] transition-colors"
+          style={{ backgroundColor: '#57A091' }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#478A7C')}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#57A091')}
+        >
           Get Started
         </button>
       </div>

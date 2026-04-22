@@ -1,7 +1,11 @@
 export default function Logo() {
   return (
-    <div className="w-[150px] h-[50px] bg-blue-600 rounded flex items-center justify-center">
-      <span className="text-white font-bold text-xl tracking-tight">InductAV</span>
-    </div>
+    <img
+      src="/logo-light.png"
+      alt="InductAV"
+      width={150}
+      height={50}
+      className="object-contain"
+    />
   );
 }
