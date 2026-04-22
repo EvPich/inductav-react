@@ -13,6 +13,12 @@ import {
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
+const TEAL = '#57A091';
+const TEAL_HOVER = '#478A7C';
+const TEAL_LIGHT = '#EDF7F4';
+const NAVY = '#1C2B4A';
+const GREEN = '#22C55E';
+
 const stats = [
   { value: '35+', label: 'Years Experience' },
   { value: '1,200+', label: 'Completed Jobs' },
@@ -28,7 +34,7 @@ const services = [
 
 const certifications = ['EASA Part 145', 'FAA Repair Station', 'ISO 9001:2015', 'AS/EN 9110', 'TCCA Approved'];
 
-const aircraftTags = ['Boeing 737', 'Boeing 757', 'Airbus A320', 'Airbus A330', 'Embraer E-Jet', 'ATR 72'];
+const aircraftTags = ['A320 Family', 'B737', 'B767', 'B777', 'A330', 'ATR 42/72'];
 
 const reviews = [
   {
@@ -80,9 +86,9 @@ export default function MROProfilePage({ onHome }: { onHome?: () => void }) {
 
       {/* Breadcrumb */}
       <div className="max-w-[1360px] mx-auto px-10 h-12 flex items-center gap-2 text-[13px]">
-        <a href="#" className="font-medium text-blue-600 hover:underline">Home</a>
+        <a href="#" className="font-medium hover:underline" style={{ color: TEAL }}>Home</a>
         <span className="text-slate-400">/</span>
-        <a href="#" className="font-medium text-blue-600 hover:underline">Search Results</a>
+        <a href="#" className="font-medium hover:underline" style={{ color: TEAL }}>Search Results</a>
         <span className="text-slate-400">/</span>
         <span className="font-medium text-slate-700">Lufthansa Technik Shannon</span>
       </div>
@@ -90,20 +96,23 @@ export default function MROProfilePage({ onHome }: { onHome?: () => void }) {
       {/* Hero */}
       <div className="relative w-full h-[340px] bg-slate-800 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 to-slate-900/50" />
-        <div className="relative z-10 max-w-[1360px] mx-auto px-10 h-full flex items-center justify-between">
+        <div className="relative z-10 max-w-[1360px] mx-auto px-10 h-full flex items-end justify-between">
           {/* Info */}
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 pb-8">
             <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1 px-2 py-0.5 bg-blue-500/20 border border-blue-400/30 rounded-full text-xs font-semibold text-blue-300">
+              <span
+                className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold text-white"
+                style={{ backgroundColor: GREEN }}
+              >
                 <BadgeCheck size={12} />
-                Verified Facility
+                Verified MRO
               </span>
             </div>
             <h1 className="text-[32px] font-bold text-white">Lufthansa Technik Shannon</h1>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1">
                 <MapPin size={14} className="text-slate-400" />
-                <span className="text-sm text-slate-300">Shannon, Ireland</span>
+                <span className="text-sm text-slate-300">Shannon, Co. Clare, Ireland</span>
               </div>
               <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, i) => (
@@ -115,8 +124,13 @@ export default function MROProfilePage({ onHome }: { onHome?: () => void }) {
           </div>
 
           {/* CTA */}
-          <div className="flex flex-col gap-3">
-            <button className="flex items-center gap-2 px-6 h-11 bg-blue-600 hover:bg-blue-700 text-white text-[15px] font-semibold rounded-xl transition-colors">
+          <div className="flex flex-col gap-3 pb-8">
+            <button
+              className="flex items-center gap-2 px-7 h-11 text-white text-[15px] font-semibold rounded-xl transition-colors"
+              style={{ backgroundColor: TEAL }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL)}
+            >
               <MessageCircle size={18} />
               Request Slot &amp; Chat
             </button>
@@ -125,7 +139,7 @@ export default function MROProfilePage({ onHome }: { onHome?: () => void }) {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-[1360px] mx-auto px-10 py-10 flex gap-8">
+      <div className="max-w-[1360px] mx-auto px-10 py-8 flex gap-8">
         {/* Left Column */}
         <div className="flex-1 flex flex-col gap-8">
           {/* Overview */}
@@ -140,7 +154,7 @@ export default function MROProfilePage({ onHome }: { onHome?: () => void }) {
             <div className="grid grid-cols-4 gap-4">
               {stats.map((s) => (
                 <div key={s.label} className="flex flex-col gap-1 bg-slate-50 rounded-xl p-4">
-                  <span className="text-2xl font-bold text-blue-600">{s.value}</span>
+                  <span className="text-2xl font-bold" style={{ color: TEAL }}>{s.value}</span>
                   <span className="text-xs text-slate-500">{s.label}</span>
                 </div>
               ))}
@@ -154,7 +168,11 @@ export default function MROProfilePage({ onHome }: { onHome?: () => void }) {
               {services.map((row, i) => (
                 <div key={i} className="flex gap-3">
                   {row.map((svc) => (
-                    <span key={svc} className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 text-[13px] font-medium rounded-lg">
+                    <span
+                      key={svc}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium rounded-lg"
+                      style={{ backgroundColor: TEAL_LIGHT, color: TEAL }}
+                    >
                       <BadgeCheck size={13} />
                       {svc}
                     </span>
@@ -179,14 +197,12 @@ export default function MROProfilePage({ onHome }: { onHome?: () => void }) {
               </div>
             </div>
 
-            {/* Day headers */}
             <div className="grid grid-cols-7 gap-1">
               {DAYS.map((d) => (
                 <div key={d} className="text-center text-xs font-semibold text-slate-500 py-1">{d}</div>
               ))}
             </div>
 
-            {/* Calendar grid */}
             <div className="flex flex-col gap-1">
               {calendarWeeks.map((week, wi) => (
                 <div key={wi} className="grid grid-cols-7 gap-1 h-10">
@@ -202,7 +218,6 @@ export default function MROProfilePage({ onHome }: { onHome?: () => void }) {
               ))}
             </div>
 
-            {/* Legend */}
             <div className="flex items-center gap-5">
               <div className="flex items-center gap-1.5">
                 <span className="w-3 h-3 rounded-full bg-emerald-400" />
@@ -230,7 +245,7 @@ export default function MROProfilePage({ onHome }: { onHome?: () => void }) {
                   <span className="text-sm text-slate-500">(127)</span>
                 </div>
               </div>
-              <button className="text-sm font-semibold text-blue-600 hover:underline">See All</button>
+              <button className="text-sm font-semibold hover:underline" style={{ color: TEAL }}>See All</button>
             </div>
             {reviews.map((rev) => (
               <div key={rev.author} className="flex flex-col gap-2 pb-4 border-b border-slate-100 last:border-0">
@@ -262,9 +277,9 @@ export default function MROProfilePage({ onHome }: { onHome?: () => void }) {
               <select
                 value={serviceType}
                 onChange={(e) => setServiceType(e.target.value)}
-                className="w-full h-[42px] px-3 text-sm border border-slate-200 rounded-lg bg-white text-slate-700 outline-none focus:border-blue-400"
+                className="w-full h-[42px] px-3 text-sm border border-slate-200 rounded-lg bg-slate-50 text-slate-700 outline-none"
               >
-                <option value="">Select service...</option>
+                <option value="">Base Maintenance</option>
                 <option>C-Check</option>
                 <option>D-Check</option>
                 <option>Line Maintenance</option>
@@ -276,10 +291,9 @@ export default function MROProfilePage({ onHome }: { onHome?: () => void }) {
               <select
                 value={aircraftType}
                 onChange={(e) => setAircraftType(e.target.value)}
-                className="w-full h-[42px] px-3 text-sm border border-slate-200 rounded-lg bg-white text-slate-700 outline-none focus:border-blue-400"
+                className="w-full h-[42px] px-3 text-sm border border-slate-200 rounded-lg bg-slate-50 text-slate-700 outline-none"
               >
-                <option value="">Select aircraft...</option>
-                <option>Boeing 737-800</option>
+                <option value="">Boeing 737-800</option>
                 <option>Airbus A320</option>
                 <option>Airbus A330</option>
               </select>
@@ -291,22 +305,38 @@ export default function MROProfilePage({ onHome }: { onHome?: () => void }) {
                 type="date"
                 value={preferredDate}
                 onChange={(e) => setPreferredDate(e.target.value)}
-                className="w-full h-[42px] px-3 text-sm border border-slate-200 rounded-lg bg-white text-slate-700 outline-none focus:border-blue-400"
+                className="w-full h-[42px] px-3 text-sm border border-slate-200 rounded-lg bg-slate-50 text-slate-700 outline-none"
               />
             </div>
 
-            <button className="w-full h-[46px] bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl flex items-center justify-center gap-2 transition-colors">
-              <MessageCircle size={16} />
-              Request Slot &amp; Chat
-            </button>
+            <div className="flex flex-col gap-3">
+              <button
+                className="w-full h-[46px] text-white text-sm font-semibold rounded-xl flex items-center justify-center gap-2 transition-colors"
+                style={{ backgroundColor: TEAL }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL)}
+              >
+                <MessageCircle size={16} />
+                Request Slot &amp; Chat
+              </button>
+              <div className="flex items-center justify-center gap-2">
+                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: GREEN }} />
+                <span className="text-xs text-slate-500">Online · Replies in ~15 min</span>
+              </div>
+            </div>
 
-            <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-lg">
-              <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+            <div className="h-px bg-slate-100" />
+
+            <div className="flex items-center gap-2.5">
+              <div
+                className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+                style={{ backgroundColor: NAVY }}
+              >
                 LT
               </div>
               <div className="flex flex-col">
-                <span className="text-xs font-semibold text-slate-800">Online now</span>
-                <span className="text-[11px] text-slate-500">Usually replies in under 1 hour</span>
+                <span className="text-[13px] font-semibold text-slate-800">Lufthansa Technik Shannon</span>
+                <span className="text-[11px] text-slate-500">Chat to discuss slot details, pricing &amp; logistics</span>
               </div>
             </div>
           </div>
@@ -316,7 +346,7 @@ export default function MROProfilePage({ onHome }: { onHome?: () => void }) {
             <h2 className="text-lg font-bold text-slate-900">Certifications</h2>
             {certifications.map((cert) => (
               <div key={cert} className="flex items-center gap-2">
-                <BadgeCheck size={18} className="text-blue-600 shrink-0" />
+                <BadgeCheck size={18} style={{ color: GREEN }} className="shrink-0" />
                 <span className="text-sm font-medium text-slate-800">{cert}</span>
               </div>
             ))}
@@ -327,7 +357,7 @@ export default function MROProfilePage({ onHome }: { onHome?: () => void }) {
             <h2 className="text-lg font-bold text-slate-900">Supported Aircraft</h2>
             <div className="flex flex-wrap gap-2">
               {aircraftTags.map((tag) => (
-                <span key={tag} className="px-3 py-1.5 bg-slate-100 text-slate-700 text-xs font-medium rounded-full">
+                <span key={tag} className="px-3 py-1.5 bg-slate-100 text-slate-700 text-xs font-medium rounded-md">
                   {tag}
                 </span>
               ))}
@@ -346,8 +376,8 @@ export default function MROProfilePage({ onHome }: { onHome?: () => void }) {
               { icon: <Mail size={16} />, text: 'bookings@lufthansa-technik.ie' },
               { icon: <Globe size={16} />, text: 'lufthansa-technik.com' },
             ].map(({ icon, text }) => (
-              <div key={text} className="flex items-start gap-2">
-                <span className="text-slate-400 shrink-0 mt-0.5">{icon}</span>
+              <div key={text} className="flex items-start gap-2.5">
+                <span className="shrink-0 mt-0.5" style={{ color: TEAL }}>{icon}</span>
                 <span className="text-[13px] text-slate-700">{text}</span>
               </div>
             ))}
