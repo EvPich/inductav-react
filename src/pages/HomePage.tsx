@@ -88,9 +88,17 @@ export default function HomePage({ onSearch, onHome, onViewProfile }: { onSearch
 
       {/* Hero */}
       <section
-        className="flex flex-col items-center gap-6 md:gap-8 px-6 md:px-16 lg:px-[120px] pt-10 pb-8 md:pt-16 md:pb-12 lg:pt-[80px] lg:pb-[60px]"
-        style={{ backgroundColor: NAVY }}
+        className="relative flex flex-col items-center gap-6 md:gap-8 px-6 md:px-16 lg:px-[120px] pt-10 pb-8 md:pt-16 md:pb-12 lg:pt-[80px] lg:pb-[60px]"
+        style={{
+          backgroundColor: NAVY,
+          backgroundImage: 'url(/hero.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
       >
+        {/* Dark overlay so text stays readable */}
+        <div className="absolute inset-0" style={{ backgroundColor: 'rgba(28, 43, 74, 0.72)' }} />
+        <div className="relative z-10 flex flex-col items-center gap-6 md:gap-8 w-full">
         <h1
           className="text-center font-extrabold m-0 text-3xl md:text-4xl lg:text-5xl xl:text-[56px]"
           style={{ color: '#FFFFFF', lineHeight: 1.15, maxWidth: 900 }}
@@ -126,6 +134,7 @@ export default function HomePage({ onSearch, onHome, onViewProfile }: { onSearch
             </button>
           ))}
         </div>
+        </div>{/* end z-10 content wrapper */}
       </section>
 
       {/* Immediate Availability */}
