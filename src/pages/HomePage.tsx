@@ -81,10 +81,10 @@ const categorySections: CategorySection[] = [
   },
 ];
 
-export default function HomePage({ onSearch }: { onSearch?: () => void }) {
+export default function HomePage({ onSearch, onHome }: { onSearch?: () => void; onHome?: () => void }) {
   return (
     <div className="min-h-screen">
-      <Navbar />
+      <Navbar onHome={onHome} />
 
       {/* Hero */}
       <section

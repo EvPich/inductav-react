@@ -52,7 +52,7 @@ const initialMessages: Message[] = [
   },
 ];
 
-export default function RequestSlotChatPage() {
+export default function RequestSlotChatPage({ onHome }: { onHome?: () => void }) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState('');
 
@@ -67,7 +67,7 @@ export default function RequestSlotChatPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
-      <Navbar />
+      <Navbar onHome={onHome} />
 
       <div className="flex flex-1 max-w-[1440px] w-full mx-auto overflow-hidden" style={{ height: 'calc(100vh - 72px)' }}>
         {/* Chat Panel */}

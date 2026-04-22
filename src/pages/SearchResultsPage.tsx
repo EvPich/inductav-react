@@ -27,7 +27,7 @@ const sampleResults = [
   { name: 'MTU Maintenance', location: 'Hannover, Germany', rating: 4.9, serviceTypes: ['Engine MRO'], priceRange: '$1M – $3M' },
 ];
 
-export default function SearchResultsPage() {
+export default function SearchResultsPage({ onHome }: { onHome?: () => void }) {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedAvailability, setSelectedAvailability] = useState('Any');
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,7 +39,7 @@ export default function SearchResultsPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <Navbar />
+      <Navbar onHome={onHome} />
 
       {/* Search Strip */}
       <div className="bg-white border-b border-slate-200 px-10 py-3">

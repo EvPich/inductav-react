@@ -2,14 +2,16 @@ import Logo from './Logo';
 
 const navLinks = ['Services', 'MRO Network', 'How It Works', 'Pricing', 'About'];
 
-export default function Navbar() {
+export default function Navbar({ onHome }: { onHome?: () => void }) {
   return (
     <nav
       className="w-full h-[72px] flex items-center justify-between px-12"
       style={{ backgroundColor: '#1C2B4A' }}
     >
       <div className="flex items-center gap-8">
-        <Logo />
+        <button onClick={onHome} className="shrink-0 cursor-pointer">
+          <Logo />
+        </button>
         <div className="flex items-center gap-8">
           {navLinks.map((link) => (
             <a

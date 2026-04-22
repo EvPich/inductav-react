@@ -69,14 +69,14 @@ const dayNumbers = [
   [28, 29, 30, 1, 2, 3, 4],
 ];
 
-export default function MROProfilePage() {
+export default function MROProfilePage({ onHome }: { onHome?: () => void }) {
   const [serviceType, setServiceType] = useState('');
   const [aircraftType, setAircraftType] = useState('');
   const [preferredDate, setPreferredDate] = useState('');
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <Navbar />
+      <Navbar onHome={onHome} />
 
       {/* Breadcrumb */}
       <div className="max-w-[1360px] mx-auto px-10 h-12 flex items-center gap-2 text-[13px]">
