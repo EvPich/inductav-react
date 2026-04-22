@@ -34,7 +34,7 @@ export default function App() {
         ))}
       </div>
 
-      {page === 'home' && <HomePage />}
+      {page === 'home' && <HomePage onSearch={() => setPage('search')} />}
       {page === 'search' && <SearchResultsPage />}
       {page === 'profile' && <MROProfilePage />}
       {page === 'chat' && <RequestSlotChatPage />}

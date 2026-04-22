@@ -81,7 +81,7 @@ const categorySections: CategorySection[] = [
   },
 ];
 
-export default function HomePage() {
+export default function HomePage({ onSearch }: { onSearch?: () => void }) {
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -106,7 +106,7 @@ export default function HomePage() {
           services across a global network of certified facilities — all in one platform.
         </p>
 
-        <SearchBar />
+        <SearchBar onSearch={onSearch} />
 
         {/* Category icons */}
         <div className="flex gap-5">

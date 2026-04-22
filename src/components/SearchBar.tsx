@@ -472,7 +472,7 @@ const FIELDS: { key: Field; icon: (active: boolean) => ReactNode; defaultLabel: 
   },
 ];
 
-export default function SearchBar() {
+export default function SearchBar({ onSearch }: { onSearch?: () => void }) {
   const [open, setOpen] = useState<Field>(null);
   const [values, setValues] = useState<Record<string, string>>({});
   const ref = useRef<HTMLDivElement>(null);
@@ -557,6 +557,7 @@ export default function SearchBar() {
 
         {/* Search button */}
         <button
+          onClick={onSearch}
           className="flex items-center gap-2 h-12 px-8 text-[15px] font-semibold text-white shrink-0 transition-colors"
           style={{ backgroundColor: TEAL, borderRadius: 8 }}
           onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
