@@ -35,7 +35,7 @@ export default function SearchResultsPage({ onHome, onViewProfile }: { onHome?: 
       <Navbar onHome={onHome} />
 
       {/* Search strip */}
-      <div className="bg-white border-b border-slate-200 px-10 py-3">
+      <div className="border-b border-slate-200 px-10 py-3" style={{ backgroundColor: '#F5F7FA' }}>
         <div className="max-w-[1360px] mx-auto">
           <SearchBar />
         </div>
