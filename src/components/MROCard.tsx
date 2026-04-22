@@ -6,6 +6,7 @@ export interface MROCardProps {
   serviceType?: string;
   available?: boolean;
   imageUrl?: string;
+  onViewProfile?: () => void;
 }
 
 const TEAL = '#57A091';
@@ -18,6 +19,7 @@ export default function MROCard({
   serviceType = 'General MRO',
   available = true,
   imageUrl,
+  onViewProfile,
 }: MROCardProps) {
   const dotColor = available ? GREEN : '#EF4444';
   const availText = available ? 'Available Now' : 'Limited Slots';
@@ -59,6 +61,7 @@ export default function MROCard({
         </div>
 
         <button
+          onClick={onViewProfile}
           className="w-full h-10 text-sm font-semibold text-white rounded-lg mt-auto"
           style={{ backgroundColor: TEAL }}
           onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}

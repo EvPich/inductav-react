@@ -81,7 +81,7 @@ const categorySections: CategorySection[] = [
   },
 ];
 
-export default function HomePage({ onSearch, onHome }: { onSearch?: () => void; onHome?: () => void }) {
+export default function HomePage({ onSearch, onHome, onViewProfile }: { onSearch?: () => void; onHome?: () => void; onViewProfile?: () => void }) {
   return (
     <div className="min-h-screen">
       <Navbar onHome={onHome} />
@@ -138,12 +138,12 @@ export default function HomePage({ onSearch, onHome }: { onSearch?: () => void; 
         </div>
         <div className="flex gap-6">
           {immediateRow1.map((card) => (
-            <div key={card.name} className="flex-1"><MROCard {...card} /></div>
+            <div key={card.name} className="flex-1"><MROCard {...card} onViewProfile={onViewProfile} /></div>
           ))}
         </div>
         <div className="flex gap-6">
           {immediateRow2.map((card) => (
-            <div key={card.name} className="flex-1"><MROCard {...card} /></div>
+            <div key={card.name} className="flex-1"><MROCard {...card} onViewProfile={onViewProfile} /></div>
           ))}
         </div>
       </section>
@@ -192,7 +192,7 @@ export default function HomePage({ onSearch, onHome }: { onSearch?: () => void; 
           <div className="flex gap-4">
             {cards.map((card) => (
               <div key={card.name} className="flex-1">
-                <MROCardHorizontal name={card.name} location={card.location} />
+                <MROCardHorizontal name={card.name} location={card.location} onViewProfile={onViewProfile} />
               </div>
             ))}
           </div>

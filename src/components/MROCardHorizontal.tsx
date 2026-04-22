@@ -5,6 +5,7 @@ export interface MROCardHorizontalProps {
   location?: string;
   available?: boolean;
   imageUrl?: string;
+  onViewProfile?: () => void;
 }
 
 const GREEN = '#22C55E';
@@ -14,10 +15,12 @@ export default function MROCardHorizontal({
   location = 'Location',
   available = true,
   imageUrl,
+  onViewProfile,
 }: MROCardHorizontalProps) {
   return (
     <div
-      className="rounded-xl overflow-hidden flex"
+      onClick={onViewProfile}
+      className="rounded-xl overflow-hidden flex cursor-pointer hover:shadow-md transition-shadow"
       style={{ height: 120, border: '1px solid #E2E8F0', backgroundColor: '#FFFFFF', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}
     >
       <div
