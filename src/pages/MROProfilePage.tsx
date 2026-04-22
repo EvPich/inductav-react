@@ -87,7 +87,7 @@ const aircraftOptions = ['Boeing 737-800', 'Airbus A320', 'Airbus A330', 'Boeing
 
 type OpenField = 'service' | 'aircraft' | 'date' | null;
 
-export default function MROProfilePage({ onHome, onRequestSlot }: { onHome?: () => void; onRequestSlot?: () => void }) {
+export default function MROProfilePage({ onHome, onRequestSlot, onSearchResults }: { onHome?: () => void; onRequestSlot?: () => void; onSearchResults?: () => void }) {
   const [serviceType, setServiceType] = useState('Base Maintenance');
   const [aircraftType, setAircraftType] = useState('Boeing 737-800');
   const [selectedDay, setSelectedDay] = useState<number | null>(9);
@@ -131,7 +131,7 @@ export default function MROProfilePage({ onHome, onRequestSlot }: { onHome?: () 
       <div className="max-w-[1360px] mx-auto px-4 md:px-8 lg:px-10 h-12 flex items-center gap-2 text-[13px]">
         <a href="#" className="font-medium hover:underline" style={{ color: TEAL }}>Home</a>
         <span className="text-slate-400">/</span>
-        <a href="#" className="font-medium hover:underline" style={{ color: TEAL }}>Search Results</a>
+        <button onClick={onSearchResults} className="font-medium hover:underline" style={{ color: TEAL }}>Search Results</button>
         <span className="text-slate-400">/</span>
         <span className="font-medium text-slate-700">Lufthansa Technik Shannon</span>
       </div>
