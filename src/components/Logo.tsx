@@ -3,9 +3,7 @@ export default function Logo() {
     <img
       src="/logo-light.png"
       alt="InductAV"
-      width={150}
-      height={50}
-      className="object-contain"
+      className="h-8 lg:h-[50px] w-auto object-contain"
     />
   );
 }

@@ -127,8 +127,8 @@ export default function MROProfilePage({ onHome, onRequestSlot, onSearchResults 
     <div className="min-h-screen bg-slate-50">
       <Navbar onHome={onHome} />
 
-      {/* Breadcrumb */}
-      <div className="max-w-[1360px] mx-auto px-4 md:px-8 lg:px-10 h-12 flex items-center gap-2 text-[13px]">
+      {/* Breadcrumb — hidden on mobile */}
+      <div className="hidden md:flex max-w-[1360px] mx-auto px-4 md:px-8 lg:px-10 h-12 items-center gap-2 text-[13px]">
         <a href="#" className="font-medium hover:underline" style={{ color: TEAL }}>Home</a>
         <span className="text-slate-400">/</span>
         <button onClick={onSearchResults} className="font-medium hover:underline" style={{ color: TEAL }}>Search Results</button>
@@ -137,7 +137,7 @@ export default function MROProfilePage({ onHome, onRequestSlot, onSearchResults 
       </div>
 
       {/* Hero */}
-      <div className="relative w-full h-[340px] overflow-hidden" style={{ backgroundImage: 'url(/lufthansa-technik.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <div className="relative w-full h-[220px] md:h-[340px] overflow-hidden" style={{ backgroundImage: 'url(/lufthansa-technik.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
         <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 to-slate-900/50" />
         <div className="relative z-10 max-w-[1360px] mx-auto px-4 md:px-8 lg:px-10 h-full flex items-end justify-between gap-4">
           {/* Info */}
@@ -164,8 +164,8 @@ export default function MROProfilePage({ onHome, onRequestSlot, onSearchResults 
             </div>
           </div>
 
-          {/* Hero CTA */}
-          <div className="pb-8">
+          {/* Hero CTA — hidden on mobile */}
+          <div className="hidden md:block pb-8">
             <button
               onClick={onRequestSlot}
               className="flex items-center gap-2 px-7 h-11 text-white text-[15px] font-semibold rounded-xl transition-colors"
@@ -178,6 +178,25 @@ export default function MROProfilePage({ onHome, onRequestSlot, onSearchResults 
             </button>
           </div>
         </div>
+      </div>
+
+      {/* Mobile action row — below hero, hidden on md+ */}
+      <div className="md:hidden flex items-center gap-3 px-4 py-3 border-b border-slate-200 bg-white">
+        <button
+          onClick={onRequestSlot}
+          className="flex-1 flex items-center justify-center gap-2 h-11 text-white text-sm font-semibold rounded-xl transition-colors"
+          style={{ backgroundColor: TEAL }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL)}
+        >
+          <MessageCircle size={16} />
+          Request Slot &amp; Chat
+        </button>
+        <button
+          className="w-11 h-11 flex items-center justify-center border border-slate-200 rounded-xl bg-white transition-colors hover:border-slate-300"
+        >
+          <Phone size={18} style={{ color: TEAL }} />
+        </button>
       </div>
 
       {/* Main Content */}

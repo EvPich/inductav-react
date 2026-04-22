@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Star, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Star, ChevronDown, ChevronLeft, ChevronRight, SlidersHorizontal } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import SearchBar from '../components/SearchBar';
 import ResultCard from '../components/ResultCard';
@@ -34,8 +34,17 @@ export default function SearchResultsPage({ onHome, onViewProfile }: { onHome?: 
     <div className="min-h-screen" style={{ backgroundColor: '#F5F7FA' }}>
       <Navbar onHome={onHome} />
 
-      {/* Search strip */}
-      <div className="border-b border-slate-200 px-4 md:px-8 lg:px-10 py-3" style={{ backgroundColor: '#F5F7FA' }}>
+      {/* Mobile filter bar */}
+      <div className="flex sm:hidden items-center justify-between px-4 py-3 border-b border-slate-200 bg-white">
+        <span className="text-sm text-slate-500">All Locations · All Services</span>
+        <button className="flex items-center gap-1.5 px-3 py-2 border border-slate-200 rounded-lg text-[13px] text-slate-600 bg-white">
+          <SlidersHorizontal size={14} />
+          Filters
+        </button>
+      </div>
+
+      {/* Desktop search strip */}
+      <div className="hidden sm:block border-b border-slate-200 px-4 md:px-8 lg:px-10 py-3" style={{ backgroundColor: '#F5F7FA' }}>
         <div className="max-w-[1360px] mx-auto">
           <SearchBar />
         </div>

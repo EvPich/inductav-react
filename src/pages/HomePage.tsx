@@ -117,12 +117,12 @@ export default function HomePage({ onSearch, onHome, onViewProfile }: { onSearch
         <SearchBar onSearch={onSearch} />
 
         {/* Category icons */}
-        <div className="flex flex-wrap justify-center gap-3 md:gap-5">
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center gap-3 md:gap-5">
           {categories.map((cat) => (
             <button
               key={cat.label}
               className="flex flex-col items-center gap-3 cursor-pointer transition-opacity hover:opacity-80"
-              style={{ backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 12, padding: '20px 16px', width: 140, minWidth: 120 }}
+              style={{ backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 12, padding: '16px 12px', minWidth: 120 }}
             >
               {cat.icon}
               <span
@@ -192,9 +192,11 @@ export default function HomePage({ onSearch, onHome, onViewProfile }: { onSearch
           style={{ backgroundColor: bg }}
         >
           <h2 className="text-xl md:text-2xl font-bold m-0" style={{ color: TEXT_PRIMARY }}>{title}</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+          <div className="flex gap-3 pb-2 overflow-x-auto md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-visible md:pb-0">
             {cards.map((card) => (
-              <MROCardHorizontal key={card.name} name={card.name} location={card.location} imageUrl={card.imageUrl} onViewProfile={onViewProfile} />
+              <div key={card.name} className="shrink-0 w-[240px] md:w-auto">
+                <MROCardHorizontal name={card.name} location={card.location} imageUrl={card.imageUrl} onViewProfile={onViewProfile} />
+              </div>
             ))}
           </div>
         </section>

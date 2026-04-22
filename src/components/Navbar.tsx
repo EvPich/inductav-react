@@ -1,42 +1,94 @@
+import { useState } from 'react';
+import { Menu, X, User } from 'lucide-react';
 import Logo from './Logo';
 
 const navLinks = ['Services', 'MRO Network', 'How It Works', 'Pricing', 'About'];
 
 export default function Navbar({ onHome }: { onHome?: () => void }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <nav
-      className="w-full h-[72px] flex items-center justify-between px-4 md:px-8 lg:px-12"
-      style={{ backgroundColor: '#1C2B4A' }}
-    >
-      <div className="flex items-center gap-4 lg:gap-8">
-        <button onClick={onHome} className="shrink-0 cursor-pointer">
+    <nav className="w-full" style={{ backgroundColor: '#1C2B4A' }}>
+      {/* Mobile header */}
+      <div className="lg:hidden flex items-center h-14 px-4">
+        <div className="flex-1">
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="text-white p-1 -ml-1"
+          >
+            {menuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+        <button onClick={onHome} className="cursor-pointer">
           <Logo />
         </button>
-        <div className="hidden lg:flex items-center gap-8">
+        <div className="flex-1 flex justify-end">
+          <button className="text-white p-1 -mr-1">
+            <User size={22} />
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile dropdown menu */}
+      {menuOpen && (
+        <div
+          className="lg:hidden flex flex-col px-4 pb-5"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}
+        >
           {navLinks.map((link) => (
             <a
               key={link}
               href="#"
-              className="text-sm font-medium text-white/90 hover:text-white transition-colors"
+              className="py-3.5 text-sm font-medium text-white/80 border-b border-white/10 last:border-0 hover:text-white transition-colors"
             >
               {link}
             </a>
           ))}
+          <div className="flex flex-col gap-3 pt-5">
+            <a href="#" className="text-center py-2.5 text-sm font-medium text-white/80 hover:text-white">
+              Log In
+            </a>
+            <button
+              className="py-3 text-sm font-semibold text-white rounded-lg"
+              style={{ backgroundColor: '#57A091' }}
+            >
+              Get Started
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
-      <div className="flex items-center gap-2 md:gap-4">
-        <a href="#" className="hidden md:block text-sm font-medium text-white/90 hover:text-white transition-colors">
-          Log In
-        </a>
-        <button
-          className="px-4 md:px-6 py-[10px] text-sm font-semibold text-white rounded-[6px] transition-colors"
-          style={{ backgroundColor: '#57A091' }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#478A7C')}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#57A091')}
-        >
-          Get Started
-        </button>
+      {/* Desktop header */}
+      <div className="hidden lg:flex items-center justify-between h-[72px] px-12">
+        <div className="flex items-center gap-8">
+          <button onClick={onHome} className="shrink-0 cursor-pointer">
+            <Logo />
+          </button>
+          <div className="flex items-center gap-8">
+            {navLinks.map((link) => (
+              <a
+                key={link}
+                href="#"
+                className="text-sm font-medium text-white/90 hover:text-white transition-colors"
+              >
+                {link}
+              </a>
+            ))}
+          </div>
+        </div>
+        <div className="flex items-center gap-4">
+          <a href="#" className="text-sm font-medium text-white/90 hover:text-white transition-colors">
+            Log In
+          </a>
+          <button
+            className="px-6 py-[10px] text-sm font-semibold text-white rounded-[6px] transition-colors"
+            style={{ backgroundColor: '#57A091' }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#478A7C')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#57A091')}
+          >
+            Get Started
+          </button>
+        </div>
       </div>
     </nav>
   );

@@ -520,47 +520,39 @@ export default function SearchBar({ onSearch }: { onSearch?: () => void }) {
 
   return (
     <div ref={ref} style={{ position: 'relative', maxWidth: 1100, width: '100%' }}>
-      {/* Bar — horizontally scrollable on small screens */}
-      <div className="overflow-x-auto">
-      <div
-        className="flex items-center"
-        style={{ backgroundColor: '#fff', borderRadius: 12, padding: 8, minWidth: 560 }}
-      >
-        {FIELDS.map(({ key, icon, defaultLabel }, i) => {
+
+      {/* ── Mobile stacked layout (< sm) ── */}
+      <div className="flex flex-col gap-2 sm:hidden">
+        {FIELDS.map(({ key, icon, defaultLabel }) => {
           const active = open === key;
           const hasValue = !!values[key!];
           return (
-            <div key={key} className="flex items-center flex-1">
+            <div key={key} style={{ position: 'relative' }}>
               <button
-                style={fieldStyle(key)}
                 onClick={() => setOpen(open === key ? null : key)}
+                className="w-full flex items-center gap-3 h-12 px-4 rounded-lg"
+                style={{
+                  backgroundColor: active ? TEAL_BG : 'rgba(255,255,255,0.12)',
+                  border: `2px solid ${active ? TEAL : 'rgba(255,255,255,0.15)'}`,
+                }}
               >
                 {icon(active || hasValue)}
-                <span
-                  style={{
-                    fontSize: 14,
-                    fontWeight: hasValue ? 500 : 400,
-                    color: active || hasValue ? NAVY : MUTED,
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
+                <span className="flex-1 text-left text-sm" style={{ color: active || hasValue ? NAVY : 'rgba(255,255,255,0.75)' }}>
                   {values[key!] || defaultLabel}
                 </span>
               </button>
-              {i < FIELDS.length - 1 && (
-                <div style={{ width: 1, height: 32, backgroundColor: open === key || open === FIELDS[i + 1].key ? 'transparent' : '#E2E8F0', flexShrink: 0 }} />
+              {active && (
+                <div style={{ position: 'absolute', top: 'calc(100% + 4px)', left: 0, maxWidth: 400, width: 'calc(100vw - 32px)', zIndex: 100 }}>
+                  {renderDropdown(key)}
+                </div>
               )}
             </div>
           );
         })}
-
-        {/* Search button */}
         <button
           onClick={onSearch}
-          className="flex items-center gap-2 h-12 px-8 text-[15px] font-semibold text-white shrink-0 transition-colors"
-          style={{ backgroundColor: TEAL, borderRadius: 8 }}
+          className="w-full flex items-center justify-center gap-2 h-12 text-[15px] font-semibold text-white rounded-lg transition-colors"
+          style={{ backgroundColor: TEAL }}
           onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
           onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL)}
         >
@@ -568,11 +560,68 @@ export default function SearchBar({ onSearch }: { onSearch?: () => void }) {
           Search
         </button>
       </div>
-      </div>{/* end overflow-x-auto */}
 
-      {/* Dropdown panel — floats below the matching field, outside the overflow wrapper */}
+      {/* ── Desktop horizontal bar (≥ sm) ── */}
+      <div className="hidden sm:block overflow-x-auto">
+        <div
+          className="flex items-center"
+          style={{ backgroundColor: '#fff', borderRadius: 12, padding: 8, minWidth: 560 }}
+        >
+          {FIELDS.map(({ key, icon, defaultLabel }, i) => {
+            const active = open === key;
+            const hasValue = !!values[key!];
+            return (
+              <div key={key} className="flex items-center flex-1">
+                <button
+                  style={fieldStyle(key)}
+                  onClick={() => setOpen(open === key ? null : key)}
+                >
+                  {icon(active || hasValue)}
+                  <span
+                    style={{
+                      fontSize: 14,
+                      fontWeight: hasValue ? 500 : 400,
+                      color: active || hasValue ? NAVY : MUTED,
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    {values[key!] || defaultLabel}
+                  </span>
+                </button>
+                {i < FIELDS.length - 1 && (
+                  <div style={{ width: 1, height: 32, backgroundColor: open === key || open === FIELDS[i + 1].key ? 'transparent' : '#E2E8F0', flexShrink: 0 }} />
+                )}
+              </div>
+            );
+          })}
+
+          {/* Search button */}
+          <button
+            onClick={onSearch}
+            className="flex items-center gap-2 h-12 px-8 text-[15px] font-semibold text-white shrink-0 transition-colors"
+            style={{ backgroundColor: TEAL, borderRadius: 8 }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL)}
+          >
+            <Search size={18} />
+            Search
+          </button>
+        </div>
+      </div>
+
+      {/* Desktop dropdown panel — outside the overflow wrapper */}
       {open && (
-        <div style={{ position: 'absolute', top: 'calc(100% + 8px)', zIndex: 50, ...(open === 'location' ? { left: 0 } : open === 'service' ? { left: '25%' } : open === 'aircraft' ? { left: '50%' } : { right: 80 }) }}>
+        <div
+          className="hidden sm:block"
+          style={{
+            position: 'absolute',
+            top: 'calc(100% + 8px)',
+            zIndex: 50,
+            ...(open === 'location' ? { left: 0 } : open === 'service' ? { left: '25%' } : open === 'aircraft' ? { left: '50%' } : { right: 80 }),
+          }}
+        >
           {renderDropdown(open)}
         </div>
       )}

@@ -22,10 +22,10 @@ export default function ResultCard({
   onViewProfile,
 }: ResultCardProps) {
   return (
-    <div className="w-full h-[160px] rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow flex">
+    <div className="w-full rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow flex flex-col sm:flex-row sm:h-[160px]">
       {/* Thumbnail */}
       <div
-        className="w-[180px] h-full shrink-0 bg-slate-200"
+        className="w-full h-44 sm:h-full sm:w-[180px] shrink-0 bg-slate-200"
         style={
           imageUrl
             ? { backgroundImage: `url(${imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }

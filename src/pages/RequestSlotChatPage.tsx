@@ -73,7 +73,7 @@ export default function RequestSlotChatPage({ onHome, onBack }: { onHome?: () =>
     <div className="min-h-screen bg-slate-50 flex flex-col">
       <Navbar onHome={onHome} />
 
-      <div className="flex flex-col lg:flex-row flex-1 max-w-[1440px] w-full mx-auto overflow-hidden" style={{ height: 'calc(100vh - 72px)' }}>
+      <div className="flex flex-col lg:flex-row flex-1 max-w-[1440px] w-full mx-auto overflow-hidden h-[calc(100vh_-_56px)] lg:h-[calc(100vh_-_72px)]">
         {/* Chat Panel */}
         <div className="flex-1 flex flex-col border-r border-slate-200 bg-white min-w-0">
           {/* Header */}
@@ -201,7 +201,7 @@ export default function RequestSlotChatPage({ onHome, onBack }: { onHome?: () =>
         </div>
 
         {/* Booking Sidebar */}
-        <div className="w-full lg:w-[360px] shrink-0 flex flex-col overflow-y-auto bg-white border-t lg:border-t-0 border-slate-200">
+        <div className="hidden lg:flex w-[360px] shrink-0 flex-col overflow-y-auto bg-white border-slate-200">
           <div className="flex flex-col gap-0 divide-y divide-slate-100">
             {/* Booking Summary */}
             <div className="p-6 flex flex-col gap-4">
