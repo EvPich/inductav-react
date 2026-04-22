@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   MapPin,
   Star,
@@ -9,6 +9,8 @@ import {
   Globe,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
+  Calendar,
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -55,30 +57,71 @@ const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 type SlotStatus = 'available' | 'booked' | 'partial';
 
-const calendarWeeks: SlotStatus[][] = [
-  ['available', 'available', 'booked', 'available', 'partial', 'booked', 'booked'],
-  ['available', 'booked', 'available', 'available', 'booked', 'booked', 'available'],
-  ['partial', 'available', 'available', 'booked', 'available', 'booked', 'available'],
-  ['available', 'available', 'partial', 'available', 'available', 'booked', 'partial'],
+// April 2026: starts Wednesday (Mon-index = 2)
+// null = padding cell outside month
+const aprilWeeks: (number | null)[][] = [
+  [null, null, 1, 2, 3, 4, 5],
+  [6, 7, 8, 9, 10, 11, 12],
+  [13, 14, 15, 16, 17, 18, 19],
+  [20, 21, 22, 23, 24, 25, 26],
+  [27, 28, 29, 30, null, null, null],
 ];
 
-const slotColor: Record<SlotStatus, string> = {
-  available: 'bg-emerald-100 text-emerald-700',
-  booked: 'bg-red-100 text-red-500',
-  partial: 'bg-amber-100 text-amber-600',
+const dayStatus: Record<number, SlotStatus> = {
+  1: 'available', 2: 'available', 3: 'booked', 4: 'available', 5: 'partial',
+  6: 'booked', 7: 'available', 8: 'available', 9: 'booked', 10: 'available',
+  11: 'available', 12: 'booked', 13: 'available', 14: 'partial', 15: 'available',
+  16: 'available', 17: 'booked', 18: 'available', 19: 'booked', 20: 'available',
+  21: 'available', 22: 'partial', 23: 'available', 24: 'available', 25: 'booked',
+  26: 'partial', 27: 'available', 28: 'available', 29: 'available', 30: 'booked',
 };
 
-const dayNumbers = [
-  [7, 8, 9, 10, 11, 12, 13],
-  [14, 15, 16, 17, 18, 19, 20],
-  [21, 22, 23, 24, 25, 26, 27],
-  [28, 29, 30, 1, 2, 3, 4],
-];
+const slotColor: Record<SlotStatus, { bg: string; text: string }> = {
+  available: { bg: '#F0FDF4', text: '#16A34A' },
+  booked: { bg: '#FEF2F2', text: '#EF4444' },
+  partial: { bg: '#FFFBEB', text: '#D97706' },
+};
 
-export default function MROProfilePage({ onHome }: { onHome?: () => void }) {
-  const [serviceType, setServiceType] = useState('');
-  const [aircraftType, setAircraftType] = useState('');
-  const [preferredDate, setPreferredDate] = useState('');
+const serviceOptions = ['Base Maintenance', 'C-Check', 'D-Check', 'A-Check', 'Line Maintenance', 'Cabin Modification', 'Avionics'];
+const aircraftOptions = ['Boeing 737-800', 'Airbus A320', 'Airbus A330', 'Boeing 757', 'Embraer E-Jet', 'ATR 72'];
+
+type OpenField = 'service' | 'aircraft' | 'date' | null;
+
+export default function MROProfilePage({ onHome, onRequestSlot }: { onHome?: () => void; onRequestSlot?: () => void }) {
+  const [serviceType, setServiceType] = useState('Base Maintenance');
+  const [aircraftType, setAircraftType] = useState('Boeing 737-800');
+  const [selectedDay, setSelectedDay] = useState<number | null>(9);
+  const [openField, setOpenField] = useState<OpenField>(null);
+
+  const slotRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (slotRef.current && !slotRef.current.contains(e.target as Node)) {
+        setOpenField(null);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const dateLabel = selectedDay ? `${selectedDay} Apr 2026` : 'Select date';
+
+  const toggleField = (field: OpenField) =>
+    setOpenField((prev) => (prev === field ? null : field));
+
+  const triggerStyle = (field: OpenField) => ({
+    backgroundColor: '#F5F7FA',
+    border: `1px solid ${openField === field ? TEAL : '#E2E8F0'}`,
+    borderRadius: 8,
+    height: 42,
+    padding: '0 12px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between' as const,
+    width: '100%',
+    cursor: 'pointer',
+  });
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -99,15 +142,13 @@ export default function MROProfilePage({ onHome }: { onHome?: () => void }) {
         <div className="relative z-10 max-w-[1360px] mx-auto px-10 h-full flex items-end justify-between">
           {/* Info */}
           <div className="flex flex-col gap-3 pb-8">
-            <div className="flex items-center gap-2">
-              <span
-                className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold text-white"
-                style={{ backgroundColor: GREEN }}
-              >
-                <BadgeCheck size={12} />
-                Verified MRO
-              </span>
-            </div>
+            <span
+              className="self-start flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold text-white"
+              style={{ backgroundColor: GREEN }}
+            >
+              <BadgeCheck size={12} />
+              Verified MRO
+            </span>
             <h1 className="text-[32px] font-bold text-white">Lufthansa Technik Shannon</h1>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1">
@@ -123,9 +164,10 @@ export default function MROProfilePage({ onHome }: { onHome?: () => void }) {
             </div>
           </div>
 
-          {/* CTA */}
-          <div className="flex flex-col gap-3 pb-8">
+          {/* Hero CTA */}
+          <div className="pb-8">
             <button
+              onClick={onRequestSlot}
               className="flex items-center gap-2 px-7 h-11 text-white text-[15px] font-semibold rounded-xl transition-colors"
               style={{ backgroundColor: TEAL }}
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
@@ -204,16 +246,22 @@ export default function MROProfilePage({ onHome }: { onHome?: () => void }) {
             </div>
 
             <div className="flex flex-col gap-1">
-              {calendarWeeks.map((week, wi) => (
+              {aprilWeeks.map((week, wi) => (
                 <div key={wi} className="grid grid-cols-7 gap-1 h-10">
-                  {week.map((status, di) => (
-                    <button
-                      key={di}
-                      className={`flex items-center justify-center rounded-lg text-xs font-medium transition-opacity hover:opacity-80 ${slotColor[status]}`}
-                    >
-                      {dayNumbers[wi][di]}
-                    </button>
-                  ))}
+                  {week.map((day, di) => {
+                    if (day === null) return <div key={di} />;
+                    const status = dayStatus[day];
+                    const { bg, text } = slotColor[status];
+                    return (
+                      <button
+                        key={di}
+                        className="flex items-center justify-center rounded-lg text-xs font-medium transition-opacity hover:opacity-80"
+                        style={{ backgroundColor: bg, color: text }}
+                      >
+                        {day}
+                      </button>
+                    );
+                  })}
                 </div>
               ))}
             </div>
@@ -269,48 +317,158 @@ export default function MROProfilePage({ onHome }: { onHome?: () => void }) {
         {/* Right Column */}
         <div className="w-[380px] shrink-0 flex flex-col gap-5">
           {/* Quick Book */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm flex flex-col gap-4 sticky top-4">
-            <h2 className="text-lg font-bold text-slate-900">Request a Slot</h2>
+          <div ref={slotRef} className="bg-white rounded-2xl p-6 shadow-sm flex flex-col gap-4 sticky top-4">
+            <h2 className="text-[18px] font-bold text-slate-900">Request a Slot</h2>
 
+            {/* Service Type */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-[13px] font-medium text-slate-700">Service Type</label>
-              <select
-                value={serviceType}
-                onChange={(e) => setServiceType(e.target.value)}
-                className="w-full h-[42px] px-3 text-sm border border-slate-200 rounded-lg bg-slate-50 text-slate-700 outline-none"
-              >
-                <option value="">Base Maintenance</option>
-                <option>C-Check</option>
-                <option>D-Check</option>
-                <option>Line Maintenance</option>
-              </select>
+              <label className="text-[13px] font-medium text-slate-500">Service Type</label>
+              <div className="relative">
+                <button style={triggerStyle('service')} onClick={() => toggleField('service')}>
+                  <span className="text-sm" style={{ color: '#1E293B' }}>{serviceType}</span>
+                  <ChevronDown size={16} color="#94A3B8" />
+                </button>
+                {openField === 'service' && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-lg z-20 overflow-hidden" style={{ border: '1px solid #E2E8F0' }}>
+                    {serviceOptions.map((opt) => (
+                      <button
+                        key={opt}
+                        onClick={() => { setServiceType(opt); setOpenField(null); }}
+                        className="w-full px-3 py-2.5 text-left text-sm flex items-center justify-between transition-colors hover:bg-slate-50"
+                        style={{
+                          color: serviceType === opt ? TEAL : '#1E293B',
+                          backgroundColor: serviceType === opt ? TEAL_LIGHT : 'transparent',
+                        }}
+                      >
+                        {opt}
+                        {serviceType === opt && (
+                          <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
+                            <path d="M1 5L4.5 8.5L11 1" stroke={TEAL} strokeWidth="2" strokeLinecap="round" />
+                          </svg>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
+            {/* Aircraft Type */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-[13px] font-medium text-slate-700">Aircraft Type</label>
-              <select
-                value={aircraftType}
-                onChange={(e) => setAircraftType(e.target.value)}
-                className="w-full h-[42px] px-3 text-sm border border-slate-200 rounded-lg bg-slate-50 text-slate-700 outline-none"
-              >
-                <option value="">Boeing 737-800</option>
-                <option>Airbus A320</option>
-                <option>Airbus A330</option>
-              </select>
+              <label className="text-[13px] font-medium text-slate-500">Aircraft Type</label>
+              <div className="relative">
+                <button style={triggerStyle('aircraft')} onClick={() => toggleField('aircraft')}>
+                  <span className="text-sm" style={{ color: '#1E293B' }}>{aircraftType}</span>
+                  <ChevronDown size={16} color="#94A3B8" />
+                </button>
+                {openField === 'aircraft' && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-lg z-20 overflow-hidden" style={{ border: '1px solid #E2E8F0' }}>
+                    {aircraftOptions.map((opt) => (
+                      <button
+                        key={opt}
+                        onClick={() => { setAircraftType(opt); setOpenField(null); }}
+                        className="w-full px-3 py-2.5 text-left text-sm flex items-center justify-between transition-colors hover:bg-slate-50"
+                        style={{
+                          color: aircraftType === opt ? TEAL : '#1E293B',
+                          backgroundColor: aircraftType === opt ? TEAL_LIGHT : 'transparent',
+                        }}
+                      >
+                        {opt}
+                        {aircraftType === opt && (
+                          <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
+                            <path d="M1 5L4.5 8.5L11 1" stroke={TEAL} strokeWidth="2" strokeLinecap="round" />
+                          </svg>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
+            {/* Preferred Date */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-[13px] font-medium text-slate-700">Preferred Date</label>
-              <input
-                type="date"
-                value={preferredDate}
-                onChange={(e) => setPreferredDate(e.target.value)}
-                className="w-full h-[42px] px-3 text-sm border border-slate-200 rounded-lg bg-slate-50 text-slate-700 outline-none"
-              />
+              <label className="text-[13px] font-medium text-slate-500">Preferred Date</label>
+              <div className="relative">
+                <button style={triggerStyle('date')} onClick={() => toggleField('date')}>
+                  <span className="text-sm" style={{ color: '#1E293B' }}>{dateLabel}</span>
+                  <Calendar size={16} color="#94A3B8" />
+                </button>
+                {openField === 'date' && (
+                  <div
+                    className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-lg z-20 p-4 flex flex-col gap-3"
+                    style={{ border: '1px solid #E2E8F0' }}
+                  >
+                    {/* Month nav */}
+                    <div className="flex items-center justify-between">
+                      <button className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors">
+                        <ChevronLeft size={15} className="text-slate-500" />
+                      </button>
+                      <span className="text-sm font-semibold text-slate-800">April 2026</span>
+                      <button className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors">
+                        <ChevronRight size={15} className="text-slate-500" />
+                      </button>
+                    </div>
+
+                    {/* Day headers */}
+                    <div className="grid grid-cols-7 gap-0.5">
+                      {DAYS.map((d) => (
+                        <div key={d} className="text-center text-[11px] font-semibold text-slate-400 py-0.5">{d}</div>
+                      ))}
+                    </div>
+
+                    {/* Calendar grid */}
+                    <div className="flex flex-col gap-0.5">
+                      {aprilWeeks.map((week, wi) => (
+                        <div key={wi} className="grid grid-cols-7 gap-0.5">
+                          {week.map((day, di) => {
+                            if (day === null) return <div key={di} className="h-8" />;
+                            const isSelected = day === selectedDay;
+                            const status = dayStatus[day];
+                            const { bg, text } = slotColor[status];
+                            return (
+                              <button
+                                key={di}
+                                onClick={() => { setSelectedDay(day); setOpenField(null); }}
+                                className="h-8 flex items-center justify-center rounded-lg text-xs font-medium transition-all"
+                                style={
+                                  isSelected
+                                    ? { backgroundColor: TEAL, color: '#FFFFFF', border: `2px solid ${TEAL}` }
+                                    : { backgroundColor: bg, color: text }
+                                }
+                              >
+                                {day}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Legend */}
+                    <div className="flex items-center gap-3 pt-1 border-t border-slate-100">
+                      <div className="flex items-center gap-1">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                        <span className="text-[10px] text-slate-400">Available</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="w-2 h-2 rounded-full bg-amber-400" />
+                        <span className="text-[10px] text-slate-400">Partial</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="w-2 h-2 rounded-full bg-red-400" />
+                        <span className="text-[10px] text-slate-400">Booked</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
+            {/* CTA */}
             <div className="flex flex-col gap-3">
               <button
+                onClick={onRequestSlot}
                 className="w-full h-[46px] text-white text-sm font-semibold rounded-xl flex items-center justify-center gap-2 transition-colors"
                 style={{ backgroundColor: TEAL }}
                 onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
