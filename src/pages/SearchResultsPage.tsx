@@ -1,17 +1,10 @@
 import { useState } from 'react';
-import {
-  MapPin,
-  Wrench,
-  Plane,
-  Calendar,
-  Search,
-  Star,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react';
+import { Search, Star, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import Navbar from '../components/Navbar';
+import SearchBar from '../components/SearchBar';
 import ResultCard from '../components/ResultCard';
+
+const TEAL = '#57A091';
 
 const serviceTypes = ['General', 'Landing Gear', 'Painting', 'Engine', 'APU', 'Avionics'];
 const availabilityOptions = ['Any', 'Available Now', 'Next 7 Days', 'Next 30 Days'];
@@ -38,121 +31,115 @@ export default function SearchResultsPage({ onHome }: { onHome?: () => void }) {
     );
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen" style={{ backgroundColor: '#F5F7FA' }}>
       <Navbar onHome={onHome} />
 
-      {/* Search Strip */}
+      {/* Search strip */}
       <div className="bg-white border-b border-slate-200 px-10 py-3">
-        <div className="max-w-[1360px] mx-auto flex items-center h-[44px] bg-slate-100 rounded-xl overflow-hidden">
-          <div className="flex items-center gap-2 px-4 flex-1 h-full border-r border-slate-200">
-            <MapPin size={16} className="text-slate-400 shrink-0" />
-            <input defaultValue="Miami, FL" className="text-sm text-slate-700 bg-transparent outline-none w-full" />
-          </div>
-          <div className="flex items-center gap-2 px-4 flex-1 h-full border-r border-slate-200">
-            <Wrench size={16} className="text-slate-400 shrink-0" />
-            <input defaultValue="All Services" className="text-sm text-slate-700 bg-transparent outline-none w-full" />
-          </div>
-          <div className="flex items-center gap-2 px-4 flex-1 h-full border-r border-slate-200">
-            <Plane size={16} className="text-slate-400 shrink-0" />
-            <input defaultValue="Boeing 737" className="text-sm text-slate-700 bg-transparent outline-none w-full" />
-          </div>
-          <div className="flex items-center gap-2 px-4 flex-1 h-full border-r border-slate-200">
-            <Calendar size={16} className="text-slate-400 shrink-0" />
-            <input defaultValue="Apr 25 – May 10" className="text-sm text-slate-700 bg-transparent outline-none w-full" />
-          </div>
-          <button className="flex items-center gap-2 px-5 h-full bg-blue-600 hover:bg-blue-700 text-white text-[13px] font-semibold transition-colors shrink-0">
-            <Search size={16} />
-            Search
-          </button>
+        <div className="max-w-[1360px] mx-auto">
+          <SearchBar />
         </div>
       </div>
 
       {/* Main */}
       <div className="max-w-[1360px] mx-auto px-10 py-8 flex gap-8">
-        {/* Sidebar */}
+
+        {/* Sidebar filters */}
         <aside className="w-[300px] shrink-0 flex flex-col gap-6">
-          {/* Location Filter */}
+
+          {/* Location */}
           <div className="flex flex-col gap-3">
-            <span className="text-sm font-semibold text-slate-800">Location</span>
-            <div className="flex items-center gap-2 px-3 h-10 bg-white border border-slate-200 rounded-lg">
-              <Search size={16} className="text-slate-400 shrink-0" />
-              <input placeholder="Search location..." className="text-[13px] text-slate-700 outline-none w-full placeholder-slate-400" />
+            <span className="text-sm font-semibold" style={{ color: '#1E293B' }}>Location</span>
+            <div className="flex items-center gap-2 px-3 h-10 bg-white rounded-lg" style={{ border: '1px solid #E2E8F0' }}>
+              <Search size={16} color="#94A3B8" className="shrink-0" />
+              <input
+                placeholder="Search location..."
+                className="text-[13px] outline-none w-full bg-transparent"
+                style={{ color: '#1E293B' }}
+              />
             </div>
           </div>
 
           {/* Service Type */}
           <div className="flex flex-col gap-3">
-            <span className="text-sm font-semibold text-slate-800">Service Type</span>
-            {serviceTypes.map((svc) => (
-              <label key={svc} className="flex items-center gap-2 cursor-pointer">
-                <div
-                  onClick={() => toggleService(svc)}
-                  className={`w-[18px] h-[18px] rounded border-2 flex items-center justify-center shrink-0 transition-colors ${
-                    selectedServices.includes(svc)
-                      ? 'bg-blue-600 border-blue-600'
-                      : 'bg-white border-slate-300'
-                  }`}
-                >
-                  {selectedServices.includes(svc) && (
-                    <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                      <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
-                  )}
-                </div>
-                <span className="text-[13px] text-slate-700">{svc}</span>
-              </label>
-            ))}
+            <span className="text-sm font-semibold" style={{ color: '#1E293B' }}>Service Type</span>
+            {serviceTypes.map((svc) => {
+              const checked = selectedServices.includes(svc);
+              return (
+                <label key={svc} className="flex items-center gap-2 cursor-pointer">
+                  <div
+                    onClick={() => toggleService(svc)}
+                    className="w-[18px] h-[18px] rounded flex items-center justify-center shrink-0 transition-colors"
+                    style={{
+                      backgroundColor: checked ? TEAL : '#FFFFFF',
+                      border: `2px solid ${checked ? TEAL : '#CBD5E1'}`,
+                    }}
+                  >
+                    {checked && (
+                      <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                        <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                      </svg>
+                    )}
+                  </div>
+                  <span className="text-[13px]" style={{ color: '#475569' }}>{svc}</span>
+                </label>
+              );
+            })}
           </div>
 
-          <div className="h-px bg-slate-200" />
+          <div className="h-px" style={{ backgroundColor: '#E2E8F0' }} />
 
           {/* Availability */}
           <div className="flex flex-col gap-3">
-            <span className="text-sm font-semibold text-slate-800">Availability</span>
-            {availabilityOptions.map((opt) => (
-              <label key={opt} className="flex items-center gap-2 cursor-pointer">
-                <div
-                  onClick={() => setSelectedAvailability(opt)}
-                  className={`w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
-                    selectedAvailability === opt ? 'border-blue-600' : 'border-slate-300'
-                  }`}
-                >
-                  {selectedAvailability === opt && (
-                    <span className="w-2.5 h-2.5 rounded-full bg-blue-600 block" />
-                  )}
-                </div>
-                <span className="text-[13px] text-slate-700">{opt}</span>
-              </label>
-            ))}
+            <span className="text-sm font-semibold" style={{ color: '#1E293B' }}>Availability</span>
+            {availabilityOptions.map((opt) => {
+              const selected = selectedAvailability === opt;
+              return (
+                <label key={opt} className="flex items-center gap-2 cursor-pointer">
+                  <div
+                    onClick={() => setSelectedAvailability(opt)}
+                    className="w-[18px] h-[18px] rounded-full flex items-center justify-center shrink-0 transition-colors"
+                    style={{ border: `2px solid ${selected ? TEAL : '#CBD5E1'}` }}
+                  >
+                    {selected && (
+                      <span className="w-2.5 h-2.5 rounded-full block" style={{ backgroundColor: TEAL }} />
+                    )}
+                  </div>
+                  <span className="text-[13px]" style={{ color: '#475569' }}>{opt}</span>
+                </label>
+              );
+            })}
           </div>
 
-          <div className="h-px bg-slate-200" />
+          <div className="h-px" style={{ backgroundColor: '#E2E8F0' }} />
 
           {/* Rating */}
           <div className="flex flex-col gap-2">
-            <span className="text-sm font-semibold text-slate-800">Rating</span>
+            <span className="text-sm font-semibold" style={{ color: '#1E293B' }}>Rating</span>
             <div className="flex items-center gap-1">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} size={20} className="text-amber-400 fill-amber-400" />
               ))}
             </div>
-            <span className="text-xs text-slate-500">4 stars & above</span>
+            <span className="text-xs" style={{ color: '#94A3B8' }}>4 stars & above</span>
           </div>
 
-          <div className="h-px bg-slate-200" />
+          <div className="h-px" style={{ backgroundColor: '#E2E8F0' }} />
 
           {/* Price Range */}
           <div className="flex flex-col gap-3">
-            <span className="text-sm font-semibold text-slate-800">Price Range</span>
+            <span className="text-sm font-semibold" style={{ color: '#1E293B' }}>Price Range</span>
             <div className="flex items-center gap-2">
               <input
                 placeholder="Min"
-                className="flex-1 h-10 px-3 text-sm bg-white border border-slate-200 rounded-lg outline-none placeholder-slate-400"
+                className="flex-1 h-10 px-3 text-sm bg-white rounded-lg outline-none"
+                style={{ border: '1px solid #E2E8F0', color: '#1E293B' }}
               />
-              <span className="text-sm text-slate-500">–</span>
+              <span className="text-sm" style={{ color: '#94A3B8' }}>–</span>
               <input
                 placeholder="Max"
-                className="flex-1 h-10 px-3 text-sm bg-white border border-slate-200 rounded-lg outline-none placeholder-slate-400"
+                className="flex-1 h-10 px-3 text-sm bg-white rounded-lg outline-none"
+                style={{ border: '1px solid #E2E8F0', color: '#1E293B' }}
               />
             </div>
           </div>
@@ -162,14 +149,17 @@ export default function SearchResultsPage({ onHome }: { onHome?: () => void }) {
         <div className="flex-1 flex flex-col gap-5">
           {/* Header */}
           <div className="flex items-center justify-between">
-            <span className="text-base font-semibold text-slate-900">24 MRO facilities found</span>
-            <button className="flex items-center gap-1.5 px-3 py-2 bg-white border border-slate-200 rounded-lg text-[13px] text-slate-700 hover:border-slate-300 transition-colors">
+            <span className="text-base font-semibold" style={{ color: '#1E293B' }}>24 MRO facilities found</span>
+            <button
+              className="flex items-center gap-1.5 px-3 py-2 bg-white rounded-lg text-[13px] transition-colors"
+              style={{ border: '1px solid #E2E8F0', color: '#475569' }}
+            >
               Sort by: Relevance
-              <ChevronDown size={16} className="text-slate-500" />
+              <ChevronDown size={16} color="#94A3B8" />
             </button>
           </div>
 
-          {/* Cards grid (2 per row) */}
+          {/* Cards */}
           <div className="grid grid-cols-2 gap-4">
             {sampleResults.map((r) => (
               <ResultCard key={r.name} {...r} />
@@ -178,26 +168,27 @@ export default function SearchResultsPage({ onHome }: { onHome?: () => void }) {
 
           {/* Pagination */}
           <div className="flex items-center justify-center gap-2 pt-4">
-            <button className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 transition-colors">
-              <ChevronLeft size={20} />
+            <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white transition-colors">
+              <ChevronLeft size={20} color="#94A3B8" />
             </button>
             {[1, 2, 3, 4].map((p) => (
               <button
                 key={p}
                 onClick={() => setCurrentPage(p)}
-                className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-${
-                  currentPage === p ? '600' : 'normal'
-                } transition-colors ${
-                  currentPage === p
-                    ? 'bg-blue-600 text-white'
-                    : 'text-slate-600 hover:bg-slate-100'
-                }`}
+                className="w-9 h-9 flex items-center justify-center rounded-lg text-sm transition-colors"
+                style={{
+                  backgroundColor: currentPage === p ? TEAL : 'transparent',
+                  color: currentPage === p ? '#FFFFFF' : '#475569',
+                  fontWeight: currentPage === p ? 600 : 400,
+                }}
+                onMouseEnter={(e) => { if (currentPage !== p) e.currentTarget.style.backgroundColor = '#FFFFFF'; }}
+                onMouseLeave={(e) => { if (currentPage !== p) e.currentTarget.style.backgroundColor = 'transparent'; }}
               >
                 {p}
               </button>
             ))}
-            <button className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 transition-colors">
-              <ChevronRight size={20} />
+            <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white transition-colors">
+              <ChevronRight size={20} color="#94A3B8" />
             </button>
           </div>
         </div>
