@@ -12,6 +12,10 @@ import {
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
+const TEAL = '#57A091';
+const TEAL_HOVER = '#478A7C';
+const NAVY = '#1C2B4A';
+
 interface Message {
   id: string;
   sender: 'mro' | 'airline' | 'system';
@@ -47,12 +51,12 @@ const initialMessages: Message[] = [
   {
     id: '5',
     sender: 'mro',
-    text: 'Absolutely, we can integrate the cabin modification into the C-Check package. Our cabin team is certified for this work. I\'ll include it in the quote.',
+    text: "Absolutely, we can integrate the cabin modification into the C-Check package. Our cabin team is certified for this work. I'll include it in the quote.",
     time: '10:25 AM',
   },
 ];
 
-export default function RequestSlotChatPage({ onHome }: { onHome?: () => void }) {
+export default function RequestSlotChatPage({ onHome, onBack }: { onHome?: () => void; onBack?: () => void }) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState('');
 
@@ -74,12 +78,16 @@ export default function RequestSlotChatPage({ onHome }: { onHome?: () => void })
         <div className="flex-1 flex flex-col border-r border-slate-200 bg-white min-w-0">
           {/* Header */}
           <div className="h-14 flex items-center justify-between px-5 border-b border-slate-200 shrink-0">
-            <div className="flex items-center gap-3">
-              <button className="flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
-                <ArrowLeft size={20} />
-                Back to Profile
-              </button>
-            </div>
+            <button
+              onClick={onBack}
+              className="flex items-center gap-1.5 text-sm font-medium transition-colors"
+              style={{ color: TEAL }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = TEAL_HOVER)}
+              onMouseLeave={(e) => (e.currentTarget.style.color = TEAL)}
+            >
+              <ArrowLeft size={18} />
+              Back to Profile
+            </button>
             <span className="text-base font-bold text-slate-900">Slot Request</span>
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500" />
@@ -89,7 +97,10 @@ export default function RequestSlotChatPage({ onHome }: { onHome?: () => void })
 
           {/* Booking Context */}
           <div className="flex items-center gap-3 px-5 py-3 bg-slate-50 border-b border-slate-200 shrink-0">
-            <div className="w-11 h-11 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold shrink-0">
+            <div
+              className="w-11 h-11 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
+              style={{ backgroundColor: NAVY }}
+            >
               LT
             </div>
             <div className="flex flex-col flex-1 min-w-0">
@@ -121,19 +132,21 @@ export default function RequestSlotChatPage({ onHome }: { onHome?: () => void })
               return (
                 <div key={msg.id} className={`flex items-end gap-2 ${isMRO ? 'justify-start' : 'justify-end'}`}>
                   {isMRO && (
-                    <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-[11px] font-bold shrink-0">
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[11px] font-bold shrink-0"
+                      style={{ backgroundColor: NAVY }}
+                    >
                       LT
                     </div>
                   )}
                   <div
                     className={`max-w-[60%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
-                      isMRO
-                        ? 'bg-slate-100 text-slate-800 rounded-bl-sm'
-                        : 'bg-blue-600 text-white rounded-br-sm'
+                      isMRO ? 'bg-slate-100 text-slate-800 rounded-bl-sm' : 'text-white rounded-br-sm'
                     }`}
+                    style={!isMRO ? { backgroundColor: TEAL } : {}}
                   >
                     {msg.text}
-                    <p className={`text-[10px] mt-1 ${isMRO ? 'text-slate-400' : 'text-blue-200'}`}>
+                    <p className={`text-[10px] mt-1 ${isMRO ? 'text-slate-400' : 'text-white/60'}`}>
                       {msg.time}
                     </p>
                   </div>
@@ -143,7 +156,10 @@ export default function RequestSlotChatPage({ onHome }: { onHome?: () => void })
 
             {/* Typing indicator */}
             <div className="flex items-end gap-2">
-              <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-[11px] font-bold shrink-0">
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[11px] font-bold shrink-0"
+                style={{ backgroundColor: NAVY }}
+              >
                 LT
               </div>
               <div className="px-4 py-3 bg-slate-100 rounded-2xl rounded-bl-sm flex items-center gap-1">
@@ -174,7 +190,10 @@ export default function RequestSlotChatPage({ onHome }: { onHome?: () => void })
             </div>
             <button
               onClick={sendMessage}
-              className="w-11 h-11 flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors shrink-0"
+              className="w-11 h-11 flex items-center justify-center text-white rounded-xl transition-colors shrink-0"
+              style={{ backgroundColor: TEAL }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL)}
             >
               <Send size={20} />
             </button>
@@ -211,7 +230,10 @@ export default function RequestSlotChatPage({ onHome }: { onHome?: () => void })
             <div className="p-6 flex flex-col gap-3">
               <h2 className="text-base font-bold text-slate-900">MRO Facility</h2>
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center text-white text-sm font-bold shrink-0">
+                <div
+                  className="w-12 h-12 rounded-xl flex items-center justify-center text-white text-sm font-bold shrink-0"
+                  style={{ backgroundColor: NAVY }}
+                >
                   LT
                 </div>
                 <div className="flex flex-col">
@@ -225,7 +247,7 @@ export default function RequestSlotChatPage({ onHome }: { onHome?: () => void })
                 <span className="text-xs text-slate-500">(127 reviews)</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <BadgeCheck size={14} className="text-blue-600 shrink-0" />
+                <BadgeCheck size={14} className="shrink-0" style={{ color: TEAL }} />
                 <span className="text-xs font-medium text-slate-600">EASA Part 145 · FAA Certified</span>
               </div>
             </div>
@@ -233,7 +255,12 @@ export default function RequestSlotChatPage({ onHome }: { onHome?: () => void })
             {/* Actions */}
             <div className="p-6 flex flex-col gap-3">
               <h2 className="text-base font-bold text-slate-900">Actions</h2>
-              <button className="w-full h-[42px] flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors">
+              <button
+                className="w-full h-[42px] flex items-center justify-center gap-2 text-white text-sm font-semibold rounded-xl transition-colors"
+                style={{ backgroundColor: TEAL }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL)}
+              >
                 <CircleCheckBig size={16} />
                 Confirm Booking
               </button>
@@ -251,7 +278,7 @@ export default function RequestSlotChatPage({ onHome }: { onHome?: () => void })
                 { name: 'Aircraft Technical Log.pdf', size: '1.1 MB' },
               ].map((file) => (
                 <div key={file.name} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
-                  <FileText size={18} className="text-blue-600 shrink-0" />
+                  <FileText size={18} style={{ color: TEAL }} className="shrink-0" />
                   <div className="flex flex-col flex-1 min-w-0">
                     <span className="text-xs font-semibold text-slate-800 truncate">{file.name}</span>
                     <span className="text-[11px] text-slate-400">{file.size}</span>

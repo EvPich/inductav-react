@@ -37,7 +37,7 @@ export default function App() {
       {page === 'home' && <HomePage onSearch={() => setPage('search')} onHome={() => setPage('home')} onViewProfile={() => setPage('profile')} />}
       {page === 'search' && <SearchResultsPage onHome={() => setPage('home')} onViewProfile={() => setPage('profile')} />}
       {page === 'profile' && <MROProfilePage onHome={() => setPage('home')} onRequestSlot={() => setPage('chat')} />}
-      {page === 'chat' && <RequestSlotChatPage onHome={() => setPage('home')} />}
+      {page === 'chat' && <RequestSlotChatPage onHome={() => setPage('home')} onBack={() => setPage('profile')} />}
     </div>
   );
 }
