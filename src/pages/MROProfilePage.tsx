@@ -137,7 +137,7 @@ export default function MROProfilePage({ onHome, onRequestSlot, onSearchResults 
       </div>
 
       {/* Hero */}
-      <div className="relative w-full h-[340px] bg-slate-800 overflow-hidden">
+      <div className="relative w-full h-[340px] overflow-hidden" style={{ backgroundImage: 'url(/lufthansa-technik.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
         <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 to-slate-900/50" />
         <div className="relative z-10 max-w-[1360px] mx-auto px-4 md:px-8 lg:px-10 h-full flex items-end justify-between gap-4">
           {/* Info */}

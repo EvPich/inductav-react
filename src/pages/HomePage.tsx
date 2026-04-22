@@ -20,7 +20,7 @@ const categories = [
 ];
 
 const immediateRow1 = [
-  { name: 'Lufthansa Technik', location: 'Hamburg, Germany', serviceType: 'General MRO', available: true },
+  { name: 'Lufthansa Technik', location: 'Hamburg, Germany', serviceType: 'General MRO', available: true, imageUrl: '/lufthansa-technik.jpg' },
   { name: 'ST Aerospace', location: 'Singapore', serviceType: 'Engine MRO', available: true },
   { name: 'HAECO', location: 'Hong Kong, China', serviceType: 'Components', available: true },
 ];
@@ -31,13 +31,13 @@ const immediateRow2 = [
   { name: 'Iberia Maintenance', location: 'Madrid, Spain', serviceType: 'APU Services', available: false },
 ];
 
-type CategorySection = { title: string; bg: string; cards: { name: string; location: string }[] };
+type CategorySection = { title: string; bg: string; cards: { name: string; location: string; imageUrl?: string }[] };
 
 const categorySections: CategorySection[] = [
   {
     title: 'General MRO', bg: '#FFFFFF',
     cards: [
-      { name: 'Lufthansa Technik', location: 'Hamburg, Germany' },
+      { name: 'Lufthansa Technik', location: 'Hamburg, Germany', imageUrl: '/lufthansa-technik.jpg' },
       { name: 'Ameco Beijing', location: 'Beijing, China' },
       { name: 'GAMECO', location: 'Guangzhou, China' },
       { name: 'SIA Engineering', location: 'Singapore' },
@@ -194,7 +194,7 @@ export default function HomePage({ onSearch, onHome, onViewProfile }: { onSearch
           <h2 className="text-xl md:text-2xl font-bold m-0" style={{ color: TEXT_PRIMARY }}>{title}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
             {cards.map((card) => (
-              <MROCardHorizontal key={card.name} name={card.name} location={card.location} onViewProfile={onViewProfile} />
+              <MROCardHorizontal key={card.name} name={card.name} location={card.location} imageUrl={card.imageUrl} onViewProfile={onViewProfile} />
             ))}
           </div>
         </section>

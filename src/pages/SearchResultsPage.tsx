@@ -10,7 +10,7 @@ const serviceTypes = ['General', 'Landing Gear', 'Painting', 'Engine', 'APU', 'A
 const availabilityOptions = ['Any', 'Available Now', 'Next 7 Days', 'Next 30 Days'];
 
 const sampleResults = [
-  { name: 'Lufthansa Technik Shannon', location: 'Shannon, Ireland', rating: 4.8, serviceTypes: ['C-Check', 'General'], priceRange: '$800K – $1.2M' },
+  { name: 'Lufthansa Technik Shannon', location: 'Shannon, Ireland', rating: 4.8, serviceTypes: ['C-Check', 'General'], priceRange: '$800K – $1.2M', imageUrl: '/lufthansa-technik.jpg' },
   { name: 'SR Technics', location: 'Zurich, Switzerland', rating: 4.6, serviceTypes: ['General MRO'], priceRange: '$200K – $600K' },
   { name: 'Air France Industries KLM', location: 'Paris, France', rating: 4.7, serviceTypes: ['Engine', 'General'], priceRange: '$500K – $900K' },
   { name: 'ST Engineering Aerospace', location: 'Singapore', rating: 4.5, serviceTypes: ['General MRO'], priceRange: '$150K – $400K' },
