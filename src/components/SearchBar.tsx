@@ -519,11 +519,12 @@ export default function SearchBar({ onSearch }: { onSearch?: () => void }) {
   }
 
   return (
-    <div ref={ref} className="w-full overflow-x-auto" style={{ position: 'relative', maxWidth: 1100 }}>
-      {/* Bar */}
+    <div ref={ref} style={{ position: 'relative', maxWidth: 1100, width: '100%' }}>
+      {/* Bar — horizontally scrollable on small screens */}
+      <div className="overflow-x-auto">
       <div
         className="flex items-center"
-        style={{ backgroundColor: '#fff', borderRadius: 12, padding: 8 }}
+        style={{ backgroundColor: '#fff', borderRadius: 12, padding: 8, minWidth: 560 }}
       >
         {FIELDS.map(({ key, icon, defaultLabel }, i) => {
           const active = open === key;
@@ -567,8 +568,9 @@ export default function SearchBar({ onSearch }: { onSearch?: () => void }) {
           Search
         </button>
       </div>
+      </div>{/* end overflow-x-auto */}
 
-      {/* Dropdown panel — floats below the matching field */}
+      {/* Dropdown panel — floats below the matching field, outside the overflow wrapper */}
       {open && (
         <div style={{ position: 'absolute', top: 'calc(100% + 8px)', zIndex: 50, ...(open === 'location' ? { left: 0 } : open === 'service' ? { left: '25%' } : open === 'aircraft' ? { left: '50%' } : { right: 80 }) }}>
           {renderDropdown(open)}
