@@ -21,14 +21,14 @@ const categories = [
 
 const immediateRow1 = [
   { name: 'Lufthansa Technik', location: 'Hamburg, Germany', serviceType: 'General MRO', available: true, imageUrl: '/lufthansa-technik.jpg' },
-  { name: 'ST Aerospace', location: 'Singapore', serviceType: 'Engine MRO', available: true },
-  { name: 'HAECO', location: 'Hong Kong, China', serviceType: 'Components', available: true },
+  { name: 'ST Aerospace', location: 'Singapore', serviceType: 'Engine MRO', available: true, imageUrl: '/st-engineering.jpg' },
+  { name: 'HAECO', location: 'Hong Kong, China', serviceType: 'Components', available: true, imageUrl: '/haeco.jpg' },
 ];
 
 const immediateRow2 = [
   { name: 'AAR Corp', location: 'Miami, USA', serviceType: 'Landing Gear', available: false },
-  { name: 'Turkish Technic', location: 'Istanbul, Turkey', serviceType: 'Painting', available: true },
-  { name: 'Iberia Maintenance', location: 'Madrid, Spain', serviceType: 'APU Services', available: false },
+  { name: 'Turkish Technic', location: 'Istanbul, Turkey', serviceType: 'Painting', available: true, imageUrl: '/turkish-technic.jpg' },
+  { name: 'Iberia Maintenance', location: 'Madrid, Spain', serviceType: 'APU Services', available: false, imageUrl: '/iberia.jpg' },
 ];
 
 type CategorySection = { title: string; bg: string; cards: { name: string; location: string; imageUrl?: string }[] };
@@ -38,45 +38,45 @@ const categorySections: CategorySection[] = [
     title: 'General MRO', bg: '#FFFFFF',
     cards: [
       { name: 'Lufthansa Technik', location: 'Hamburg, Germany', imageUrl: '/lufthansa-technik.jpg' },
-      { name: 'Ameco Beijing', location: 'Beijing, China' },
-      { name: 'GAMECO', location: 'Guangzhou, China' },
-      { name: 'SIA Engineering', location: 'Singapore' },
+      { name: 'Ameco Beijing', location: 'Beijing, China', imageUrl: '/ameco-beijing.jpg' },
+      { name: 'GAMECO', location: 'Guangzhou, China', imageUrl: '/gameco.jpg' },
+      { name: 'SIA Engineering', location: 'Singapore', imageUrl: '/sia-engineering.jpg' },
     ],
   },
   {
     title: 'Landing Gear Shop', bg: BG_LIGHT,
     cards: [
-      { name: 'Safran Landing', location: 'Gloucester, UK' },
-      { name: 'Liebherr Aerospace', location: 'Lindenberg, Germany' },
-      { name: 'Triumph Group', location: 'Cleveland, USA' },
-      { name: 'Messier-Bugatti', location: 'Vélizy, France' },
+      { name: 'Safran Landing', location: 'Gloucester, UK', imageUrl: '/safran-landing.jpg' },
+      { name: 'Liebherr Aerospace', location: 'Lindenberg, Germany', imageUrl: '/liebherr-aerospace.jpg' },
+      { name: 'Triumph Group', location: 'Cleveland, USA', imageUrl: '/triumph-group.png' },
+      { name: 'Messier-Bugatti', location: 'Vélizy, France', imageUrl: '/messier-bugatti.jpg' },
     ],
   },
   {
     title: 'Painting', bg: '#FFFFFF',
     cards: [
-      { name: 'MAAS Aviation', location: 'Maastricht, NL' },
-      { name: 'IAC Painting', location: 'Shannon, Ireland' },
-      { name: 'Satys Aerospace', location: 'Toulouse, France' },
-      { name: 'Bombardier Paint', location: 'Montreal, Canada' },
+      { name: 'MAAS Aviation', location: 'Maastricht, NL', imageUrl: '/maas-aviation.jpg' },
+      { name: 'IAC Painting', location: 'Shannon, Ireland', imageUrl: '/iac-painting.jpg' },
+      { name: 'Satys Aerospace', location: 'Toulouse, France', imageUrl: '/satys-aerospace.jpg' },
+      { name: 'Bombardier Paint', location: 'Montreal, Canada', imageUrl: '/bombardier-paint.jpg' },
     ],
   },
   {
     title: 'Engine MRO', bg: BG_LIGHT,
     cards: [
-      { name: 'GE Aviation', location: 'Cincinnati, USA' },
-      { name: 'Rolls-Royce MRO', location: 'Derby, UK' },
-      { name: 'MTU Aero Engines', location: 'Munich, Germany' },
-      { name: 'Pratt & Whitney', location: 'East Hartford, USA' },
+      { name: 'GE Aviation', location: 'Cincinnati, USA', imageUrl: '/ge-aviation.jpg' },
+      { name: 'Rolls-Royce MRO', location: 'Derby, UK', imageUrl: '/rolls-royce-mro.jpg' },
+      { name: 'MTU Aero Engines', location: 'Munich, Germany', imageUrl: '/mtu-aero-engines.jpg' },
+      { name: 'Pratt & Whitney', location: 'East Hartford, USA', imageUrl: '/pratt-whitney.jpg' },
     ],
   },
   {
     title: 'APU Services', bg: '#FFFFFF',
     cards: [
-      { name: 'Honeywell Aerospace', location: 'Phoenix, USA' },
-      { name: 'StandardAero', location: 'Scottsdale, USA' },
-      { name: 'Safran Power', location: 'Brussels, Belgium' },
-      { name: 'Chromalloy', location: 'San Antonio, USA' },
+      { name: 'Honeywell Aerospace', location: 'Phoenix, USA', imageUrl: '/honeywell-aerospace.jpg' },
+      { name: 'StandardAero', location: 'Scottsdale, USA', imageUrl: '/standardaero.jpg' },
+      { name: 'Safran Power', location: 'Brussels, Belgium', imageUrl: '/safran-power.jpg' },
+      { name: 'Chromalloy', location: 'San Antonio, USA', imageUrl: '/chromalloy.jpg' },
     ],
   },
 ];

@@ -11,13 +11,13 @@ const availabilityOptions = ['Any', 'Available Now', 'Next 7 Days', 'Next 30 Day
 
 const sampleResults = [
   { name: 'Lufthansa Technik Shannon', location: 'Shannon, Ireland', rating: 4.8, serviceTypes: ['C-Check', 'General'], priceRange: '$800K – $1.2M', imageUrl: '/lufthansa-technik.jpg' },
-  { name: 'SR Technics', location: 'Zurich, Switzerland', rating: 4.6, serviceTypes: ['General MRO'], priceRange: '$200K – $600K' },
-  { name: 'Air France Industries KLM', location: 'Paris, France', rating: 4.7, serviceTypes: ['Engine', 'General'], priceRange: '$500K – $900K' },
-  { name: 'ST Engineering Aerospace', location: 'Singapore', rating: 4.5, serviceTypes: ['General MRO'], priceRange: '$150K – $400K' },
-  { name: 'Turkish Technic', location: 'Istanbul, Turkey', rating: 4.4, serviceTypes: ['Painting', 'General'], priceRange: '$120K – $350K' },
-  { name: 'HAECO', location: 'Hong Kong', rating: 4.6, serviceTypes: ['Landing Gear'], priceRange: '$200K – $500K' },
-  { name: 'Iberia MRO', location: 'Madrid, Spain', rating: 4.3, serviceTypes: ['Painting'], priceRange: '$100K – $250K' },
-  { name: 'MTU Maintenance', location: 'Hannover, Germany', rating: 4.9, serviceTypes: ['Engine MRO'], priceRange: '$1M – $3M' },
+  { name: 'SR Technics', location: 'Zurich, Switzerland', rating: 4.6, serviceTypes: ['General MRO'], priceRange: '$200K – $600K', imageUrl: '/sr-technics.jpg' },
+  { name: 'Air France Industries KLM', location: 'Paris, France', rating: 4.7, serviceTypes: ['Engine', 'General'], priceRange: '$500K – $900K', imageUrl: '/air-france.jpg' },
+  { name: 'ST Engineering Aerospace', location: 'Singapore', rating: 4.5, serviceTypes: ['General MRO'], priceRange: '$150K – $400K', imageUrl: '/st-engineering.jpg' },
+  { name: 'Turkish Technic', location: 'Istanbul, Turkey', rating: 4.4, serviceTypes: ['Painting', 'General'], priceRange: '$120K – $350K', imageUrl: '/turkish-technic.jpg' },
+  { name: 'HAECO', location: 'Hong Kong', rating: 4.6, serviceTypes: ['Landing Gear'], priceRange: '$200K – $500K', imageUrl: '/haeco.jpg' },
+  { name: 'Iberia MRO', location: 'Madrid, Spain', rating: 4.3, serviceTypes: ['Painting'], priceRange: '$100K – $250K', imageUrl: '/iberia.jpg' },
+  { name: 'MTU Maintenance', location: 'Hannover, Germany', rating: 4.9, serviceTypes: ['Engine MRO'], priceRange: '$1M – $3M', imageUrl: '/mtu-maintenance.jpg' },
 ];
 
 export default function SearchResultsPage({ onHome, onViewProfile }: { onHome?: () => void; onViewProfile?: () => void }) {
