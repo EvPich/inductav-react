@@ -519,7 +519,7 @@ export default function SearchBar({ onSearch }: { onSearch?: () => void }) {
   }
 
   return (
-    <div ref={ref} style={{ position: 'relative', width: 1100, maxWidth: '100%' }}>
+    <div ref={ref} className="w-full overflow-x-auto" style={{ position: 'relative', maxWidth: 1100 }}>
       {/* Bar */}
       <div
         className="flex items-center"

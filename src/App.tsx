@@ -18,7 +18,7 @@ export default function App() {
   };
 
   return (
-    <div>
+    <div className="max-w-[1800px] mx-auto">
       {/* Page switcher (dev only) */}
       <div className="fixed bottom-4 right-4 z-50 flex gap-2 bg-white border border-slate-200 rounded-2xl shadow-lg p-2">
         {(Object.keys(nav) as Page[]).map((p) => (

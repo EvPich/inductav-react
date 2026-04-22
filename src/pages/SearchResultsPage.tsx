@@ -35,17 +35,17 @@ export default function SearchResultsPage({ onHome, onViewProfile }: { onHome?: 
       <Navbar onHome={onHome} />
 
       {/* Search strip */}
-      <div className="border-b border-slate-200 px-10 py-3" style={{ backgroundColor: '#F5F7FA' }}>
+      <div className="border-b border-slate-200 px-4 md:px-8 lg:px-10 py-3" style={{ backgroundColor: '#F5F7FA' }}>
         <div className="max-w-[1360px] mx-auto">
           <SearchBar />
         </div>
       </div>
 
       {/* Main */}
-      <div className="max-w-[1360px] mx-auto px-10 py-8 flex gap-8">
+      <div className="max-w-[1360px] mx-auto px-4 md:px-8 lg:px-10 py-6 md:py-8 flex gap-6 lg:gap-8">
 
         {/* Sidebar filters */}
-        <aside className="w-[300px] shrink-0 flex flex-col gap-6">
+        <aside className="hidden lg:flex w-[260px] xl:w-[300px] shrink-0 flex-col gap-6">
 
           {/* Location */}
           <div className="flex flex-col gap-3">
@@ -160,7 +160,7 @@ export default function SearchResultsPage({ onHome, onViewProfile }: { onHome?: 
           </div>
 
           {/* Cards */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {sampleResults.map((r) => (
               <ResultCard key={r.name} {...r} onViewProfile={onViewProfile} />
             ))}

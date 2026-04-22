@@ -88,19 +88,19 @@ export default function HomePage({ onSearch, onHome, onViewProfile }: { onSearch
 
       {/* Hero */}
       <section
-        className="flex flex-col items-center gap-8"
-        style={{ backgroundColor: NAVY, padding: '80px 120px 60px' }}
+        className="flex flex-col items-center gap-6 md:gap-8 px-6 md:px-16 lg:px-[120px] pt-10 pb-8 md:pt-16 md:pb-12 lg:pt-[80px] lg:pb-[60px]"
+        style={{ backgroundColor: NAVY }}
       >
         <h1
-          className="text-center font-extrabold m-0"
-          style={{ color: '#FFFFFF', fontSize: 56, lineHeight: 1.15, maxWidth: 900 }}
+          className="text-center font-extrabold m-0 text-3xl md:text-4xl lg:text-5xl xl:text-[56px]"
+          style={{ color: '#FFFFFF', lineHeight: 1.15, maxWidth: 900 }}
         >
           Secure MRO Slots in Minutes,<br />Not Weeks
         </h1>
 
         <p
-          className="text-center m-0"
-          style={{ color: TEXT_MUTED, fontSize: 18, lineHeight: 1.6, maxWidth: 700 }}
+          className="text-center m-0 text-sm md:text-base lg:text-[18px]"
+          style={{ color: TEXT_MUTED, lineHeight: 1.6, maxWidth: 700 }}
         >
           The world's leading aviation maintenance marketplace. Compare, book, and manage MRO
           services across a global network of certified facilities — all in one platform.
@@ -109,12 +109,12 @@ export default function HomePage({ onSearch, onHome, onViewProfile }: { onSearch
         <SearchBar onSearch={onSearch} />
 
         {/* Category icons */}
-        <div className="flex gap-5">
+        <div className="flex flex-wrap justify-center gap-3 md:gap-5">
           {categories.map((cat) => (
             <button
               key={cat.label}
               className="flex flex-col items-center gap-3 cursor-pointer transition-opacity hover:opacity-80"
-              style={{ backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 12, padding: '28px 20px', width: 170 }}
+              style={{ backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 12, padding: '20px 16px', width: 140, minWidth: 120 }}
             >
               {cat.icon}
               <span
@@ -129,42 +129,36 @@ export default function HomePage({ onSearch, onHome, onViewProfile }: { onSearch
       </section>
 
       {/* Immediate Availability */}
-      <section className="flex flex-col gap-8" style={{ backgroundColor: '#FFFFFF', padding: '64px 80px' }}>
+      <section className="flex flex-col gap-6 md:gap-8 px-6 md:px-12 lg:px-20 py-10 md:py-12 lg:py-16" style={{ backgroundColor: '#FFFFFF' }}>
         <div className="flex items-center gap-2.5">
           <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: GREEN }} />
-          <h2 className="text-[32px] font-bold m-0" style={{ color: TEXT_PRIMARY }}>
+          <h2 className="text-2xl md:text-[32px] font-bold m-0" style={{ color: TEXT_PRIMARY }}>
             Immediate Availability
           </h2>
         </div>
-        <div className="flex gap-6">
-          {immediateRow1.map((card) => (
-            <div key={card.name} className="flex-1"><MROCard {...card} onViewProfile={onViewProfile} /></div>
-          ))}
-        </div>
-        <div className="flex gap-6">
-          {immediateRow2.map((card) => (
-            <div key={card.name} className="flex-1"><MROCard {...card} onViewProfile={onViewProfile} /></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          {[...immediateRow1, ...immediateRow2].map((card) => (
+            <MROCard key={card.name} {...card} onViewProfile={onViewProfile} />
           ))}
         </div>
       </section>
 
       {/* World Map */}
       <section
-        className="flex flex-col items-center gap-6"
-        style={{ backgroundColor: BG_LIGHT, padding: '64px 80px' }}
+        className="flex flex-col items-center gap-4 md:gap-6 px-6 md:px-12 lg:px-20 py-10 md:py-16"
+        style={{ backgroundColor: BG_LIGHT }}
       >
-        <h2 className="text-[32px] font-bold text-center m-0" style={{ color: TEXT_PRIMARY }}>
+        <h2 className="text-2xl md:text-[32px] font-bold text-center m-0" style={{ color: TEXT_PRIMARY }}>
           Global MRO Network
         </h2>
         <p className="text-base text-center m-0" style={{ color: TEXT_SECONDARY }}>
           Access certified maintenance facilities across 6 continents
         </p>
         <div
-          className="relative overflow-hidden"
+          className="relative overflow-hidden w-full"
           style={{
-            width: 1200,
-            maxWidth: '100%',
-            height: 500,
+            maxWidth: 1200,
+            height: 300,
             borderRadius: 16,
             backgroundImage: 'url(/world-map.png)',
             backgroundSize: 'cover',
@@ -173,7 +167,7 @@ export default function HomePage({ onSearch, onHome, onViewProfile }: { onSearch
         >
           <div
             className="absolute flex items-center gap-1.5 px-4 py-2"
-            style={{ top: 24, left: 40, backgroundColor: GREEN, borderRadius: 20 }}
+            style={{ top: 24, left: 24, backgroundColor: GREEN, borderRadius: 20 }}
           >
             <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.7)' }} />
             <span className="text-[13px] font-semibold text-white">142 Facilities Available Now</span>
@@ -185,15 +179,13 @@ export default function HomePage({ onSearch, onHome, onViewProfile }: { onSearch
       {categorySections.map(({ title, bg, cards }) => (
         <section
           key={title}
-          className="flex flex-col gap-6"
-          style={{ backgroundColor: bg, padding: '48px 80px' }}
+          className="flex flex-col gap-4 md:gap-6 px-6 md:px-12 lg:px-20 py-8 md:py-12"
+          style={{ backgroundColor: bg }}
         >
-          <h2 className="text-2xl font-bold m-0" style={{ color: TEXT_PRIMARY }}>{title}</h2>
-          <div className="flex gap-4">
+          <h2 className="text-xl md:text-2xl font-bold m-0" style={{ color: TEXT_PRIMARY }}>{title}</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
             {cards.map((card) => (
-              <div key={card.name} className="flex-1">
-                <MROCardHorizontal name={card.name} location={card.location} onViewProfile={onViewProfile} />
-              </div>
+              <MROCardHorizontal key={card.name} name={card.name} location={card.location} onViewProfile={onViewProfile} />
             ))}
           </div>
         </section>

@@ -128,7 +128,7 @@ export default function MROProfilePage({ onHome, onRequestSlot }: { onHome?: () 
       <Navbar onHome={onHome} />
 
       {/* Breadcrumb */}
-      <div className="max-w-[1360px] mx-auto px-10 h-12 flex items-center gap-2 text-[13px]">
+      <div className="max-w-[1360px] mx-auto px-4 md:px-8 lg:px-10 h-12 flex items-center gap-2 text-[13px]">
         <a href="#" className="font-medium hover:underline" style={{ color: TEAL }}>Home</a>
         <span className="text-slate-400">/</span>
         <a href="#" className="font-medium hover:underline" style={{ color: TEAL }}>Search Results</a>
@@ -139,7 +139,7 @@ export default function MROProfilePage({ onHome, onRequestSlot }: { onHome?: () 
       {/* Hero */}
       <div className="relative w-full h-[340px] bg-slate-800 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 to-slate-900/50" />
-        <div className="relative z-10 max-w-[1360px] mx-auto px-10 h-full flex items-end justify-between">
+        <div className="relative z-10 max-w-[1360px] mx-auto px-4 md:px-8 lg:px-10 h-full flex items-end justify-between gap-4">
           {/* Info */}
           <div className="flex flex-col gap-3 pb-8">
             <span
@@ -181,7 +181,7 @@ export default function MROProfilePage({ onHome, onRequestSlot }: { onHome?: () 
       </div>
 
       {/* Main Content */}
-      <div className="max-w-[1360px] mx-auto px-10 py-8 flex gap-8">
+      <div className="max-w-[1360px] mx-auto px-4 md:px-8 lg:px-10 py-6 md:py-8 flex flex-col lg:flex-row gap-6 lg:gap-8">
         {/* Left Column */}
         <div className="flex-1 flex flex-col gap-8">
           {/* Overview */}
@@ -193,7 +193,7 @@ export default function MROProfilePage({ onHome, onRequestSlot }: { onHome?: () 
               we offer comprehensive C-check and D-check capabilities alongside line maintenance and
               cabin modification services.
             </p>
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {stats.map((s) => (
                 <div key={s.label} className="flex flex-col gap-1 bg-slate-50 rounded-xl p-4">
                   <span className="text-2xl font-bold" style={{ color: TEAL }}>{s.value}</span>
@@ -315,9 +315,9 @@ export default function MROProfilePage({ onHome, onRequestSlot }: { onHome?: () 
         </div>
 
         {/* Right Column */}
-        <div className="w-[380px] shrink-0 flex flex-col gap-5">
+        <div className="w-full lg:w-[380px] shrink-0 flex flex-col gap-5">
           {/* Quick Book */}
-          <div ref={slotRef} className="bg-white rounded-2xl p-6 shadow-sm flex flex-col gap-4 sticky top-4">
+          <div ref={slotRef} className="bg-white rounded-2xl p-6 shadow-sm flex flex-col gap-4 lg:sticky lg:top-4">
             <h2 className="text-[18px] font-bold text-slate-900">Request a Slot</h2>
 
             {/* Service Type */}
