@@ -26,7 +26,7 @@ const immediateRow1 = [
 ];
 
 const immediateRow2 = [
-  { name: 'AAR Corp', location: 'Miami, USA', serviceType: 'Landing Gear', available: false },
+  { name: 'AAR Corp', location: 'Miami, USA', serviceType: 'Landing Gear', available: false, imageUrl: '/aar-corp.jpg' },
   { name: 'Turkish Technic', location: 'Istanbul, Turkey', serviceType: 'Painting', available: true, imageUrl: '/turkish-technic.jpg' },
   { name: 'Iberia Maintenance', location: 'Madrid, Spain', serviceType: 'APU Services', available: false, imageUrl: '/iberia.jpg' },
 ];
