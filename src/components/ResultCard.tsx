@@ -80,7 +80,10 @@ export default function ResultCard({
           <span className="text-xs font-semibold text-slate-800">{priceRange}</span>
           <button
             onClick={onViewProfile}
-            className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors"
+            className="px-3 py-1.5 text-white text-xs font-semibold rounded-lg transition-colors"
+            style={{ backgroundColor: '#57A091' }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#478A7C')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#57A091')}
           >
             View Profile
           </button>

@@ -20,7 +20,7 @@ const sampleResults = [
   { name: 'MTU Maintenance', location: 'Hannover, Germany', rating: 4.9, serviceTypes: ['Engine MRO'], priceRange: '$1M – $3M' },
 ];
 
-export default function SearchResultsPage({ onHome }: { onHome?: () => void }) {
+export default function SearchResultsPage({ onHome, onViewProfile }: { onHome?: () => void; onViewProfile?: () => void }) {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedAvailability, setSelectedAvailability] = useState('Any');
   const [currentPage, setCurrentPage] = useState(1);
@@ -162,7 +162,7 @@ export default function SearchResultsPage({ onHome }: { onHome?: () => void }) {
           {/* Cards */}
           <div className="grid grid-cols-2 gap-4">
             {sampleResults.map((r) => (
-              <ResultCard key={r.name} {...r} />
+              <ResultCard key={r.name} {...r} onViewProfile={onViewProfile} />
             ))}
           </div>
 
