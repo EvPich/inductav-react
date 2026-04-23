@@ -28,7 +28,9 @@ export default function Footer() {
         <div className="flex flex-col lg:flex-row justify-between gap-10 lg:gap-16 mb-10 lg:mb-12">
           {/* Brand */}
           <div className="flex flex-col gap-4 lg:w-[280px] shrink-0">
-            <Logo />
+            <div className="self-start">
+              <Logo />
+            </div>
             <p className="text-sm leading-relaxed max-w-[280px]" style={{ color: '#94A3B8' }}>
               The world's leading aviation MRO marketplace. Connecting airlines with certified
               maintenance facilities worldwide.
