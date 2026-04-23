@@ -50,12 +50,7 @@ export default function SignInModal({
 
         {/* Header */}
         <div className="flex flex-col items-center gap-3 text-center">
-          <div
-            className="flex items-center justify-center px-4 py-2 rounded-xl"
-            style={{ backgroundColor: '#1C2B4A' }}
-          >
-            <img src="/logo-light.png" alt="InductAV" className="h-7 w-auto object-contain" />
-          </div>
+          <img src="/logo-dark.png" alt="InductAV" className="h-10 w-auto object-contain" />
           <div className="flex flex-col gap-1.5 pt-1">
             <h2 className="text-2xl font-bold" style={{ color: NAVY }}>Welcome back</h2>
             <p className="text-sm" style={{ color: MUTED }}>Sign in to your InductAV account</p>
