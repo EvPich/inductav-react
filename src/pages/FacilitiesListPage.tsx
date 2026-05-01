@@ -269,10 +269,6 @@ function DesktopLayout({ onDashboard, onManager, onChats, onBookings, onViewFaci
                 <SlidersHorizontal size={14} color={TEXT_SECONDARY} />
                 <span style={{ fontSize: 13, color: TEXT_SECONDARY }}>Filters</span>
               </button>
-              <button className="flex items-center gap-2" style={{ padding: '7px 12px', borderRadius: 8, backgroundColor: TEAL, border: 'none', cursor: 'pointer' }}>
-                <Plus size={14} color="#FFFFFF" />
-                <span style={{ fontSize: 13, fontWeight: 600, color: '#FFFFFF' }}>Add Bay</span>
-              </button>
             </div>
           </div>
 
