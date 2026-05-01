@@ -6,8 +6,9 @@ import RequestSlotChatPage from './pages/RequestSlotChatPage';
 import MRODashboardPage from './pages/MRODashboardPage';
 import MROChatsPage from './pages/MROChatsPage';
 import BookingDetailPage from './pages/BookingDetailPage';
+import MROManagerPage from './pages/MROManagerPage';
 
-type Page = 'home' | 'search' | 'profile' | 'chat' | 'dashboard' | 'mro-chats' | 'booking-detail';
+type Page = 'home' | 'search' | 'profile' | 'chat' | 'dashboard' | 'mro-chats' | 'booking-detail' | 'mro-manager';
 
 export default function App() {
   const [page, setPage] = useState<Page>('home');
@@ -21,6 +22,7 @@ export default function App() {
     dashboard: 'MRO Dashboard',
     'mro-chats': 'MRO Chats',
     'booking-detail': 'Booking Detail',
+    'mro-manager': 'MRO Manager',
   };
 
   const fullViewportSwitcher = (
@@ -43,7 +45,7 @@ export default function App() {
     return (
       <>
         {fullViewportSwitcher}
-        <MRODashboardPage onChats={() => setPage('mro-chats')} onViewBooking={() => setPage('booking-detail')} />
+        <MRODashboardPage onChats={() => setPage('mro-chats')} onViewBooking={() => setPage('booking-detail')} onManager={() => setPage('mro-manager')} />
       </>
     );
   }
@@ -62,6 +64,19 @@ export default function App() {
       <>
         {fullViewportSwitcher}
         <MROChatsPage onDashboard={() => setPage('dashboard')} />
+      </>
+    );
+  }
+
+  if (page === 'mro-manager') {
+    return (
+      <>
+        {fullViewportSwitcher}
+        <MROManagerPage
+          onDashboard={() => setPage('dashboard')}
+          onChats={() => setPage('mro-chats')}
+          onViewBooking={() => setPage('booking-detail')}
+        />
       </>
     );
   }

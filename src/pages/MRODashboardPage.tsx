@@ -210,7 +210,7 @@ const NAV_ITEMS: { key: NavKey; icon: React.ElementType; label: string; badge?: 
 
 // ── Component ───────────────────────────────────────────────────────
 
-export default function MRODashboardPage({ onChats, onViewBooking }: { onChats?: () => void; onViewBooking?: () => void }) {
+export default function MRODashboardPage({ onChats, onViewBooking, onManager }: { onChats?: () => void; onViewBooking?: () => void; onManager?: () => void }) {
   const [activeNav, setActiveNav] = useState<NavKey>('dashboard');
   const [viewMode, setViewMode] = useState<'week' | 'month'>('week');
   const [addHover, setAddHover] = useState(false);
@@ -230,7 +230,7 @@ export default function MRODashboardPage({ onChats, onViewBooking }: { onChats?:
               return (
                 <button
                   key={key}
-                  onClick={() => { setActiveNav(key); if (key === 'chats') onChats?.(); }}
+                  onClick={() => { setActiveNav(key); if (key === 'chats') onChats?.(); if (key === 'manager') onManager?.(); }}
                   className="flex items-center justify-between w-full text-left"
                   style={{
                     padding: '10px 14px', borderRadius: 8, cursor: 'pointer',
