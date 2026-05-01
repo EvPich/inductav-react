@@ -65,7 +65,7 @@ export default function App() {
     return (
       <>
         {fullViewportSwitcher}
-        <MROChatsPage onDashboard={() => setPage('dashboard')} />
+        <MROChatsPage onDashboard={() => setPage('dashboard')} onManager={() => setPage('mro-manager')} onBookings={() => setPage('bookings')} />
       </>
     );
   }

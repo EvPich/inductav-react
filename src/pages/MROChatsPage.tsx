@@ -77,9 +77,11 @@ const SHARED_FILES = [
 // ── Component ───────────────────────────────────────────────────────
 
 export default function MROChatsPage({
-  onDashboard,
+  onDashboard, onManager, onBookings,
 }: {
   onDashboard?: () => void;
+  onManager?: () => void;
+  onBookings?: () => void;
 }) {
   const [selectedChat, setSelectedChat] = useState('ryanair');
   const [inputValue, setInputValue] = useState('');
@@ -104,10 +106,10 @@ export default function MROChatsPage({
             </div>
             <nav className="flex flex-col gap-1" style={{ padding: '0 12px' }}>
               {[
-                { key: 'dashboard', Icon: LayoutDashboard, label: 'Dashboard', active: false, onClick: onDashboard },
-                { key: 'manager',   Icon: CalendarDays,    label: 'MRO Manager', active: false },
+                { key: 'dashboard', Icon: LayoutDashboard, label: 'Dashboard',   active: false, onClick: onDashboard },
+                { key: 'manager',   Icon: CalendarDays,    label: 'MRO Manager', active: false, onClick: onManager },
                 { key: 'chats',     Icon: MessageCircle,   label: 'Chats',       active: true,  badge: 3 },
-                { key: 'bookings',  Icon: Plane,           label: 'Bookings',    active: false },
+                { key: 'bookings',  Icon: Plane,           label: 'Bookings',    active: false, onClick: onBookings },
                 { key: 'settings',  Icon: Settings,        label: 'Settings',    active: false },
               ].map(({ key, Icon, label, active, badge, onClick }) => (
                 <button
