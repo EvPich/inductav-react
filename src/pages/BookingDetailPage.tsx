@@ -1,7 +1,6 @@
-import { useState } from 'react';
 import {
   LayoutDashboard, CalendarDays, MessageCircle, Plane, Settings,
-  ArrowLeft, Check, Timer, Calendar, ChevronDown, TriangleAlert,
+  ArrowLeft, Check, Timer, Calendar, Clock3, CircleCheck,
 } from 'lucide-react';
 
 const NAVY = '#1C2B4A';
@@ -24,46 +23,49 @@ const NAV_ITEMS: { key: NavKey; icon: React.ElementType; label: string; badge?: 
   { key: 'settings',  icon: Settings,        label: 'Settings' },
 ];
 
-const BAYS_DATA = [
-  { id: 'a1', name: 'Bay A-1', cap: 'Wide-body',   status: 'conflict'   as const },
-  { id: 'a2', name: 'Bay A-2', cap: 'Wide-body',   status: 'available'  as const },
-  { id: 'b1', name: 'Bay B-1', cap: 'Narrow-body', status: 'available'  as const },
-  { id: 'b2', name: 'Bay B-2', cap: 'Narrow-body', status: 'available'  as const },
-  { id: 'c1', name: 'Bay C-1', cap: 'Regional',    status: 'booked'     as const },
-  { id: 'c2', name: 'Bay C-2', cap: 'Regional',    status: 'available'  as const },
+const OVERVIEW_ROWS = [
+  { label: 'Booking ID', value: 'BK-2401',                 color: TEXT_PRIMARY },
+  { label: 'Status',     value: 'In Progress',              color: '#0369A1'   },
+  { label: 'Operator',   value: 'Lufthansa',                color: TEXT_PRIMARY },
+  { label: 'Aircraft',   value: 'Boeing 737-800 (D-ABCD)', color: TEXT_PRIMARY },
+  { label: 'Bay',        value: 'A-1 · Wide-body',          color: TEXT_PRIMARY },
 ];
 
-const MAINT_TAGS = ['C-Check', 'A-Check', 'Engine Overhaul', 'Heavy Maint.'];
-
-const REQUIREMENTS_INIT = [
-  { label: 'Hangar space available', checked: true  },
-  { label: 'Ground power unit',      checked: true  },
-  { label: 'Aircraft jacks',         checked: false },
-  { label: 'Engine test stand',      checked: false },
-  { label: 'Paint booth access',     checked: true  },
+const MAINT_TAGS = [
+  { label: 'Structural', bg: BLUE_LIGHT,  color: TEAL      },
+  { label: 'Engine',     bg: '#F0FDF4',   color: '#16A34A' },
+  { label: 'Avionics',   bg: '#E0F2FE',   color: '#0369A1' },
 ];
 
-// ── Timeline section data ─────────────────────────────────────────────
+const TIMELINE_EVENTS = [
+  {
+    event: 'Work Started',       date: 'Apr 25, 2026',
+    desc:  'Maintenance commenced in Bay A-1',
+    badge: 'Active', badgeBg: '#E0F2FE', badgeColor: '#0369A1',
+  },
+  {
+    event: 'Payment Confirmed',  date: 'Apr 18, 2026',
+    desc:  'Full payment of €59,500 received',
+    badge: 'Done',   badgeBg: '#F0FDF4', badgeColor: '#22C55E',
+  },
+  {
+    event: 'Booking Created',    date: 'Apr 15, 2026',
+    desc:  'Booking submitted and confirmed',
+    badge: 'Done',   badgeBg: '#F0FDF4', badgeColor: '#22C55E',
+  },
+];
 
-const TIMELINE_DAYS = ['21','22','23','24','25','26','27','28','29','30'];
-
-const EXISTING_BOOKINGS = [
-  { bay: 'Bay A-1', dates: 'Apr 22–24, 2026', airline: 'Lufthansa',  service: 'Engine Overhaul',          status: 'Booked',    statusBg: '#FEF3C7', statusColor: '#B45309' },
-  { bay: 'Bay A-1', dates: 'Mar 15–18, 2026', airline: 'Air France', service: 'Landing Gear Inspection',  status: 'Completed', statusBg: '#F0FDF4', statusColor: '#22C55E' },
+const REQUIREMENTS = [
+  'Hangar space available',
+  'Ground power unit',
+  'Aircraft jacks',
+  'Engine test stand',
+  'Paint booth access',
 ];
 
 // ── Component ─────────────────────────────────────────────────────────
 
 export default function BookingDetailPage({ onBack, onChats }: { onBack?: () => void; onChats?: () => void }) {
-  const [selectedBay, setSelectedBay] = useState('a1');
-  const [selectedTag, setSelectedTag] = useState('C-Check');
-  const [recurring, setRecurring] = useState(false);
-  const [negotiable, setNegotiable] = useState(true);
-  const [reqChecked, setReqChecked] = useState(REQUIREMENTS_INIT.map(r => r.checked));
-
-  const toggleReq = (i: number) =>
-    setReqChecked(prev => prev.map((v, idx) => idx === i ? !v : v));
-
   return (
     <div className="flex overflow-hidden" style={{ height: '100vh', backgroundColor: BG_LIGHT }}>
 
@@ -79,7 +81,10 @@ export default function BookingDetailPage({ onBack, onChats }: { onBack?: () => 
               return (
                 <button
                   key={key}
-                  onClick={() => { if (key === 'chats') onChats?.(); if (key === 'dashboard') onBack?.(); }}
+                  onClick={() => {
+                    if (key === 'chats') onChats?.();
+                    if (key === 'dashboard') onBack?.();
+                  }}
                   className="flex items-center justify-between w-full text-left"
                   style={{
                     padding: '10px 14px', borderRadius: 8, cursor: 'pointer',
@@ -141,7 +146,7 @@ export default function BookingDetailPage({ onBack, onChats }: { onBack?: () => 
             </button>
             <button
               className="flex items-center gap-2"
-              style={{ padding: '10px 20px', borderRadius: 8, backgroundColor: TEAL, fontFamily: 'Inter', fontSize: 13, fontWeight: 600, color: '#FFFFFF', cursor: 'pointer' }}
+              style={{ padding: '10px 20px', borderRadius: 8, backgroundColor: TEAL, fontFamily: 'Inter', fontSize: 13, fontWeight: 600, color: '#FFFFFF', cursor: 'pointer', border: 'none' }}
               onMouseEnter={e => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
               onMouseLeave={e => (e.currentTarget.style.backgroundColor = TEAL)}
             >
@@ -158,94 +163,50 @@ export default function BookingDetailPage({ onBack, onChats }: { onBack?: () => 
             {/* ── Left column ── */}
             <div className="flex flex-col flex-1 min-w-0" style={{ gap: 24 }}>
 
-              {/* Bay Selection */}
-              <Card title="Select Bay">
-                <div className="grid grid-cols-6 gap-2.5">
-                  {BAYS_DATA.map((bay) => {
-                    const isSel = selectedBay === bay.id;
-                    const isBooked = bay.status === 'booked';
-                    return (
-                      <button
-                        key={bay.id}
-                        onClick={() => setSelectedBay(bay.id)}
-                        className="flex flex-col items-center justify-center"
-                        style={{
-                          padding: '14px 0', borderRadius: 10, gap: 4,
-                          backgroundColor: isSel ? TEAL : '#FFFFFF',
-                          border: isSel ? 'none' : `1px solid ${BORDER}`,
-                          cursor: 'pointer',
-                        }}
-                      >
-                        <span style={{ fontFamily: 'Inter', fontSize: 13, fontWeight: isSel ? 700 : 600, color: isSel ? '#FFFFFF' : TEXT_PRIMARY }}>
-                          {bay.name}
-                        </span>
-                        <span style={{ fontFamily: 'Inter', fontSize: 10, color: isSel ? 'rgba(255,255,255,0.7)' : TEXT_MUTED }}>
-                          {bay.cap}
-                        </span>
-                        {bay.status === 'conflict' && (
-                          <div className="flex items-center gap-1">
-                            <TriangleAlert size={9} color="#FBBF24" />
-                            <span style={{ fontFamily: 'Inter', fontSize: 9, fontWeight: 600, color: '#FBBF24' }}>Conflict</span>
-                          </div>
-                        )}
-                        {bay.status === 'available' && (
-                          <div className="flex items-center gap-1">
-                            <div style={{ width: 5, height: 5, borderRadius: 999, backgroundColor: '#22C55E' }} />
-                            <span style={{ fontFamily: 'Inter', fontSize: 9, fontWeight: 500, color: '#22C55E' }}>Available</span>
-                          </div>
-                        )}
-                        {isBooked && (
-                          <div className="flex items-center gap-1">
-                            <div style={{ width: 5, height: 5, borderRadius: 999, backgroundColor: '#EF4444' }} />
-                            <span style={{ fontFamily: 'Inter', fontSize: 9, fontWeight: 500, color: '#EF4444' }}>Booked</span>
-                          </div>
-                        )}
-                      </button>
-                    );
-                  })}
+              {/* Booking Overview */}
+              <Card title="Booking Overview">
+                <div className="flex flex-col">
+                  {OVERVIEW_ROWS.map((row, i) => (
+                    <div
+                      key={row.label}
+                      className="flex items-center justify-between"
+                      style={{
+                        padding: '14px 0',
+                        borderTop: i === 0 ? 'none' : `1px solid ${BORDER}`,
+                      }}
+                    >
+                      <span style={{ fontFamily: 'Inter', fontSize: 13, fontWeight: 500, color: TEXT_MUTED }}>{row.label}</span>
+                      <span style={{ fontFamily: 'Inter', fontSize: 13, fontWeight: 600, color: row.color }}>{row.value}</span>
+                    </div>
+                  ))}
                 </div>
               </Card>
 
-              {/* Maintenance Type */}
-              <Card title="Maintenance Type">
-                {/* Dropdown */}
-                <div className="flex items-center justify-between" style={{ padding: '12px 16px', borderRadius: 10, border: `1px solid ${BORDER}`, cursor: 'pointer' }}>
-                  <span style={{ fontFamily: 'Inter', fontSize: 14, fontWeight: 500, color: TEXT_PRIMARY }}>C-Check</span>
-                  <ChevronDown size={16} color={TEXT_MUTED} />
+              {/* Maintenance Details */}
+              <Card title="Maintenance Details">
+                {/* Display field */}
+                <div className="flex items-center" style={{ padding: '12px 16px', borderRadius: 10, backgroundColor: BG_LIGHT }}>
+                  <span style={{ fontFamily: 'Inter', fontSize: 14, fontWeight: 600, color: TEXT_PRIMARY }}>C-Check</span>
                 </div>
                 {/* Tags */}
                 <div className="flex flex-wrap gap-2">
-                  {MAINT_TAGS.map((tag) => {
-                    const sel = selectedTag === tag;
-                    return (
-                      <button
-                        key={tag}
-                        onClick={() => setSelectedTag(tag)}
-                        style={{
-                          padding: '6px 14px', borderRadius: 20, cursor: 'pointer',
-                          backgroundColor: sel ? BLUE_LIGHT : '#FFFFFF',
-                          border: sel ? 'none' : `1px solid ${BORDER}`,
-                          fontFamily: 'Inter', fontSize: 12, fontWeight: sel ? 600 : 500,
-                          color: sel ? TEAL : TEXT_SECONDARY,
-                        }}
-                      >
-                        {tag}
-                      </button>
-                    );
-                  })}
+                  {MAINT_TAGS.map((tag) => (
+                    <div
+                      key={tag.label}
+                      style={{ padding: '6px 14px', borderRadius: 20, backgroundColor: tag.bg }}
+                    >
+                      <span style={{ fontFamily: 'Inter', fontSize: 12, fontWeight: 600, color: tag.color }}>{tag.label}</span>
+                    </div>
+                  ))}
                 </div>
-                {/* Description */}
+                {/* Work Scope */}
                 <div className="flex flex-col gap-2">
-                  <span style={{ fontFamily: 'Inter', fontSize: 13, fontWeight: 600, color: TEXT_SECONDARY }}>Description</span>
-                  <textarea
-                    placeholder="Describe the maintenance work scope, expected duration, and any special considerations..."
-                    style={{
-                      height: 80, padding: '12px 16px', borderRadius: 10, border: `1px solid ${BORDER}`,
-                      fontFamily: 'Inter', fontSize: 13, color: TEXT_PRIMARY, resize: 'none',
-                      backgroundColor: '#FFFFFF', outline: 'none',
-                    }}
-                    defaultValue="Full C-Check inspection including structural checks, avionics testing, and interior inspection per Boeing maintenance manual."
-                  />
+                  <span style={{ fontFamily: 'Inter', fontSize: 13, fontWeight: 600, color: TEXT_SECONDARY }}>Work Scope</span>
+                  <div style={{ padding: '12px 16px', borderRadius: 10, backgroundColor: '#FFFFFF', border: `1px solid ${BORDER}` }}>
+                    <p style={{ fontFamily: 'Inter', fontSize: 13, color: TEXT_SECONDARY, margin: 0, lineHeight: 1.6 }}>
+                      Complete C-Check inspection including structural assessment, corrosion treatment, systems testing, landing gear overhaul, and avionics upgrade per manufacturer specifications.
+                    </p>
+                  </div>
                 </div>
               </Card>
 
@@ -255,137 +216,71 @@ export default function BookingDetailPage({ onBack, onChats }: { onBack?: () => 
                 <div className="flex gap-3">
                   <div className="flex flex-col flex-1 gap-1.5">
                     <span style={{ fontFamily: 'Inter', fontSize: 12, fontWeight: 600, color: TEXT_SECONDARY }}>Start Date</span>
-                    <div className="flex items-center justify-between" style={{ padding: '12px 16px', borderRadius: 10, border: `1px solid ${BORDER}` }}>
+                    <div className="flex items-center justify-between" style={{ padding: '12px 16px', borderRadius: 8, backgroundColor: BG_LIGHT }}>
                       <span style={{ fontFamily: 'Inter', fontSize: 14, fontWeight: 500, color: TEXT_PRIMARY }}>Apr 25, 2026</span>
-                      <Calendar size={16} color={TEXT_MUTED} />
+                      <Calendar size={16} color={TEAL} />
                     </div>
                   </div>
                   <div className="flex flex-col flex-1 gap-1.5">
                     <span style={{ fontFamily: 'Inter', fontSize: 12, fontWeight: 600, color: TEXT_SECONDARY }}>End Date</span>
-                    <div className="flex items-center justify-between" style={{ padding: '12px 16px', borderRadius: 10, border: `1px solid ${BORDER}` }}>
+                    <div className="flex items-center justify-between" style={{ padding: '12px 16px', borderRadius: 8, backgroundColor: BG_LIGHT }}>
                       <span style={{ fontFamily: 'Inter', fontSize: 14, fontWeight: 500, color: TEXT_PRIMARY }}>Apr 28, 2026</span>
-                      <Calendar size={16} color={TEXT_MUTED} />
+                      <Calendar size={16} color={TEAL} />
                     </div>
                   </div>
                 </div>
                 {/* Duration */}
-                <div className="flex items-center" style={{ padding: '12px 16px', borderRadius: 10, backgroundColor: BG_LIGHT }}>
-                  <div className="flex items-center gap-2">
-                    <Timer size={16} color={TEAL} />
-                    <span style={{ fontFamily: 'Inter', fontSize: 13, fontWeight: 600, color: TEXT_PRIMARY }}>Duration: 4 days</span>
-                  </div>
+                <div className="flex items-center gap-2" style={{ padding: '12px 16px', borderRadius: 10, backgroundColor: BG_LIGHT }}>
+                  <Timer size={16} color={TEAL} />
+                  <span style={{ fontFamily: 'Inter', fontSize: 13, fontWeight: 600, color: TEXT_PRIMARY }}>Duration: 4 days</span>
                 </div>
-                {/* Recurring */}
-                <div className="flex items-center justify-between">
-                  <span style={{ fontFamily: 'Inter', fontSize: 13, fontWeight: 500, color: TEXT_SECONDARY }}>Recurring Slot</span>
-                  <button
-                    onClick={() => setRecurring(v => !v)}
-                    style={{
-                      width: 44, height: 24, borderRadius: 12, position: 'relative', cursor: 'pointer', border: 'none', flexShrink: 0,
-                      backgroundColor: recurring ? TEAL : BORDER, transition: 'background-color 0.2s',
-                    }}
-                  >
-                    <div style={{
-                      position: 'absolute', top: 2, left: recurring ? 22 : 2, width: 20, height: 20,
-                      borderRadius: 10, backgroundColor: '#FFFFFF', transition: 'left 0.2s',
-                    }} />
-                  </button>
+                {/* Progress */}
+                <div className="flex items-center gap-4 justify-between">
+                  <span style={{ fontFamily: 'Inter', fontSize: 13, fontWeight: 600, color: TEXT_PRIMARY }}>Progress</span>
+                  <div className="flex-1" style={{ height: 10, borderRadius: 6, backgroundColor: BG_LIGHT, overflow: 'hidden' }}>
+                    <div style={{ width: '65%', height: '100%', borderRadius: 6, backgroundColor: TEAL }} />
+                  </div>
+                  <span style={{ fontFamily: 'Inter', fontSize: 12, fontWeight: 600, color: TEAL }}>65%</span>
                 </div>
               </Card>
 
-              {/* Bay Availability */}
+              {/* Status History */}
               <Card>
                 {/* Header */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Calendar size={18} color={NAVY} />
-                    <span style={{ fontFamily: 'Inter', fontSize: 15, fontWeight: 600, color: TEXT_PRIMARY }}>Bay Availability</span>
-                  </div>
-                  <div style={{ padding: '4px 10px', borderRadius: 20, backgroundColor: BLUE_LIGHT }}>
-                    <span style={{ fontFamily: 'Inter', fontSize: 12, fontWeight: 600, color: TEAL }}>Bay A-1</span>
-                  </div>
+                <div className="flex items-center gap-2">
+                  <Clock3 size={18} color={NAVY} />
+                  <span style={{ fontFamily: 'Inter', fontSize: 15, fontWeight: 600, color: TEXT_PRIMARY }}>Status History</span>
                 </div>
 
-                {/* Conflict warning */}
-                <div className="flex items-start gap-2.5" style={{ padding: '10px 12px', borderRadius: 8, backgroundColor: '#FEF3C7' }}>
-                  <TriangleAlert size={16} color="#F59E0B" style={{ flexShrink: 0, marginTop: 1 }} />
-                  <span style={{ fontFamily: 'Inter', fontSize: 12, color: '#92400E' }}>
-                    Scheduling conflict detected — Apr 25–28 overlaps with an existing booking
+                {/* Success banner */}
+                <div className="flex items-start gap-2.5" style={{ padding: '10px 12px', borderRadius: 8, backgroundColor: '#F0FDF4' }}>
+                  <CircleCheck size={16} color="#22C55E" style={{ flexShrink: 0, marginTop: 1 }} />
+                  <span style={{ fontFamily: 'Inter', fontSize: 12, color: '#166534' }}>
+                    Work is in progress — 65% complete. On schedule for Apr 28 delivery.
                   </span>
                 </div>
 
-                {/* Mini timeline */}
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between">
-                    <span style={{ fontFamily: 'Inter', fontSize: 11, fontWeight: 600, color: TEXT_MUTED }}>April 2026</span>
-                  </div>
-                  {/* Day labels */}
-                  <div className="flex" style={{ gap: 2 }}>
-                    {TIMELINE_DAYS.map((d, i) => (
-                      <div key={d} className="flex-1 flex items-center justify-center">
-                        <span style={{
-                          fontFamily: 'Inter', fontSize: 11, fontWeight: (i >= 4 && i <= 7) ? 700 : 'normal', textAlign: 'center',
-                          color: (i >= 4 && i <= 7) ? '#EF4444' : TEXT_MUTED,
-                        }}>
-                          {d}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                  {/* Timeline blocks */}
-                  <div className="flex" style={{ gap: 2, height: 44 }}>
-                    {/* Day 21 — empty */}
-                    <div style={{ flex: 1, borderRadius: '4px 0 0 4px', backgroundColor: '#F1F5F9' }} />
-                    {/* Days 22–24 — existing booking */}
-                    <div className="flex flex-col items-center justify-center" style={{
-                      flex: 3, backgroundColor: '#FFF7ED', gap: 2, overflow: 'hidden',
-                      border: '1px solid #F59E0B',
-                    }}>
-                      <span style={{ fontFamily: 'Inter', fontSize: 10, fontWeight: 700, color: '#B45309', textAlign: 'center' }}>Lufthansa</span>
-                      <span style={{ fontFamily: 'Inter', fontSize: 9, color: '#D97706', textAlign: 'center' }}>Engine Overhaul</span>
-                    </div>
-                    {/* Days 25–28 — proposed (conflict) */}
-                    <div className="flex flex-col items-center justify-center" style={{
-                      flex: 4, backgroundColor: BLUE_LIGHT, gap: 2, overflow: 'hidden',
-                      border: '2px solid #EF4444',
-                    }}>
-                      <span style={{ fontFamily: 'Inter', fontSize: 10, fontWeight: 700, color: TEAL, textAlign: 'center' }}>Proposed</span>
-                      <span style={{ fontFamily: 'Inter', fontSize: 9, color: TEXT_MUTED, textAlign: 'center' }}>Apr 25–28</span>
-                    </div>
-                    {/* Days 29–30 — empty */}
-                    <div style={{ flex: 2, borderRadius: '0 4px 4px 0', backgroundColor: '#F1F5F9' }} />
-                  </div>
-                </div>
-
-                {/* Existing bookings list */}
+                {/* Timeline events */}
                 <div className="flex flex-col">
                   <div className="flex items-center justify-between" style={{ paddingBottom: 12 }}>
-                    <div className="flex items-center gap-2">
-                      <span style={{ fontFamily: 'Inter', fontSize: 13, fontWeight: 600, color: TEXT_PRIMARY }}>Existing Bookings</span>
-                      <div style={{ padding: '3px 8px', borderRadius: 12, backgroundColor: '#E2E8F0' }}>
-                        <span style={{ fontFamily: 'Inter', fontSize: 11, fontWeight: 600, color: TEXT_SECONDARY }}>2</span>
-                      </div>
-                    </div>
+                    <span style={{ fontFamily: 'Inter', fontSize: 13, fontWeight: 600, color: TEXT_PRIMARY }}>Timeline</span>
                   </div>
                   <div style={{ height: 1, backgroundColor: BORDER }} />
-                  {EXISTING_BOOKINGS.map((bk, i) => (
+                  {TIMELINE_EVENTS.map((ev, i) => (
                     <div key={i}>
                       <div className="flex items-center justify-between" style={{ padding: '12px 0' }}>
                         <div className="flex flex-col gap-1">
                           <div className="flex items-center gap-2">
-                            <span style={{ fontFamily: 'Inter', fontSize: 11, fontWeight: 600, color: TEAL }}>{bk.bay}</span>
-                            <span style={{ fontFamily: 'Inter', fontSize: 11, color: TEXT_MUTED }}>{bk.dates}</span>
+                            <span style={{ fontFamily: 'Inter', fontSize: 11, fontWeight: 600, color: TEXT_PRIMARY }}>{ev.event}</span>
+                            <span style={{ fontFamily: 'Inter', fontSize: 11, color: TEXT_MUTED }}>{ev.date}</span>
                           </div>
-                          <div className="flex items-center gap-1.5">
-                            <span style={{ fontFamily: 'Inter', fontSize: 12, fontWeight: 600, color: TEXT_PRIMARY }}>{bk.airline}</span>
-                            <span style={{ fontFamily: 'Inter', fontSize: 12, color: TEXT_SECONDARY }}>{bk.service}</span>
-                          </div>
+                          <span style={{ fontFamily: 'Inter', fontSize: 12, fontWeight: 600, color: TEXT_PRIMARY }}>{ev.desc}</span>
                         </div>
-                        <div style={{ padding: '4px 10px', borderRadius: 20, backgroundColor: bk.statusBg }}>
-                          <span style={{ fontFamily: 'Inter', fontSize: 11, fontWeight: 600, color: bk.statusColor }}>{bk.status}</span>
+                        <div style={{ padding: '4px 10px', borderRadius: 20, backgroundColor: ev.badgeBg, flexShrink: 0 }}>
+                          <span style={{ fontFamily: 'Inter', fontSize: 11, fontWeight: 600, color: ev.badgeColor }}>{ev.badge}</span>
                         </div>
                       </div>
-                      {i < EXISTING_BOOKINGS.length - 1 && <div style={{ height: 1, backgroundColor: BORDER }} />}
+                      {i < TIMELINE_EVENTS.length - 1 && <div style={{ height: 1, backgroundColor: BORDER }} />}
                     </div>
                   ))}
                 </div>
@@ -396,13 +291,13 @@ export default function BookingDetailPage({ onBack, onChats }: { onBack?: () => 
             {/* ── Right column ── */}
             <div className="flex flex-col shrink-0" style={{ width: 360, gap: 24 }}>
 
-              {/* Pricing */}
-              <Card title="Pricing">
+              {/* Pricing & Payment */}
+              <Card title="Pricing & Payment">
                 {/* Price per day */}
                 <div className="flex flex-col gap-1.5">
                   <span style={{ fontFamily: 'Inter', fontSize: 12, fontWeight: 600, color: TEXT_SECONDARY }}>Price per Day</span>
-                  <div className="flex" style={{ borderRadius: 10, border: `1px solid ${BORDER}`, overflow: 'hidden' }}>
-                    <div style={{ padding: '12px 14px', backgroundColor: BG_LIGHT, borderRight: `1px solid ${BORDER}` }}>
+                  <div className="flex" style={{ borderRadius: 10, backgroundColor: BG_LIGHT, overflow: 'hidden' }}>
+                    <div style={{ padding: '12px 14px', borderRight: `1px solid ${BORDER}` }}>
                       <span style={{ fontFamily: 'Inter', fontSize: 14, fontWeight: 600, color: TEXT_SECONDARY }}>€</span>
                     </div>
                     <div className="flex-1" style={{ padding: '12px 16px' }}>
@@ -417,66 +312,49 @@ export default function BookingDetailPage({ onBack, onChats }: { onBack?: () => 
                     <span style={{ fontFamily: 'Inter', fontSize: 14, fontWeight: 700, color: TEXT_PRIMARY }}>€50,000</span>
                   </div>
                 </div>
-                {/* Negotiable toggle */}
+                {/* Payment Status */}
                 <div className="flex items-center justify-between">
-                  <span style={{ fontFamily: 'Inter', fontSize: 13, fontWeight: 500, color: TEXT_SECONDARY }}>Price Negotiable</span>
-                  <button
-                    onClick={() => setNegotiable(v => !v)}
-                    style={{
-                      width: 44, height: 24, borderRadius: 12, position: 'relative', cursor: 'pointer', border: 'none', flexShrink: 0,
-                      backgroundColor: negotiable ? TEAL : BORDER, transition: 'background-color 0.2s',
-                    }}
-                  >
-                    <div style={{
-                      position: 'absolute', top: 2, left: negotiable ? 22 : 2, width: 20, height: 20,
-                      borderRadius: 10, backgroundColor: '#FFFFFF', transition: 'left 0.2s',
-                    }} />
-                  </button>
+                  <span style={{ fontFamily: 'Inter', fontSize: 13, fontWeight: 600, color: TEXT_PRIMARY }}>Payment Status</span>
+                  <div style={{ padding: '4px 12px', borderRadius: 20, backgroundColor: '#F0FDF4' }}>
+                    <span style={{ fontFamily: 'Inter', fontSize: 11, fontWeight: 600, color: '#16A34A' }}>Paid</span>
+                  </div>
                 </div>
               </Card>
 
               {/* Requirements & Equipment */}
               <Card title="Requirements & Equipment">
                 <div className="flex flex-col gap-2.5">
-                  {REQUIREMENTS_INIT.map((req, i) => {
-                    const checked = reqChecked[i];
-                    return (
-                      <label key={req.label} className="flex items-center gap-2.5" style={{ cursor: 'pointer' }}>
-                        <button
-                          onClick={() => toggleReq(i)}
-                          className="flex items-center justify-center shrink-0"
-                          style={{
-                            width: 20, height: 20, borderRadius: 4, border: 'none', cursor: 'pointer',
-                            backgroundColor: checked ? TEAL : '#FFFFFF',
-                            outline: checked ? 'none' : `1px solid ${BORDER}`,
-                          }}
-                        >
-                          {checked && <Check size={14} color="#FFFFFF" />}
-                        </button>
-                        <span style={{ fontFamily: 'Inter', fontSize: 13, fontWeight: 500, color: checked ? TEXT_PRIMARY : TEXT_SECONDARY }}>
-                          {req.label}
-                        </span>
-                      </label>
-                    );
-                  })}
+                  {REQUIREMENTS.map((req) => (
+                    <div key={req} className="flex items-center gap-2.5">
+                      <div
+                        className="flex items-center justify-center shrink-0"
+                        style={{ width: 20, height: 20, borderRadius: 4, backgroundColor: TEAL }}
+                      >
+                        <Check size={14} color="#FFFFFF" />
+                      </div>
+                      <span style={{ fontFamily: 'Inter', fontSize: 13, fontWeight: 500, color: TEXT_PRIMARY }}>
+                        {req}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </Card>
 
-              {/* Slot Preview */}
+              {/* Booking Summary */}
               <Card>
                 <div className="flex items-center justify-between">
-                  <span style={{ fontFamily: 'Inter', fontSize: 15, fontWeight: 700, color: TEXT_PRIMARY }}>Slot Preview</span>
-                  <div style={{ padding: '4px 12px', borderRadius: 999, backgroundColor: '#F0FDF4' }}>
-                    <span style={{ fontFamily: 'Inter', fontSize: 11, fontWeight: 600, color: '#16A34A' }}>Available</span>
+                  <span style={{ fontFamily: 'Inter', fontSize: 15, fontWeight: 700, color: TEXT_PRIMARY }}>Booking Summary</span>
+                  <div style={{ padding: '4px 12px', borderRadius: 999, backgroundColor: '#E0F2FE' }}>
+                    <span style={{ fontFamily: 'Inter', fontSize: 11, fontWeight: 600, color: '#0369A1' }}>In Progress</span>
                   </div>
                 </div>
                 <div style={{ padding: 16, borderRadius: 10, backgroundColor: BG_LIGHT, border: `1px solid ${BORDER}` }}>
                   {[
-                    { label: 'Bay',       value: 'A-1 · Wide-body'    },
-                    { label: 'Type',      value: 'C-Check'            },
-                    { label: 'Schedule',  value: 'Apr 25 – 28, 2026'  },
-                    { label: 'Duration',  value: '4 days'             },
-                    { label: 'Price/Day', value: '€12,500'            },
+                    { label: 'Bay',       value: 'A-1 · Wide-body'   },
+                    { label: 'Type',      value: 'C-Check'           },
+                    { label: 'Schedule',  value: 'Apr 25 – 28, 2026' },
+                    { label: 'Duration',  value: '4 days'            },
+                    { label: 'Price/Day', value: '€12,500'           },
                     { label: 'Total',     value: '€50,000', highlight: true },
                   ].map((row, i, arr) => (
                     <div key={row.label}>
