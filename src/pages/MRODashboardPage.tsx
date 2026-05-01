@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
-  LayoutDashboard, CalendarDays, MessageCircle, Plane, Settings,
+  LayoutDashboard, Building2, CalendarDays, MessageCircle, Plane, Settings,
   Bell, Plus, CalendarCheck, CalendarPlus, TrendingUp, Gauge,
   ChevronLeft, ChevronRight,
   Menu, Warehouse, BookOpen, Signal, Wifi, BatteryFull,
@@ -209,14 +209,15 @@ const LEGEND_ITEMS = [
 
 // ── Sidebar nav ─────────────────────────────────────────────────────
 
-type NavKey = 'dashboard' | 'manager' | 'chats' | 'bookings' | 'settings';
+type NavKey = 'dashboard' | 'facilities' | 'manager' | 'chats' | 'bookings' | 'settings';
 
 const NAV_ITEMS: { key: NavKey; icon: React.ElementType; label: string; badge?: number }[] = [
-  { key: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { key: 'manager',   icon: CalendarDays,    label: 'MRO Manager' },
-  { key: 'chats',     icon: MessageCircle,   label: 'Chats', badge: 3 },
-  { key: 'bookings',  icon: Plane,           label: 'Bookings' },
-  { key: 'settings',  icon: Settings,        label: 'Settings' },
+  { key: 'dashboard',  icon: LayoutDashboard, label: 'Dashboard' },
+  { key: 'facilities', icon: Building2,        label: 'Facilities' },
+  { key: 'manager',    icon: CalendarDays,     label: 'MRO Manager' },
+  { key: 'chats',      icon: MessageCircle,    label: 'Chats', badge: 3 },
+  { key: 'bookings',   icon: Plane,            label: 'Bookings' },
+  { key: 'settings',   icon: Settings,         label: 'Settings' },
 ];
 
 // ── Mobile bay schedule data ────────────────────────────────────────
@@ -271,8 +272,8 @@ const MOBILE_BAY_ROWS: MobileBayRow[] = [
 
 // ── Component ───────────────────────────────────────────────────────
 
-export default function MRODashboardPage({ onChats, onViewBooking, onManager, onBookings }: {
-  onChats?: () => void; onViewBooking?: () => void; onManager?: () => void; onBookings?: () => void;
+export default function MRODashboardPage({ onChats, onViewBooking, onManager, onBookings, onFacilities }: {
+  onChats?: () => void; onViewBooking?: () => void; onManager?: () => void; onBookings?: () => void; onFacilities?: () => void;
 }) {
   const isMobile = useMobile();
   const [activeNav, setActiveNav] = useState<NavKey>('dashboard');
@@ -280,7 +281,7 @@ export default function MRODashboardPage({ onChats, onViewBooking, onManager, on
   const [addHover, setAddHover] = useState(false);
 
   if (isMobile) {
-    return <MobileLayout onChats={onChats} onViewBooking={onViewBooking} onManager={onManager} onBookings={onBookings} />;
+    return <MobileLayout onChats={onChats} onViewBooking={onViewBooking} onManager={onManager} onBookings={onBookings} onFacilities={onFacilities} />;
   }
 
   return (
@@ -298,7 +299,7 @@ export default function MRODashboardPage({ onChats, onViewBooking, onManager, on
               return (
                 <button
                   key={key}
-                  onClick={() => { setActiveNav(key); if (key === 'chats') onChats?.(); if (key === 'manager') onManager?.(); if (key === 'bookings') onBookings?.(); }}
+                  onClick={() => { setActiveNav(key); if (key === 'chats') onChats?.(); if (key === 'manager') onManager?.(); if (key === 'bookings') onBookings?.(); if (key === 'facilities') onFacilities?.(); }}
                   className="flex items-center justify-between w-full text-left"
                   style={{ padding: '10px 14px', borderRadius: 8, cursor: 'pointer', backgroundColor: active ? 'rgba(255,255,255,0.1)' : 'transparent' }}
                 >
@@ -410,8 +411,8 @@ export default function MRODashboardPage({ onChats, onViewBooking, onManager, on
 
 // ── Mobile layout ───────────────────────────────────────────────────
 
-function MobileLayout({ onChats, onViewBooking, onManager, onBookings }: {
-  onChats?: () => void; onViewBooking?: () => void; onManager?: () => void; onBookings?: () => void;
+function MobileLayout({ onChats, onViewBooking, onManager, onBookings, onFacilities }: {
+  onChats?: () => void; onViewBooking?: () => void; onManager?: () => void; onBookings?: () => void; onFacilities?: () => void;
 }) {
   return (
     <div style={{ width: '100%', maxWidth: 430, height: '100dvh', display: 'flex', flexDirection: 'column', backgroundColor: BG_LIGHT, fontFamily: 'Inter, system-ui, sans-serif', margin: '0 auto', overflow: 'hidden' }}>
@@ -473,7 +474,7 @@ function MobileLayout({ onChats, onViewBooking, onManager, onBookings }: {
       </div>
 
       {/* Bottom tab bar */}
-      <MobileTabBar onManager={onManager} onChats={onChats} onBookings={onBookings} />
+      <MobileTabBar onManager={onManager} onChats={onChats} onBookings={onBookings} onFacilities={onFacilities} />
     </div>
   );
 }
@@ -535,13 +536,13 @@ function MobileBayCard({ bay, onViewBooking }: { bay: MobileBayRow; onViewBookin
   );
 }
 
-function MobileTabBar({ onManager, onChats, onBookings }: { onManager?: () => void; onChats?: () => void; onBookings?: () => void }) {
+function MobileTabBar({ onManager, onChats, onBookings, onFacilities }: { onManager?: () => void; onChats?: () => void; onBookings?: () => void; onFacilities?: () => void }) {
   const tabs = [
-    { key: 'dashboard', label: 'DASHBOARD', icon: <LayoutDashboard size={18} />, active: true,  handler: undefined as (() => void) | undefined },
-    { key: 'slots',     label: 'SLOTS',     icon: <Warehouse size={18} />,       active: false, handler: onManager },
-    { key: 'chats',     label: 'CHATS',     icon: <MessageCircle size={18} />,   active: false, handler: onChats,  badge: true },
-    { key: 'bookings',  label: 'BOOKINGS',  icon: <BookOpen size={18} />,        active: false, handler: onBookings },
-    { key: 'settings',  label: 'SETTINGS',  icon: <Settings size={18} />,        active: false, handler: undefined },
+    { key: 'dashboard',  label: 'DASHBOARD',  icon: <LayoutDashboard size={18} />, active: true,  handler: undefined as (() => void) | undefined },
+    { key: 'slots',      label: 'SLOTS',      icon: <Warehouse size={18} />,       active: false, handler: onManager },
+    { key: 'chats',      label: 'CHATS',      icon: <MessageCircle size={18} />,   active: false, handler: onChats,  badge: true },
+    { key: 'bookings',   label: 'BOOKINGS',   icon: <BookOpen size={18} />,        active: false, handler: onBookings },
+    { key: 'facilities', label: 'FACILITIES', icon: <Building2 size={18} />,       active: false, handler: onFacilities },
   ];
 
   return (

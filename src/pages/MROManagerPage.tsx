@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
-  LayoutDashboard, CalendarDays, MessageCircle, Plane, Settings,
+  LayoutDashboard, Building2, CalendarDays, MessageCircle, Plane, Settings,
   Download, Plus, Search, SlidersHorizontal, Warehouse,
   Pencil, EllipsisVertical, ChevronLeft, ChevronRight, ChevronDown,
   Calendar, Wrench, Bookmark, Signal, Wifi, BatteryFull,
@@ -29,18 +29,19 @@ function useMobile(breakpoint = 768) {
 
 // ── Shared types & data ─────────────────────────────────────────────
 
-type NavKey = 'dashboard' | 'manager' | 'chats' | 'bookings' | 'settings';
+type NavKey = 'dashboard' | 'facilities' | 'manager' | 'chats' | 'bookings' | 'settings';
 type TabFilter = 'All Bays' | 'Available' | 'Booked' | 'Blocked';
 type BayStatus = 'Available' | 'Booked' | 'Blocked';
 
 const TABS: TabFilter[] = ['All Bays', 'Available', 'Booked', 'Blocked'];
 
 const NAV_ITEMS: { key: NavKey; icon: React.ElementType; label: string; badge?: number }[] = [
-  { key: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { key: 'manager',   icon: CalendarDays,    label: 'MRO Manager' },
-  { key: 'chats',     icon: MessageCircle,   label: 'Chats', badge: 3 },
-  { key: 'bookings',  icon: Plane,           label: 'Bookings' },
-  { key: 'settings',  icon: Settings,        label: 'Settings' },
+  { key: 'dashboard',  icon: LayoutDashboard, label: 'Dashboard' },
+  { key: 'facilities', icon: Building2,        label: 'Facilities' },
+  { key: 'manager',    icon: CalendarDays,     label: 'MRO Manager' },
+  { key: 'chats',      icon: MessageCircle,    label: 'Chats', badge: 3 },
+  { key: 'bookings',   icon: Plane,            label: 'Bookings' },
+  { key: 'settings',   icon: Settings,         label: 'Settings' },
 ];
 
 // ── Desktop data ────────────────────────────────────────────────────
@@ -101,12 +102,14 @@ const BAY_CARDS: BayCard[] = [
 // ── Main component ──────────────────────────────────────────────────
 
 export default function MROManagerPage({
-  onDashboard, onChats, onViewBooking, onBookings,
+  onDashboard, onChats, onViewBooking, onBookings, onFacilities, onMROList,
 }: {
   onDashboard?: () => void;
   onChats?: () => void;
   onViewBooking?: () => void;
   onBookings?: () => void;
+  onFacilities?: () => void;
+  onMROList?: () => void;
 }) {
   const isMobile = useMobile();
   const [activeTab, setActiveTab] = useState<TabFilter>('All Bays');
@@ -129,6 +132,8 @@ export default function MROManagerPage({
         onChats={onChats}
         onViewBooking={onViewBooking}
         onBookings={onBookings}
+        onFacilities={onFacilities}
+        onMROList={onMROList}
       />
     );
   }
@@ -149,9 +154,11 @@ export default function MROManagerPage({
                 <button
                   key={key}
                   onClick={() => {
-                    if (key === 'dashboard') onDashboard?.();
-                    if (key === 'chats') onChats?.();
-                    if (key === 'bookings') onBookings?.();
+                    if (key === 'dashboard')  onDashboard?.();
+                    if (key === 'manager')    onMROList?.();
+                    if (key === 'chats')      onChats?.();
+                    if (key === 'bookings')   onBookings?.();
+                    if (key === 'facilities') onFacilities?.();
                   }}
                   className="flex items-center justify-between w-full text-left"
                   style={{ padding: '10px 14px', borderRadius: 8, cursor: 'pointer', backgroundColor: active ? 'rgba(255,255,255,0.1)' : 'transparent' }}
@@ -374,13 +381,15 @@ export default function MROManagerPage({
 
 // ── Mobile layout ───────────────────────────────────────────────────
 
-function MobileLayout({ activeFilter, onFilterChange, onDashboard, onChats, onViewBooking, onBookings }: {
+function MobileLayout({ activeFilter, onFilterChange, onDashboard, onChats, onViewBooking, onBookings, onFacilities, onMROList }: {
   activeFilter: TabFilter;
   onFilterChange: (f: TabFilter) => void;
   onDashboard?: () => void;
   onChats?: () => void;
   onViewBooking?: () => void;
   onBookings?: () => void;
+  onFacilities?: () => void;
+  onMROList?: () => void;
 }) {
   const filtered = activeFilter === 'All Bays'
     ? BAY_CARDS
@@ -459,7 +468,7 @@ function MobileLayout({ activeFilter, onFilterChange, onDashboard, onChats, onVi
       </div>
 
       {/* Bottom tab bar */}
-      <MobileTabBar onHome={onDashboard} onMessages={onChats} onSaved={onBookings} />
+      <MobileTabBar onHome={onDashboard} onMessages={onChats} onSaved={onBookings} onFacilities={onFacilities} onMROList={onMROList} />
     </div>
   );
 }
@@ -506,13 +515,13 @@ function MobileBayCard({ card, onPress }: { card: BayCard; onPress?: () => void 
   );
 }
 
-function MobileTabBar({ onHome, onMessages, onSaved }: { onHome?: () => void; onMessages?: () => void; onSaved?: () => void }) {
+function MobileTabBar({ onHome, onMessages, onSaved, onFacilities, onMROList }: { onHome?: () => void; onMessages?: () => void; onSaved?: () => void; onFacilities?: () => void; onMROList?: () => void }) {
   const tabs = [
-    { key: 'home',     label: 'HOME',     icon: <LayoutDashboard size={18} />, active: false, handler: onHome },
-    { key: 'slots',    label: 'SLOTS',    icon: <Calendar size={18} />,        active: true,  handler: undefined as (() => void) | undefined },
-    { key: 'messages', label: 'MESSAGES', icon: <MessageCircle size={18} />,   active: false, handler: onMessages, badge: true },
-    { key: 'saved',    label: 'SAVED',    icon: <Bookmark size={18} />,        active: false, handler: onSaved },
-    { key: 'settings', label: 'SETTINGS', icon: <Settings size={18} />,        active: false, handler: undefined },
+    { key: 'home',       label: 'HOME',       icon: <LayoutDashboard size={18} />, active: false, handler: onHome },
+    { key: 'slots',      label: 'SLOTS',      icon: <Calendar size={18} />,        active: true,  handler: onMROList as (() => void) | undefined },
+    { key: 'messages',   label: 'MESSAGES',   icon: <MessageCircle size={18} />,   active: false, handler: onMessages, badge: true },
+    { key: 'saved',      label: 'SAVED',      icon: <Bookmark size={18} />,        active: false, handler: onSaved },
+    { key: 'facilities', label: 'FACILITIES', icon: <Building2 size={18} />,       active: false, handler: onFacilities },
   ];
 
   return (

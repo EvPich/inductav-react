@@ -49,29 +49,31 @@ const MRO_ITEMS = [
 interface Props {
   onBack?: () => void;
   onDashboard?: () => void;
+  onFacilities?: () => void;
   onManager?: () => void;
   onChats?: () => void;
   onBookings?: () => void;
 }
 
-export default function FacilitiesPage({ onBack, onDashboard, onManager, onChats, onBookings }: Props) {
+export default function FacilitiesPage({ onBack, onDashboard, onFacilities, onManager, onChats, onBookings }: Props) {
   const isMobile = useMobile();
 
   if (isMobile) {
-    return <MobileLayout onBack={onBack} onDashboard={onDashboard} onManager={onManager} onChats={onChats} onBookings={onBookings} />;
+    return <MobileLayout onBack={onBack} onDashboard={onDashboard} onFacilities={onFacilities} onManager={onManager} onChats={onChats} onBookings={onBookings} />;
   }
 
-  return <DesktopLayout onBack={onBack} onDashboard={onDashboard} onManager={onManager} onChats={onChats} onBookings={onBookings} />;
+  return <DesktopLayout onBack={onBack} onDashboard={onDashboard} onFacilities={onFacilities} onManager={onManager} onChats={onChats} onBookings={onBookings} />;
 }
 
 // ── Desktop layout ──────────────────────────────────────────────────
 
-function DesktopLayout({ onBack, onDashboard, onManager, onChats, onBookings }: Props) {
+function DesktopLayout({ onBack, onDashboard, onFacilities, onManager, onChats, onBookings }: Props) {
   const navHandlers: Partial<Record<NavKey, () => void>> = {
-    dashboard: onDashboard,
-    manager: onManager,
-    chats: onChats,
-    bookings: onBookings,
+    dashboard:  onDashboard,
+    facilities: onFacilities,
+    manager:    onManager,
+    chats:      onChats,
+    bookings:   onBookings,
   };
 
   return (
@@ -289,7 +291,7 @@ function Field({ label, value, muted = false }: { label: string; value: string; 
 
 // ── Mobile layout ───────────────────────────────────────────────────
 
-function MobileLayout({ onBack, onDashboard: _onDashboard, onManager: _onManager, onChats: _onChats, onBookings: _onBookings }: Props) {
+function MobileLayout({ onBack, onDashboard: _onDashboard, onFacilities: _onFacilities, onManager: _onManager, onChats: _onChats, onBookings: _onBookings }: Props) {
   return (
     <div style={{ width: '100%', maxWidth: 430, height: '100dvh', display: 'flex', flexDirection: 'column', backgroundColor: BG_LIGHT, fontFamily: 'Inter, system-ui, sans-serif', margin: '0 auto', overflow: 'hidden' }}>
 

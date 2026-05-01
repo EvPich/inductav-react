@@ -7,10 +7,12 @@ import MRODashboardPage from './pages/MRODashboardPage';
 import MROChatsPage from './pages/MROChatsPage';
 import BookingDetailPage from './pages/BookingDetailPage';
 import MROManagerPage from './pages/MROManagerPage';
+import MROListPage from './pages/MROListPage';
 import BookingsPage from './pages/BookingsPage';
 import FacilitiesPage from './pages/FacilitiesPage';
+import FacilitiesListPage from './pages/FacilitiesListPage';
 
-type Page = 'home' | 'search' | 'profile' | 'chat' | 'dashboard' | 'mro-chats' | 'booking-detail' | 'mro-manager' | 'bookings' | 'facilities';
+type Page = 'home' | 'search' | 'profile' | 'chat' | 'dashboard' | 'mro-chats' | 'booking-detail' | 'mro-manager' | 'mro-list' | 'bookings' | 'facilities' | 'facilities-list';
 
 export default function App() {
   const [page, setPage] = useState<Page>('home');
@@ -24,9 +26,11 @@ export default function App() {
     dashboard: 'MRO Dashboard',
     'mro-chats': 'MRO Chats',
     'booking-detail': 'Booking Detail',
-    'mro-manager': 'MRO Manager',
-    'bookings':    'Bookings',
-    'facilities':  'Facilities',
+    'mro-manager': 'Bay Manager',
+    'mro-list':    'MRO List',
+    'bookings':         'Bookings',
+    'facilities':       'Facility Detail',
+    'facilities-list':  'Facilities',
   };
 
   const fullViewportSwitcher = (
@@ -49,7 +53,7 @@ export default function App() {
     return (
       <>
         {fullViewportSwitcher}
-        <MRODashboardPage onChats={() => setPage('mro-chats')} onViewBooking={() => setPage('booking-detail')} onManager={() => setPage('mro-manager')} onBookings={() => setPage('bookings')} />
+        <MRODashboardPage onChats={() => setPage('mro-chats')} onViewBooking={() => setPage('booking-detail')} onManager={() => setPage('mro-list')} onBookings={() => setPage('bookings')} onFacilities={() => setPage('facilities-list')} />
       </>
     );
   }
@@ -58,7 +62,7 @@ export default function App() {
     return (
       <>
         {fullViewportSwitcher}
-        <BookingDetailPage onBack={() => setPage('dashboard')} onChats={() => setPage('mro-chats')} onBookings={() => setPage('bookings')} />
+        <BookingDetailPage onBack={() => setPage('dashboard')} onChats={() => setPage('mro-chats')} onBookings={() => setPage('bookings')} onFacilities={() => setPage('facilities-list')} onManager={() => setPage('mro-list')} />
       </>
     );
   }
@@ -67,7 +71,22 @@ export default function App() {
     return (
       <>
         {fullViewportSwitcher}
-        <MROChatsPage onDashboard={() => setPage('dashboard')} onManager={() => setPage('mro-manager')} onBookings={() => setPage('bookings')} />
+        <MROChatsPage onDashboard={() => setPage('dashboard')} onManager={() => setPage('mro-list')} onBookings={() => setPage('bookings')} onFacilities={() => setPage('facilities-list')} />
+      </>
+    );
+  }
+
+  if (page === 'mro-list') {
+    return (
+      <>
+        {fullViewportSwitcher}
+        <MROListPage
+          onDashboard={() => setPage('dashboard')}
+          onFacilities={() => setPage('facilities-list')}
+          onChats={() => setPage('mro-chats')}
+          onBookings={() => setPage('bookings')}
+          onViewBays={() => setPage('mro-manager')}
+        />
       </>
     );
   }
@@ -81,6 +100,23 @@ export default function App() {
           onChats={() => setPage('mro-chats')}
           onViewBooking={() => setPage('booking-detail')}
           onBookings={() => setPage('bookings')}
+          onFacilities={() => setPage('facilities-list')}
+          onMROList={() => setPage('mro-list')}
+        />
+      </>
+    );
+  }
+
+  if (page === 'facilities-list') {
+    return (
+      <>
+        {fullViewportSwitcher}
+        <FacilitiesListPage
+          onDashboard={() => setPage('dashboard')}
+          onManager={() => setPage('mro-list')}
+          onChats={() => setPage('mro-chats')}
+          onBookings={() => setPage('bookings')}
+          onViewFacility={() => setPage('facilities')}
         />
       </>
     );
@@ -91,9 +127,10 @@ export default function App() {
       <>
         {fullViewportSwitcher}
         <FacilitiesPage
-          onBack={() => setPage('dashboard')}
+          onBack={() => setPage('facilities-list')}
           onDashboard={() => setPage('dashboard')}
-          onManager={() => setPage('mro-manager')}
+          onFacilities={() => setPage('facilities-list')}
+          onManager={() => setPage('mro-list')}
           onChats={() => setPage('mro-chats')}
           onBookings={() => setPage('bookings')}
         />
@@ -108,8 +145,9 @@ export default function App() {
         <BookingsPage
           onDashboard={() => setPage('dashboard')}
           onChats={() => setPage('mro-chats')}
-          onManager={() => setPage('mro-manager')}
+          onManager={() => setPage('mro-list')}
           onViewBooking={() => setPage('booking-detail')}
+          onFacilities={() => setPage('facilities-list')}
         />
       </>
     );

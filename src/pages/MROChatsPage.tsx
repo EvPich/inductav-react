@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  LayoutDashboard, CalendarDays, MessageCircle, Plane, Settings,
+  LayoutDashboard, Building2, CalendarDays, MessageCircle, Plane, Settings,
   Search, Phone, EllipsisVertical, Paperclip, Send,
   CalendarPlus, FileText, ClipboardList, Wrench, Warehouse,
   Calendar, CreditCard, ExternalLink, Image,
@@ -77,11 +77,12 @@ const SHARED_FILES = [
 // ── Component ───────────────────────────────────────────────────────
 
 export default function MROChatsPage({
-  onDashboard, onManager, onBookings,
+  onDashboard, onManager, onBookings, onFacilities,
 }: {
   onDashboard?: () => void;
   onManager?: () => void;
   onBookings?: () => void;
+  onFacilities?: () => void;
 }) {
   const [selectedChat, setSelectedChat] = useState('ryanair');
   const [inputValue, setInputValue] = useState('');
@@ -106,11 +107,12 @@ export default function MROChatsPage({
             </div>
             <nav className="flex flex-col gap-1" style={{ padding: '0 12px' }}>
               {[
-                { key: 'dashboard', Icon: LayoutDashboard, label: 'Dashboard',   active: false, onClick: onDashboard },
-                { key: 'manager',   Icon: CalendarDays,    label: 'MRO Manager', active: false, onClick: onManager },
-                { key: 'chats',     Icon: MessageCircle,   label: 'Chats',       active: true,  badge: 3 },
-                { key: 'bookings',  Icon: Plane,           label: 'Bookings',    active: false, onClick: onBookings },
-                { key: 'settings',  Icon: Settings,        label: 'Settings',    active: false },
+                { key: 'dashboard',  Icon: LayoutDashboard, label: 'Dashboard',   active: false, onClick: onDashboard },
+                { key: 'facilities', Icon: Building2,        label: 'Facilities',  active: false, onClick: onFacilities },
+                { key: 'manager',    Icon: CalendarDays,     label: 'MRO Manager', active: false, onClick: onManager },
+                { key: 'chats',      Icon: MessageCircle,    label: 'Chats',       active: true,  badge: 3 },
+                { key: 'bookings',   Icon: Plane,            label: 'Bookings',    active: false, onClick: onBookings },
+                { key: 'settings',   Icon: Settings,         label: 'Settings',    active: false },
               ].map(({ key, Icon, label, active, badge, onClick }) => (
                 <button
                   key={key}

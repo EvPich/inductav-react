@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import {
-  LayoutDashboard, CalendarDays, MessageCircle, Plane, Settings,
+  LayoutDashboard, Building2, CalendarDays, MessageCircle, Plane, Settings,
   ArrowLeft, Check, Timer, Calendar, Clock3, CircleCheck, ChevronDown,
 } from 'lucide-react';
 
@@ -29,14 +29,15 @@ const PAYMENT_STATUS_OPTIONS = [
   { value: 'Partial', bg: '#E0F2FE', color: '#0369A1' },
 ];
 
-type NavKey = 'dashboard' | 'manager' | 'chats' | 'bookings' | 'settings';
+type NavKey = 'dashboard' | 'facilities' | 'manager' | 'chats' | 'bookings' | 'settings';
 
 const NAV_ITEMS: { key: NavKey; icon: React.ElementType; label: string; badge?: number }[] = [
-  { key: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { key: 'manager',   icon: CalendarDays,    label: 'MRO Manager' },
-  { key: 'chats',     icon: MessageCircle,   label: 'Chats', badge: 3 },
-  { key: 'bookings',  icon: Plane,           label: 'Bookings' },
-  { key: 'settings',  icon: Settings,        label: 'Settings' },
+  { key: 'dashboard',  icon: LayoutDashboard, label: 'Dashboard' },
+  { key: 'facilities', icon: Building2,        label: 'Facilities' },
+  { key: 'manager',    icon: CalendarDays,     label: 'MRO Manager' },
+  { key: 'chats',      icon: MessageCircle,    label: 'Chats', badge: 3 },
+  { key: 'bookings',   icon: Plane,            label: 'Bookings' },
+  { key: 'settings',   icon: Settings,         label: 'Settings' },
 ];
 
 const OVERVIEW_ROWS = [
@@ -81,7 +82,7 @@ const REQUIREMENTS = [
 
 // ── Component ─────────────────────────────────────────────────────────
 
-export default function BookingDetailPage({ onBack, onChats, onBookings }: { onBack?: () => void; onChats?: () => void; onBookings?: () => void }) {
+export default function BookingDetailPage({ onBack, onChats, onBookings, onFacilities, onManager }: { onBack?: () => void; onChats?: () => void; onBookings?: () => void; onFacilities?: () => void; onManager?: () => void }) {
   const [bookingStatus, setBookingStatus] = useState('In Progress');
   const [paymentStatus, setPaymentStatus] = useState('Paid');
 
@@ -101,9 +102,11 @@ export default function BookingDetailPage({ onBack, onChats, onBookings }: { onB
                 <button
                   key={key}
                   onClick={() => {
-                    if (key === 'chats') onChats?.();
-                    if (key === 'dashboard') onBack?.();
-                    if (key === 'bookings') onBookings?.();
+                    if (key === 'chats')      onChats?.();
+                    if (key === 'dashboard')  onBack?.();
+                    if (key === 'bookings')   onBookings?.();
+                    if (key === 'facilities') onFacilities?.();
+                    if (key === 'manager')    onManager?.();
                   }}
                   className="flex items-center justify-between w-full text-left"
                   style={{

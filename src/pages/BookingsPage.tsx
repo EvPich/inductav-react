@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  LayoutDashboard, CalendarDays, MessageCircle, Plane, Settings,
+  LayoutDashboard, Building2, CalendarDays, MessageCircle, Plane, Settings,
   Bell, Download, Plus, Search, SlidersHorizontal,
   CalendarCheck, Wrench, TrendingUp, Clock3,
   Pencil, EllipsisVertical, ChevronLeft, ChevronRight,
@@ -18,18 +18,19 @@ const GREEN   = '#22C55E';
 
 // ── Types ─────────────────────────────────────────────────────────────
 
-type NavKey    = 'dashboard' | 'manager' | 'chats' | 'bookings' | 'settings';
+type NavKey    = 'dashboard' | 'facilities' | 'manager' | 'chats' | 'bookings' | 'settings';
 type Status    = 'In Progress' | 'Confirmed' | 'Completed' | 'Cancelled' | 'Upcoming';
 type TabFilter = 'All Bookings' | 'Confirmed' | 'In Progress' | 'Completed' | 'Cancelled';
 
 // ── Constants ─────────────────────────────────────────────────────────
 
 const NAV_ITEMS: { key: NavKey; icon: React.ElementType; label: string; badge?: number }[] = [
-  { key: 'dashboard', icon: LayoutDashboard, label: 'Dashboard'   },
-  { key: 'manager',   icon: CalendarDays,    label: 'MRO Manager' },
-  { key: 'chats',     icon: MessageCircle,   label: 'Chats', badge: 3 },
-  { key: 'bookings',  icon: Plane,           label: 'Bookings'    },
-  { key: 'settings',  icon: Settings,        label: 'Settings'    },
+  { key: 'dashboard',  icon: LayoutDashboard, label: 'Dashboard'   },
+  { key: 'facilities', icon: Building2,        label: 'Facilities'  },
+  { key: 'manager',    icon: CalendarDays,     label: 'MRO Manager' },
+  { key: 'chats',      icon: MessageCircle,    label: 'Chats', badge: 3 },
+  { key: 'bookings',   icon: Plane,            label: 'Bookings'    },
+  { key: 'settings',   icon: Settings,         label: 'Settings'    },
 ];
 
 const STAT_CARDS = [
@@ -74,12 +75,13 @@ const COL = { id: 100, operator: 180, schedule: 160, amount: 110, bay: 140, stat
 // ── Component ─────────────────────────────────────────────────────────
 
 export default function BookingsPage({
-  onDashboard, onChats, onManager, onViewBooking,
+  onDashboard, onChats, onManager, onViewBooking, onFacilities,
 }: {
-  onDashboard?:  () => void;
-  onChats?:      () => void;
-  onManager?:    () => void;
+  onDashboard?:   () => void;
+  onChats?:       () => void;
+  onManager?:     () => void;
   onViewBooking?: () => void;
+  onFacilities?:  () => void;
 }) {
   const [activeTab, setActiveTab]       = useState<TabFilter>('All Bookings');
   const [currentPage, setCurrentPage]   = useState(1);
@@ -93,9 +95,10 @@ export default function BookingsPage({
   });
 
   function handleNav(key: NavKey) {
-    if (key === 'dashboard') onDashboard?.();
-    if (key === 'chats')     onChats?.();
-    if (key === 'manager')   onManager?.();
+    if (key === 'dashboard')  onDashboard?.();
+    if (key === 'chats')      onChats?.();
+    if (key === 'manager')    onManager?.();
+    if (key === 'facilities') onFacilities?.();
   }
 
   return (
