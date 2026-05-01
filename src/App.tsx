@@ -4,8 +4,10 @@ import SearchResultsPage from './pages/SearchResultsPage';
 import MROProfilePage from './pages/MROProfilePage';
 import RequestSlotChatPage from './pages/RequestSlotChatPage';
 import MRODashboardPage from './pages/MRODashboardPage';
+import MROChatsPage from './pages/MROChatsPage';
+import BookingDetailPage from './pages/BookingDetailPage';
 
-type Page = 'home' | 'search' | 'profile' | 'chat' | 'dashboard';
+type Page = 'home' | 'search' | 'profile' | 'chat' | 'dashboard' | 'mro-chats' | 'booking-detail';
 
 export default function App() {
   const [page, setPage] = useState<Page>('home');
@@ -17,25 +19,49 @@ export default function App() {
     profile: 'MRO Profile',
     chat: 'Request Slot – Chat',
     dashboard: 'MRO Dashboard',
+    'mro-chats': 'MRO Chats',
+    'booking-detail': 'Booking Detail',
   };
+
+  const fullViewportSwitcher = (
+    <div className="fixed bottom-4 right-4 z-50 flex gap-2 bg-white border border-slate-200 rounded-2xl shadow-lg p-2">
+      {(Object.keys(nav) as Page[]).map((p) => (
+        <button
+          key={p}
+          onClick={() => setPage(p)}
+          className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${
+            page === p ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100'
+          }`}
+        >
+          {nav[p]}
+        </button>
+      ))}
+    </div>
+  );
 
   if (page === 'dashboard') {
     return (
       <>
-        <div className="fixed bottom-4 right-4 z-50 flex gap-2 bg-white border border-slate-200 rounded-2xl shadow-lg p-2">
-          {(Object.keys(nav) as Page[]).map((p) => (
-            <button
-              key={p}
-              onClick={() => setPage(p)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${
-                page === p ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              {nav[p]}
-            </button>
-          ))}
-        </div>
-        <MRODashboardPage />
+        {fullViewportSwitcher}
+        <MRODashboardPage onChats={() => setPage('mro-chats')} onViewBooking={() => setPage('booking-detail')} />
+      </>
+    );
+  }
+
+  if (page === 'booking-detail') {
+    return (
+      <>
+        {fullViewportSwitcher}
+        <BookingDetailPage onBack={() => setPage('dashboard')} onChats={() => setPage('mro-chats')} />
+      </>
+    );
+  }
+
+  if (page === 'mro-chats') {
+    return (
+      <>
+        {fullViewportSwitcher}
+        <MROChatsPage onDashboard={() => setPage('dashboard')} />
       </>
     );
   }

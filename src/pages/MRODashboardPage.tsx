@@ -210,7 +210,7 @@ const NAV_ITEMS: { key: NavKey; icon: React.ElementType; label: string; badge?: 
 
 // ── Component ───────────────────────────────────────────────────────
 
-export default function MRODashboardPage() {
+export default function MRODashboardPage({ onChats, onViewBooking }: { onChats?: () => void; onViewBooking?: () => void }) {
   const [activeNav, setActiveNav] = useState<NavKey>('dashboard');
   const [viewMode, setViewMode] = useState<'week' | 'month'>('week');
   const [addHover, setAddHover] = useState(false);
@@ -230,7 +230,7 @@ export default function MRODashboardPage() {
               return (
                 <button
                   key={key}
-                  onClick={() => setActiveNav(key)}
+                  onClick={() => { setActiveNav(key); if (key === 'chats') onChats?.(); }}
                   className="flex items-center justify-between w-full text-left"
                   style={{
                     padding: '10px 14px', borderRadius: 8, cursor: 'pointer',
@@ -339,7 +339,7 @@ export default function MRODashboardPage() {
             </div>
 
             {/* Grid — week or month */}
-            {viewMode === 'week' ? <WeekGrid /> : <MonthGrid />}
+            {viewMode === 'week' ? <WeekGrid onViewBooking={onViewBooking} /> : <MonthGrid onViewBooking={onViewBooking} />}
 
           </div>
         </div>
@@ -380,7 +380,7 @@ function StatCard({
 
 // ── Week grid ───────────────────────────────────────────────────────
 
-function WeekGrid() {
+function WeekGrid({ onViewBooking }: { onViewBooking?: () => void }) {
   return (
     <div className="flex-1 flex flex-col min-h-0 overflow-hidden" style={{ borderRadius: 12, border: `1px solid ${BORDER}`, backgroundColor: '#FFFFFF' }}>
       {/* Day header row */}
@@ -408,7 +408,7 @@ function WeekGrid() {
                   if (cell.type === 'booking') {
                     const c = COLOR_MAP[cell.booking.color];
                     return (
-                      <div key={i} className="flex flex-col justify-center" style={{ flex: cell.flex, minWidth: 0, backgroundColor: c.bg, borderRadius: 8, padding: '6px 10px', gap: 2, cursor: 'pointer' }}>
+                      <div key={i} onClick={onViewBooking} className="flex flex-col justify-center" style={{ flex: cell.flex, minWidth: 0, backgroundColor: c.bg, borderRadius: 8, padding: '6px 10px', gap: 2, cursor: 'pointer' }}>
                         <span style={{ fontFamily: 'Inter', fontSize: 11, fontWeight: 700, color: c.title, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                           {cell.booking.airline} · {cell.booking.aircraft}
                         </span>
@@ -435,7 +435,7 @@ function WeekGrid() {
 
 // ── Month grid ──────────────────────────────────────────────────────
 
-function MonthGrid() {
+function MonthGrid({ onViewBooking }: { onViewBooking?: () => void }) {
   return (
     <>
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden" style={{ borderRadius: 12, border: `1px solid ${BORDER}`, backgroundColor: '#FFFFFF' }}>
@@ -479,11 +479,13 @@ function MonthGrid() {
                         return (
                           <div
                             key={ei}
+                            onClick={onViewBooking}
                             style={{
                               backgroundColor: c.bg,
                               borderRadius: 4,
                               padding: '3px 6px',
                               overflow: 'hidden',
+                              cursor: 'pointer',
                             }}
                           >
                             <span style={{ fontFamily: 'Inter', fontSize: 9, fontWeight: 600, color: c.title, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block' }}>
