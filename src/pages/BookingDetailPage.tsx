@@ -65,7 +65,7 @@ const REQUIREMENTS = [
 
 // ── Component ─────────────────────────────────────────────────────────
 
-export default function BookingDetailPage({ onBack, onChats }: { onBack?: () => void; onChats?: () => void }) {
+export default function BookingDetailPage({ onBack, onChats, onBookings }: { onBack?: () => void; onChats?: () => void; onBookings?: () => void }) {
   return (
     <div className="flex overflow-hidden" style={{ height: '100vh', backgroundColor: BG_LIGHT }}>
 
@@ -84,6 +84,7 @@ export default function BookingDetailPage({ onBack, onChats }: { onBack?: () => 
                   onClick={() => {
                     if (key === 'chats') onChats?.();
                     if (key === 'dashboard') onBack?.();
+                    if (key === 'bookings') onBookings?.();
                   }}
                   className="flex items-center justify-between w-full text-left"
                   style={{

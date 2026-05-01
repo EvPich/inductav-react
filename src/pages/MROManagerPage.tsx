@@ -56,11 +56,12 @@ const TABS: TabFilter[] = ['All Bays', 'Available', 'Booked', 'Blocked'];
 const COL_WIDTHS = { bay: 100, type: 200, dates: 168, price: 110, op: 160, status: 110, actions: 80 };
 
 export default function MROManagerPage({
-  onDashboard, onChats, onViewBooking,
+  onDashboard, onChats, onViewBooking, onBookings,
 }: {
   onDashboard?: () => void;
   onChats?: () => void;
   onViewBooking?: () => void;
+  onBookings?: () => void;
 }) {
   const [activeTab, setActiveTab] = useState<TabFilter>('All Bays');
   const [currentPage, setCurrentPage] = useState(1);
@@ -91,7 +92,7 @@ export default function MROManagerPage({
                   onClick={() => {
                     if (key === 'dashboard') onDashboard?.();
                     if (key === 'chats') onChats?.();
-                    if (key === 'bookings') onViewBooking?.();
+                    if (key === 'bookings') onBookings?.();
                   }}
                   className="flex items-center justify-between w-full text-left"
                   style={{
