@@ -8,8 +8,9 @@ import MROChatsPage from './pages/MROChatsPage';
 import BookingDetailPage from './pages/BookingDetailPage';
 import MROManagerPage from './pages/MROManagerPage';
 import BookingsPage from './pages/BookingsPage';
+import FacilitiesPage from './pages/FacilitiesPage';
 
-type Page = 'home' | 'search' | 'profile' | 'chat' | 'dashboard' | 'mro-chats' | 'booking-detail' | 'mro-manager' | 'bookings';
+type Page = 'home' | 'search' | 'profile' | 'chat' | 'dashboard' | 'mro-chats' | 'booking-detail' | 'mro-manager' | 'bookings' | 'facilities';
 
 export default function App() {
   const [page, setPage] = useState<Page>('home');
@@ -25,6 +26,7 @@ export default function App() {
     'booking-detail': 'Booking Detail',
     'mro-manager': 'MRO Manager',
     'bookings':    'Bookings',
+    'facilities':  'Facilities',
   };
 
   const fullViewportSwitcher = (
@@ -78,6 +80,21 @@ export default function App() {
           onDashboard={() => setPage('dashboard')}
           onChats={() => setPage('mro-chats')}
           onViewBooking={() => setPage('booking-detail')}
+          onBookings={() => setPage('bookings')}
+        />
+      </>
+    );
+  }
+
+  if (page === 'facilities') {
+    return (
+      <>
+        {fullViewportSwitcher}
+        <FacilitiesPage
+          onBack={() => setPage('dashboard')}
+          onDashboard={() => setPage('dashboard')}
+          onManager={() => setPage('mro-manager')}
+          onChats={() => setPage('mro-chats')}
           onBookings={() => setPage('bookings')}
         />
       </>
