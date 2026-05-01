@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   LayoutDashboard, CalendarDays, MessageCircle, Plane, Settings,
   Bell, Plus, CalendarCheck, CalendarPlus, TrendingUp, Gauge,
   ChevronLeft, ChevronRight,
+  Menu, Warehouse, BookOpen, Signal, Wifi, BatteryFull,
 } from 'lucide-react';
 
 const NAVY = '#1C2B4A';
@@ -16,6 +17,18 @@ const TEXT_SECONDARY = '#475569';
 const TEXT_MUTED = '#94A3B8';
 const GREEN = '#22C55E';
 const GREEN_LIGHT = '#DCFCE7';
+
+// ── Responsive hook ─────────────────────────────────────────────────
+
+function useMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < breakpoint);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < breakpoint);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, [breakpoint]);
+  return isMobile;
+}
 
 // ── Week view types & data ──────────────────────────────────────────
 
@@ -109,7 +122,6 @@ function computeWeekCells(bay: Bay): WeekCell[] {
 
 interface DayEvent { label: string; color: BookingColor; }
 
-// April 2026 (Apr 1 = Wednesday, Mon-start weeks)
 const MONTH_EVENTS: Record<number, DayEvent[]> = {
   1:  [{ label: 'A-1: C-Check',  color: 'green'  }],
   2:  [{ label: 'A-1: C-Check',  color: 'green'  }],
@@ -132,12 +144,11 @@ interface CalCell {
   dayNum: number;
   label: string;
   isCurrentMonth: boolean;
-  isWeekend: boolean; // Sat or Sun
+  isWeekend: boolean;
   isToday: boolean;
   events: DayEvent[];
 }
 
-// April 2026: Apr 1 is Wednesday (Mon=0 → Wed=2), so 2 days from prev month
 const CAL_WEEKS: CalCell[][] = [
   [
     { dayNum: 30, label: '30', isCurrentMonth: false, isWeekend: false, isToday: false, events: [] },
@@ -208,12 +219,69 @@ const NAV_ITEMS: { key: NavKey; icon: React.ElementType; label: string; badge?: 
   { key: 'settings',  icon: Settings,        label: 'Settings' },
 ];
 
+// ── Mobile bay schedule data ────────────────────────────────────────
+
+type SlotEntry =
+  | { kind: 'booking'; title: string; subtitle: string; bg: string; textColor: string }
+  | { kind: 'empty' };
+
+interface MobileBayRow { name: string; type: string; slots: SlotEntry[] }
+
+const MOBILE_BAY_ROWS: MobileBayRow[] = [
+  {
+    name: 'Bay A-1', type: 'Narrow-body',
+    slots: [
+      { kind: 'booking', title: 'Ryanair · B737-800', subtitle: 'C-Check · Mon – Wed', bg: '#DCFCE7', textColor: '#166534' },
+      { kind: 'empty' },
+    ],
+  },
+  {
+    name: 'Bay A-2', type: 'Narrow-body',
+    slots: [
+      { kind: 'booking', title: 'Delta · A320', subtitle: 'Engine · Mon – Tue', bg: '#E0F2FE', textColor: '#0369A1' },
+      { kind: 'booking', title: 'Aer Lingus · A330', subtitle: 'Cabin · Thu – Fri', bg: '#FEF3C7', textColor: '#B45309' },
+    ],
+  },
+  {
+    name: 'Bay B-1', type: 'Wide-body',
+    slots: [{ kind: 'empty' }, { kind: 'empty' }],
+  },
+  {
+    name: 'Bay B-2', type: 'Wide-body',
+    slots: [
+      { kind: 'empty' },
+      { kind: 'booking', title: 'EasyJet · A320', subtitle: 'Landing Gear · Wed – Fri', bg: '#DCFCE7', textColor: '#166534' },
+    ],
+  },
+  {
+    name: 'Bay C-1', type: 'Heavy',
+    slots: [
+      { kind: 'booking', title: 'Lufthansa · B777-300', subtitle: 'Heavy Maintenance · Full Week', bg: '#FEE2E2', textColor: '#991B1B' },
+    ],
+  },
+  {
+    name: 'Bay C-2', type: 'Heavy',
+    slots: [
+      { kind: 'booking', title: 'Turkish · B737', subtitle: 'AOG · Mon', bg: '#FEF3C7', textColor: '#B45309' },
+      { kind: 'empty' },
+      { kind: 'booking', title: 'Qatar · A350', subtitle: 'Inspection · Thu – Fri', bg: '#E0F2FE', textColor: '#0369A1' },
+    ],
+  },
+];
+
 // ── Component ───────────────────────────────────────────────────────
 
-export default function MRODashboardPage({ onChats, onViewBooking, onManager, onBookings }: { onChats?: () => void; onViewBooking?: () => void; onManager?: () => void; onBookings?: () => void }) {
+export default function MRODashboardPage({ onChats, onViewBooking, onManager, onBookings }: {
+  onChats?: () => void; onViewBooking?: () => void; onManager?: () => void; onBookings?: () => void;
+}) {
+  const isMobile = useMobile();
   const [activeNav, setActiveNav] = useState<NavKey>('dashboard');
   const [viewMode, setViewMode] = useState<'week' | 'month'>('week');
   const [addHover, setAddHover] = useState(false);
+
+  if (isMobile) {
+    return <MobileLayout onChats={onChats} onViewBooking={onViewBooking} onManager={onManager} onBookings={onBookings} />;
+  }
 
   return (
     <div className="flex overflow-hidden" style={{ height: '100vh', backgroundColor: BG_LIGHT }}>
@@ -232,16 +300,11 @@ export default function MRODashboardPage({ onChats, onViewBooking, onManager, on
                   key={key}
                   onClick={() => { setActiveNav(key); if (key === 'chats') onChats?.(); if (key === 'manager') onManager?.(); if (key === 'bookings') onBookings?.(); }}
                   className="flex items-center justify-between w-full text-left"
-                  style={{
-                    padding: '10px 14px', borderRadius: 8, cursor: 'pointer',
-                    backgroundColor: active ? 'rgba(255,255,255,0.1)' : 'transparent',
-                  }}
+                  style={{ padding: '10px 14px', borderRadius: 8, cursor: 'pointer', backgroundColor: active ? 'rgba(255,255,255,0.1)' : 'transparent' }}
                 >
                   <div className="flex items-center gap-3">
                     <Icon size={20} color={active ? '#FFFFFF' : TEXT_MUTED} />
-                    <span style={{ fontFamily: 'Inter', fontSize: 14, fontWeight: active ? 600 : 500, color: active ? '#FFFFFF' : TEXT_MUTED }}>
-                      {label}
-                    </span>
+                    <span style={{ fontFamily: 'Inter', fontSize: 14, fontWeight: active ? 600 : 500, color: active ? '#FFFFFF' : TEXT_MUTED }}>{label}</span>
                   </div>
                   {badge && (
                     <div className="flex items-center justify-center" style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: '#EF4444' }}>
@@ -301,7 +364,6 @@ export default function MRODashboardPage({ onChats, onViewBooking, onManager, on
           {/* Bay Schedule */}
           <div className="flex-1 flex flex-col min-h-0" style={{ padding: '0 28px 20px', gap: 16 }}>
 
-            {/* Section header */}
             <div className="flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2.5">
                 <span style={{ fontFamily: 'Inter', fontSize: 18, fontWeight: 700, color: TEXT_PRIMARY }}>Bay Schedule</span>
@@ -338,9 +400,7 @@ export default function MRODashboardPage({ onChats, onViewBooking, onManager, on
               </div>
             </div>
 
-            {/* Grid — week or month */}
             {viewMode === 'week' ? <WeekGrid onViewBooking={onViewBooking} /> : <MonthGrid onViewBooking={onViewBooking} />}
-
           </div>
         </div>
       </div>
@@ -348,7 +408,166 @@ export default function MRODashboardPage({ onChats, onViewBooking, onManager, on
   );
 }
 
-// ── Stat card ───────────────────────────────────────────────────────
+// ── Mobile layout ───────────────────────────────────────────────────
+
+function MobileLayout({ onChats, onViewBooking, onManager, onBookings }: {
+  onChats?: () => void; onViewBooking?: () => void; onManager?: () => void; onBookings?: () => void;
+}) {
+  return (
+    <div style={{ width: '100%', maxWidth: 430, height: '100dvh', display: 'flex', flexDirection: 'column', backgroundColor: BG_LIGHT, fontFamily: 'Inter, system-ui, sans-serif', margin: '0 auto', overflow: 'hidden' }}>
+
+      {/* Status bar */}
+      <div style={{ height: 62, backgroundColor: NAVY, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', flexShrink: 0 }}>
+        <span style={{ color: '#FFFFFF', fontSize: 15, fontWeight: 600 }}>9:41</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <Signal size={16} color="#FFFFFF" />
+          <Wifi size={16} color="#FFFFFF" />
+          <BatteryFull size={16} color="#FFFFFF" />
+        </div>
+      </div>
+
+      {/* App header */}
+      <div style={{ height: 56, backgroundColor: '#FFFFFF', borderBottom: `1px solid ${BORDER}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <Menu size={20} color={TEXT_PRIMARY} />
+          <span style={{ fontSize: 20, fontWeight: 700, color: TEXT_PRIMARY }}>Dashboard</span>
+        </div>
+        <button style={{ display: 'flex', alignItems: 'center', gap: 6, backgroundColor: TEAL, color: '#FFFFFF', border: 'none', borderRadius: 8, padding: '8px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+          <Plus size={14} />
+          Add Slot
+        </button>
+      </div>
+
+      {/* Scrollable content */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: 16, display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+        {/* Stats 2×2 grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          <MobileStatCard label="Active Bookings" value="12" sub="+3 this week" subColor="#16A34A" icon={<CalendarCheck size={16} />} iconBg={BLUE_LIGHT} iconColor={TEAL} />
+          <MobileStatCard label="Available Slots" value="24" sub="6 bays open" subColor={TEXT_MUTED} icon={<Warehouse size={16} />} iconBg={BG_LIGHT} iconColor={TEXT_SECONDARY} />
+          <MobileStatCard label="Revenue" value="€185,400" sub="+12% vs last month" subColor="#16A34A" icon={<TrendingUp size={16} />} iconBg="#F0FDF4" iconColor="#16A34A" />
+          <MobileStatCard label="Bay Utilization" value="78%" icon={<Gauge size={16} />} iconBg={BLUE_LIGHT} iconColor={TEAL} progress={78} />
+        </div>
+
+        {/* Bay Schedule */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: 16, fontWeight: 700, color: TEXT_PRIMARY }}>Bay Schedule</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2, display: 'flex' }}>
+                <ChevronLeft size={16} color={TEXT_SECONDARY} />
+              </button>
+              <span style={{ fontSize: 13, color: TEXT_SECONDARY, fontWeight: 500 }}>This Week</span>
+              <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2, display: 'flex' }}>
+                <ChevronRight size={16} color={TEXT_SECONDARY} />
+              </button>
+            </div>
+          </div>
+
+          {MOBILE_BAY_ROWS.map((bay) => (
+            <MobileBayCard key={bay.name} bay={bay} onViewBooking={onViewBooking} />
+          ))}
+        </div>
+
+        <div style={{ height: 4 }} />
+      </div>
+
+      {/* Bottom tab bar */}
+      <MobileTabBar onManager={onManager} onChats={onChats} onBookings={onBookings} />
+    </div>
+  );
+}
+
+function MobileStatCard({ label, value, sub, subColor, icon, iconBg, iconColor, progress }: {
+  label: string; value: string; sub?: string; subColor?: string;
+  icon: React.ReactNode; iconBg: string; iconColor: string; progress?: number;
+}) {
+  return (
+    <div style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 10, padding: 14, border: `1px solid ${BORDER}`, display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <span style={{ fontSize: 11, fontWeight: 500, color: TEXT_SECONDARY, lineHeight: 1.3 }}>{label}</span>
+        <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <span style={{ color: iconColor }}>{icon}</span>
+        </div>
+      </div>
+      <span style={{ fontSize: 20, fontWeight: 700, color: TEXT_PRIMARY }}>{value}</span>
+      {progress !== undefined ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <div style={{ height: 4, backgroundColor: BORDER, borderRadius: 4, overflow: 'hidden' }}>
+            <div style={{ height: '100%', width: `${progress}%`, backgroundColor: TEAL, borderRadius: 4 }} />
+          </div>
+          <span style={{ fontSize: 10, color: TEXT_MUTED }}>{progress}% utilization</span>
+        </div>
+      ) : (
+        sub && <span style={{ fontSize: 11, color: subColor ?? TEXT_MUTED }}>{sub}</span>
+      )}
+    </div>
+  );
+}
+
+function MobileBayCard({ bay, onViewBooking }: { bay: MobileBayRow; onViewBooking?: () => void }) {
+  return (
+    <div style={{ backgroundColor: '#FFFFFF', borderRadius: 10, padding: 14, border: `1px solid ${BORDER}`, display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ fontSize: 14, fontWeight: 700, color: TEXT_PRIMARY }}>{bay.name}</span>
+        <span style={{ fontSize: 11, color: TEXT_MUTED, backgroundColor: BG_LIGHT, borderRadius: 20, padding: '2px 8px' }}>{bay.type}</span>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        {bay.slots.map((slot, i) =>
+          slot.kind === 'booking' ? (
+            <button
+              key={i}
+              onClick={onViewBooking}
+              style={{ borderRadius: 8, backgroundColor: slot.bg, padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 2, border: 'none', cursor: 'pointer', textAlign: 'left' }}
+            >
+              <span style={{ fontSize: 12, fontWeight: 700, color: slot.textColor }}>{slot.title}</span>
+              <span style={{ fontSize: 11, color: slot.textColor, opacity: 0.8 }}>{slot.subtitle}</span>
+            </button>
+          ) : (
+            <div key={i} style={{ borderRadius: 8, backgroundColor: BG_LIGHT, border: `1px dashed ${BORDER}`, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, cursor: 'pointer' }}>
+              <Plus size={13} color={TEXT_MUTED} />
+              <span style={{ fontSize: 12, color: TEXT_MUTED }}>Add Booking</span>
+            </div>
+          )
+        )}
+      </div>
+    </div>
+  );
+}
+
+function MobileTabBar({ onManager, onChats, onBookings }: { onManager?: () => void; onChats?: () => void; onBookings?: () => void }) {
+  const tabs = [
+    { key: 'dashboard', label: 'DASHBOARD', icon: <LayoutDashboard size={18} />, active: true,  handler: undefined as (() => void) | undefined },
+    { key: 'slots',     label: 'SLOTS',     icon: <Warehouse size={18} />,       active: false, handler: onManager },
+    { key: 'chats',     label: 'CHATS',     icon: <MessageCircle size={18} />,   active: false, handler: onChats,  badge: true },
+    { key: 'bookings',  label: 'BOOKINGS',  icon: <BookOpen size={18} />,        active: false, handler: onBookings },
+    { key: 'settings',  label: 'SETTINGS',  icon: <Settings size={18} />,        active: false, handler: undefined },
+  ];
+
+  return (
+    <div style={{ backgroundColor: '#FFFFFF', borderTop: `1px solid ${BORDER}`, padding: '12px 21px 21px', flexShrink: 0 }}>
+      <div style={{ backgroundColor: BG_LIGHT, borderRadius: 36, height: 62, padding: 4, border: `1px solid ${BORDER}`, display: 'flex', alignItems: 'center', gap: 2 }}>
+        {tabs.map(({ key, label, icon, active, handler, badge }) => (
+          <button
+            key={key}
+            onClick={handler}
+            style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3, height: '100%', borderRadius: 26, backgroundColor: active ? TEAL : 'transparent', border: 'none', cursor: handler ? 'pointer' : 'default', position: 'relative', padding: '0 4px' }}
+          >
+            <span style={{ color: active ? '#FFFFFF' : TEXT_MUTED, position: 'relative', display: 'flex' }}>
+              {icon}
+              {badge && !active && (
+                <span style={{ position: 'absolute', top: -2, right: -3, width: 7, height: 7, borderRadius: '50%', backgroundColor: '#EF4444', border: '1.5px solid white' }} />
+              )}
+            </span>
+            <span style={{ fontSize: 9, fontWeight: 600, letterSpacing: 0.5, color: active ? '#FFFFFF' : TEXT_MUTED }}>{label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Desktop sub-components ──────────────────────────────────────────
 
 function StatCard({
   label, value, sub, subColor, iconBg, Icon, iconColor, progress, valueFontSize = 28,
@@ -378,12 +597,9 @@ function StatCard({
   );
 }
 
-// ── Week grid ───────────────────────────────────────────────────────
-
 function WeekGrid({ onViewBooking }: { onViewBooking?: () => void }) {
   return (
     <div className="flex-1 flex flex-col min-h-0 overflow-hidden" style={{ borderRadius: 12, border: `1px solid ${BORDER}`, backgroundColor: '#FFFFFF' }}>
-      {/* Day header row */}
       <div className="flex shrink-0" style={{ borderBottom: `1px solid ${BORDER}`, backgroundColor: BG_LIGHT }}>
         <div style={{ width: 120, flexShrink: 0 }} />
         {WEEK_DAYS.map((day) => (
@@ -392,7 +608,6 @@ function WeekGrid({ onViewBooking }: { onViewBooking?: () => void }) {
           </div>
         ))}
       </div>
-      {/* Bay rows */}
       <div className="flex flex-col flex-1 min-h-0">
         {BAYS.map((bay, idx) => {
           const cells = computeWeekCells(bay);
@@ -433,13 +648,10 @@ function WeekGrid({ onViewBooking }: { onViewBooking?: () => void }) {
   );
 }
 
-// ── Month grid ──────────────────────────────────────────────────────
-
 function MonthGrid({ onViewBooking }: { onViewBooking?: () => void }) {
   return (
     <>
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden" style={{ borderRadius: 12, border: `1px solid ${BORDER}`, backgroundColor: '#FFFFFF' }}>
-        {/* Day-of-week headers */}
         <div className="flex shrink-0" style={{ borderBottom: `1px solid ${BORDER}`, backgroundColor: BG_LIGHT }}>
           {MONTH_DAY_HEADERS.map((h) => (
             <div key={h} className="flex-1 flex items-center justify-center" style={{ padding: '10px 0' }}>
@@ -447,8 +659,6 @@ function MonthGrid({ onViewBooking }: { onViewBooking?: () => void }) {
             </div>
           ))}
         </div>
-
-        {/* Week rows */}
         <div className="flex flex-col flex-1 min-h-0">
           {CAL_WEEKS.map((week, wi) => {
             const isLastWeek = wi === CAL_WEEKS.length - 1;
@@ -460,37 +670,14 @@ function MonthGrid({ onViewBooking }: { onViewBooking?: () => void }) {
                   const cellBg = cell.isToday ? BLUE_LIGHT : isDimmed ? BG_LIGHT : '#FFFFFF';
                   const numColor = cell.isToday ? TEAL : !cell.isCurrentMonth ? TEXT_MUTED : cell.isWeekend ? TEXT_MUTED : TEXT_PRIMARY;
                   const numWeight = cell.isToday ? 700 : !cell.isCurrentMonth ? 500 : cell.isWeekend ? 500 : 600;
-
                   return (
-                    <div
-                      key={ci}
-                      className="flex-1 flex flex-col min-w-0 overflow-hidden"
-                      style={{
-                        padding: 6, gap: 4,
-                        backgroundColor: cellBg,
-                        borderRight: isLastCol ? 'none' : `1px solid ${BORDER}`,
-                      }}
-                    >
-                      <span style={{ fontFamily: 'Inter', fontSize: 12, fontWeight: numWeight, color: numColor, lineHeight: 1 }}>
-                        {cell.label}
-                      </span>
+                    <div key={ci} className="flex-1 flex flex-col min-w-0 overflow-hidden" style={{ padding: 6, gap: 4, backgroundColor: cellBg, borderRight: isLastCol ? 'none' : `1px solid ${BORDER}` }}>
+                      <span style={{ fontFamily: 'Inter', fontSize: 12, fontWeight: numWeight, color: numColor, lineHeight: 1 }}>{cell.label}</span>
                       {cell.events.map((ev, ei) => {
                         const c = COLOR_MAP[ev.color];
                         return (
-                          <div
-                            key={ei}
-                            onClick={onViewBooking}
-                            style={{
-                              backgroundColor: c.bg,
-                              borderRadius: 4,
-                              padding: '3px 6px',
-                              overflow: 'hidden',
-                              cursor: 'pointer',
-                            }}
-                          >
-                            <span style={{ fontFamily: 'Inter', fontSize: 9, fontWeight: 600, color: c.title, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block' }}>
-                              {ev.label}
-                            </span>
+                          <div key={ei} onClick={onViewBooking} style={{ backgroundColor: c.bg, borderRadius: 4, padding: '3px 6px', overflow: 'hidden', cursor: 'pointer' }}>
+                            <span style={{ fontFamily: 'Inter', fontSize: 9, fontWeight: 600, color: c.title, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block' }}>{ev.label}</span>
                           </div>
                         );
                       })}
@@ -502,8 +689,6 @@ function MonthGrid({ onViewBooking }: { onViewBooking?: () => void }) {
           })}
         </div>
       </div>
-
-      {/* Legend */}
       <div className="flex items-center shrink-0" style={{ gap: 20, paddingTop: 8 }}>
         {LEGEND_ITEMS.map(({ color, label, shape }) => (
           <div key={label} className="flex items-center gap-1.5">
