@@ -1,13 +1,23 @@
-import { useState } from 'react';
-import { Search, Star, ChevronDown, ChevronLeft, ChevronRight, SlidersHorizontal } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { Search, ChevronDown, ChevronLeft, ChevronRight, SlidersHorizontal, Check } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import SearchBar from '../components/SearchBar';
 import ResultCard from '../components/ResultCard';
 
 const TEAL = '#57A091';
 
-const serviceTypes = ['General', 'Landing Gear', 'Painting', 'Engine', 'APU', 'Avionics'];
-const availabilityOptions = ['Any', 'Available Now', 'Next 7 Days', 'Next 30 Days'];
+const serviceTypes = ['General', 'Landing Gear', 'Painting', 'Engine', 'APU', 'Avionics', 'Parking'];
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const YEARS = ['2026', '2027', '2028'];
+
+const sortOptions = [
+  'Relevance',
+  'Earliest Date Available',
+  'Price Low to High',
+  'Price High to Low',
+  'Proximity to location',
+];
 
 const sampleResults = [
   { name: 'Lufthansa Technik Shannon', location: 'Shannon, Ireland', rating: 4.8, serviceTypes: ['C-Check', 'General'], priceRange: '$800K – $1.2M', imageUrl: '/lufthansa-technik.jpg' },
@@ -20,15 +30,39 @@ const sampleResults = [
   { name: 'MTU Maintenance', location: 'Hannover, Germany', rating: 4.9, serviceTypes: ['Engine MRO'], priceRange: '$1M – $3M', imageUrl: '/mtu-maintenance.jpg' },
 ];
 
+function formatPrice(val: number) {
+  if (val >= 1000000) return `$${(val / 1000000).toFixed(1)}M`;
+  return `$${Math.round(val / 1000)}K`;
+}
+
 export default function SearchResultsPage({ onHome, onViewProfile }: { onHome?: () => void; onViewProfile?: () => void }) {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
-  const [selectedAvailability, setSelectedAvailability] = useState('Any');
+  const [availFromMonth, setAvailFromMonth] = useState('May');
+  const [availFromYear, setAvailFromYear] = useState('2026');
+  const [availToMonth, setAvailToMonth] = useState('Aug');
+  const [availToYear, setAvailToYear] = useState('2026');
+  const [minPrice, setMinPrice] = useState(100000);
+  const [maxPrice, setMaxPrice] = useState(3000000);
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState('Relevance');
+  const [sortOpen, setSortOpen] = useState(false);
+  const sortRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (sortRef.current && !sortRef.current.contains(e.target as Node)) setSortOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   const toggleService = (svc: string) =>
     setSelectedServices((prev) =>
       prev.includes(svc) ? prev.filter((s) => s !== svc) : [...prev, svc]
     );
+
+  const minPct = (minPrice / 5000000) * 100;
+  const maxPct = (maxPrice / 5000000) * 100;
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#F5F7FA' }}>
@@ -98,58 +132,94 @@ export default function SearchResultsPage({ onHome, onViewProfile }: { onHome?: 
 
           <div className="h-px" style={{ backgroundColor: '#E2E8F0' }} />
 
-          {/* Availability */}
+          {/* Availability Range */}
           <div className="flex flex-col gap-3">
-            <span className="text-sm font-semibold" style={{ color: '#1E293B' }}>Availability</span>
-            {availabilityOptions.map((opt) => {
-              const selected = selectedAvailability === opt;
-              return (
-                <label key={opt} className="flex items-center gap-2 cursor-pointer">
-                  <div
-                    onClick={() => setSelectedAvailability(opt)}
-                    className="w-[18px] h-[18px] rounded-full flex items-center justify-center shrink-0 transition-colors"
-                    style={{ border: `2px solid ${selected ? TEAL : '#CBD5E1'}` }}
-                  >
-                    {selected && (
-                      <span className="w-2.5 h-2.5 rounded-full block" style={{ backgroundColor: TEAL }} />
-                    )}
-                  </div>
-                  <span className="text-[13px]" style={{ color: '#475569' }}>{opt}</span>
-                </label>
-              );
-            })}
-          </div>
-
-          <div className="h-px" style={{ backgroundColor: '#E2E8F0' }} />
-
-          {/* Rating */}
-          <div className="flex flex-col gap-2">
-            <span className="text-sm font-semibold" style={{ color: '#1E293B' }}>Rating</span>
-            <div className="flex items-center gap-1">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} size={20} className="text-amber-400 fill-amber-400" />
-              ))}
+            <span className="text-sm font-semibold" style={{ color: '#1E293B' }}>Availability Window</span>
+            <div className="flex flex-col gap-2">
+              <span className="text-xs font-medium" style={{ color: '#94A3B8' }}>From</span>
+              <div className="flex gap-2">
+                <select
+                  value={availFromMonth}
+                  onChange={(e) => setAvailFromMonth(e.target.value)}
+                  className="flex-1 h-9 px-2 text-xs rounded-lg outline-none bg-white"
+                  style={{ border: '1px solid #E2E8F0', color: '#1E293B' }}
+                >
+                  {MONTHS.map((m) => <option key={m}>{m}</option>)}
+                </select>
+                <select
+                  value={availFromYear}
+                  onChange={(e) => setAvailFromYear(e.target.value)}
+                  className="w-[70px] h-9 px-2 text-xs rounded-lg outline-none bg-white"
+                  style={{ border: '1px solid #E2E8F0', color: '#1E293B' }}
+                >
+                  {YEARS.map((y) => <option key={y}>{y}</option>)}
+                </select>
+              </div>
+              <span className="text-xs font-medium" style={{ color: '#94A3B8' }}>To</span>
+              <div className="flex gap-2">
+                <select
+                  value={availToMonth}
+                  onChange={(e) => setAvailToMonth(e.target.value)}
+                  className="flex-1 h-9 px-2 text-xs rounded-lg outline-none bg-white"
+                  style={{ border: '1px solid #E2E8F0', color: '#1E293B' }}
+                >
+                  {MONTHS.map((m) => <option key={m}>{m}</option>)}
+                </select>
+                <select
+                  value={availToYear}
+                  onChange={(e) => setAvailToYear(e.target.value)}
+                  className="w-[70px] h-9 px-2 text-xs rounded-lg outline-none bg-white"
+                  style={{ border: '1px solid #E2E8F0', color: '#1E293B' }}
+                >
+                  {YEARS.map((y) => <option key={y}>{y}</option>)}
+                </select>
+              </div>
             </div>
-            <span className="text-xs" style={{ color: '#94A3B8' }}>4 stars & above</span>
           </div>
 
           <div className="h-px" style={{ backgroundColor: '#E2E8F0' }} />
 
-          {/* Price Range */}
+          {/* Price Range bar */}
           <div className="flex flex-col gap-3">
-            <span className="text-sm font-semibold" style={{ color: '#1E293B' }}>Price Range</span>
-            <div className="flex items-center gap-2">
-              <input
-                placeholder="Min"
-                className="flex-1 h-10 px-3 text-sm bg-white rounded-lg outline-none"
-                style={{ border: '1px solid #E2E8F0', color: '#1E293B' }}
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-semibold" style={{ color: '#1E293B' }}>Price Range</span>
+              <span className="text-xs font-medium" style={{ color: TEAL }}>
+                {formatPrice(minPrice)} – {formatPrice(maxPrice)}
+              </span>
+            </div>
+
+            {/* Visual track */}
+            <div className="relative h-5 flex items-center">
+              <div className="absolute w-full h-1.5 rounded-full" style={{ backgroundColor: '#E2E8F0' }} />
+              <div
+                className="absolute h-1.5 rounded-full"
+                style={{ left: `${minPct}%`, right: `${100 - maxPct}%`, backgroundColor: TEAL }}
               />
-              <span className="text-sm" style={{ color: '#94A3B8' }}>–</span>
               <input
-                placeholder="Max"
-                className="flex-1 h-10 px-3 text-sm bg-white rounded-lg outline-none"
-                style={{ border: '1px solid #E2E8F0', color: '#1E293B' }}
+                type="range" min={50000} max={5000000} step={50000}
+                value={minPrice}
+                onChange={(e) => {
+                  const v = Number(e.target.value);
+                  if (v < maxPrice) setMinPrice(v);
+                }}
+                className="absolute w-full h-full opacity-0 cursor-pointer"
+                style={{ zIndex: minPrice > maxPrice - 500000 ? 5 : 3 }}
               />
+              <input
+                type="range" min={50000} max={5000000} step={50000}
+                value={maxPrice}
+                onChange={(e) => {
+                  const v = Number(e.target.value);
+                  if (v > minPrice) setMaxPrice(v);
+                }}
+                className="absolute w-full h-full opacity-0 cursor-pointer"
+                style={{ zIndex: 4 }}
+              />
+            </div>
+
+            <div className="flex justify-between text-[11px]" style={{ color: '#94A3B8' }}>
+              <span>$50K</span>
+              <span>$5M+</span>
             </div>
           </div>
         </aside>
@@ -159,13 +229,36 @@ export default function SearchResultsPage({ onHome, onViewProfile }: { onHome?: 
           {/* Header */}
           <div className="flex items-center justify-between">
             <span className="text-base font-semibold" style={{ color: '#1E293B' }}>24 MRO facilities found</span>
-            <button
-              className="flex items-center gap-1.5 px-3 py-2 bg-white rounded-lg text-[13px] transition-colors"
-              style={{ border: '1px solid #E2E8F0', color: '#475569' }}
-            >
-              Sort by: Relevance
-              <ChevronDown size={16} color="#94A3B8" />
-            </button>
+
+            {/* Sort by dropdown */}
+            <div ref={sortRef} className="relative">
+              <button
+                onClick={() => setSortOpen((p) => !p)}
+                className="flex items-center gap-1.5 px-3 py-2 bg-white rounded-lg text-[13px] transition-colors"
+                style={{ border: '1px solid #E2E8F0', color: '#475569' }}
+              >
+                Sort by: {sortBy}
+                <ChevronDown size={16} color="#94A3B8" />
+              </button>
+              {sortOpen && (
+                <div
+                  className="absolute right-0 top-full mt-1 bg-white rounded-xl shadow-lg z-30 overflow-hidden"
+                  style={{ border: '1px solid #E2E8F0', minWidth: 220 }}
+                >
+                  {sortOptions.map((opt) => (
+                    <button
+                      key={opt}
+                      onClick={() => { setSortBy(opt); setSortOpen(false); }}
+                      className="w-full flex items-center justify-between px-4 py-2.5 text-left text-[13px] transition-colors hover:bg-slate-50"
+                      style={{ color: sortBy === opt ? TEAL : '#1E293B' }}
+                    >
+                      {opt}
+                      {sortBy === opt && <Check size={14} color={TEAL} />}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Cards */}

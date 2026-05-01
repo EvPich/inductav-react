@@ -67,7 +67,7 @@ export default function MROCard({
           onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
           onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL)}
         >
-          Book Now
+          View Availability
         </button>
       </div>
     </div>

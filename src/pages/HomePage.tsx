@@ -79,6 +79,15 @@ const categorySections: CategorySection[] = [
       { name: 'Chromalloy', location: 'San Antonio, USA', imageUrl: '/chromalloy.jpg' },
     ],
   },
+  {
+    title: 'Parking & Storage', bg: BG_LIGHT,
+    cards: [
+      { name: 'Mojave Air & Space Port', location: 'Mojave, USA', imageUrl: '/mojave.jpg' },
+      { name: 'Teruel Airport Storage', location: 'Teruel, Spain', imageUrl: '/teruel.jpg' },
+      { name: 'Alice Springs Aircraft Storage', location: 'Alice Springs, Australia', imageUrl: '/alice-springs.jpg' },
+      { name: 'Marana Pinal Airpark', location: 'Marana, USA', imageUrl: '/marana.jpg' },
+    ],
+  },
 ];
 
 export default function HomePage({ onSearch, onHome, onViewProfile }: { onSearch?: () => void; onHome?: () => void; onViewProfile?: () => void }) {

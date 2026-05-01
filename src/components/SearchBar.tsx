@@ -62,7 +62,6 @@ function LocationDropdown({ onSelect }: { onSelect: (v: string) => void }) {
 
   return (
     <div className="flex flex-col" style={{ width: 400, backgroundColor: '#fff', borderRadius: 12, boxShadow: '0 8px 32px rgba(0,0,0,0.16)' }}>
-      {/* Search inside dropdown */}
       <div
         className="flex items-center gap-2 h-12 px-4"
         style={{ borderBottom: `1px solid ${BORDER}` }}
@@ -78,7 +77,6 @@ function LocationDropdown({ onSelect }: { onSelect: (v: string) => void }) {
         />
       </div>
 
-      {/* Recent */}
       <div className="px-2 pt-3 pb-1">
         <SectionLabel>RECENT SEARCHES</SectionLabel>
         {recentSearches.map((r) => (
@@ -100,7 +98,6 @@ function LocationDropdown({ onSelect }: { onSelect: (v: string) => void }) {
 
       <div style={{ height: 1, backgroundColor: BORDER, margin: '4px 0' }} />
 
-      {/* Popular regions */}
       <div className="px-2 py-1">
         <SectionLabel>POPULAR REGIONS</SectionLabel>
         {popularRegions.map((r) => (
@@ -121,13 +118,11 @@ function LocationDropdown({ onSelect }: { onSelect: (v: string) => void }) {
 
       <div style={{ height: 1, backgroundColor: BORDER, margin: '4px 0' }} />
 
-      {/* Quick picks */}
+      {/* Quick picks — only "Available now" */}
       <div className="px-4 py-3 flex flex-col gap-2">
         <span style={{ fontSize: 10, fontWeight: 700, color: MUTED, letterSpacing: '0.05em' }}>QUICK PICKS</span>
         <div className="flex gap-1.5 flex-wrap">
-          {['Nearest to me', 'Top rated', 'Available now'].map((l) => (
-            <Chip key={l} icon={<MapPin size={12} />} label={l} onClick={() => onSelect(l)} />
-          ))}
+          <Chip icon={<MapPin size={12} />} label="Available now" onClick={() => onSelect('Available now')} />
         </div>
       </div>
     </div>
@@ -153,7 +148,6 @@ function ServiceDropdown({ onSelect }: { onSelect: (v: string) => void }) {
 
   return (
     <div style={{ width: 380, backgroundColor: '#fff', borderRadius: 12, boxShadow: '0 8px 32px rgba(0,0,0,0.16)', padding: 8 }}>
-      {/* Search */}
       <div
         className="flex items-center gap-2 h-9 px-3 rounded-lg mb-1"
         style={{ backgroundColor: LIGHT_BG }}
@@ -169,7 +163,6 @@ function ServiceDropdown({ onSelect }: { onSelect: (v: string) => void }) {
         />
       </div>
 
-      {/* Items */}
       {filtered.map((s) => (
         <button
           key={s.label}
@@ -193,7 +186,6 @@ function ServiceDropdown({ onSelect }: { onSelect: (v: string) => void }) {
 
       <div style={{ height: 1, backgroundColor: BORDER, margin: '6px 0' }} />
 
-      {/* Popular searches */}
       <div className="px-2 pb-2 flex flex-col gap-2">
         <span style={{ fontSize: 11, fontWeight: 600, color: MUTED }}>Popular searches</span>
         <div className="flex gap-1.5 flex-wrap">
@@ -249,7 +241,6 @@ function AircraftDropdown({ onSelect }: { onSelect: (v: string) => void }) {
 
   return (
     <div style={{ width: 420, backgroundColor: '#fff', borderRadius: 12, boxShadow: '0 8px 32px rgba(0,0,0,0.16)' }}>
-      {/* Search */}
       <div className="flex items-center gap-2 h-12 px-4" style={{ borderBottom: `1px solid ${BORDER}` }}>
         <Search size={16} color={MUTED} />
         <input
@@ -295,9 +286,120 @@ function AircraftDropdown({ onSelect }: { onSelect: (v: string) => void }) {
   );
 }
 
+// ─── Engine Type Dropdown ─────────────────────────────────────────────────────
+
+const enginesByAircraft: Record<string, { label: string; sub: string }[]> = {
+  'Airbus A320 Family': [
+    { label: 'CFM56-5B', sub: 'CFM International · Most common' },
+    { label: 'V2500-A5', sub: 'IAE International Aero Engines' },
+  ],
+  'Boeing 737': [
+    { label: 'CFM56-7B', sub: '737-600/-700/-800/-900' },
+    { label: 'LEAP-1B', sub: 'Boeing 737 MAX series' },
+  ],
+  'Embraer E-Jet': [
+    { label: 'CF34-8E', sub: 'E170/E175' },
+    { label: 'CF34-10E', sub: 'E190/E195' },
+  ],
+  'Bombardier CRJ': [
+    { label: 'CF34-3B', sub: 'CRJ-200' },
+    { label: 'CF34-8C', sub: 'CRJ-700/-900' },
+  ],
+  'Airbus A330': [
+    { label: 'CF6-80E1', sub: 'GE Aviation' },
+    { label: 'Trent 700', sub: 'Rolls-Royce' },
+    { label: 'PW4168', sub: 'Pratt & Whitney' },
+  ],
+  'Boeing 767': [
+    { label: 'CF6-80C2', sub: 'GE Aviation' },
+    { label: 'PW4060', sub: 'Pratt & Whitney' },
+    { label: 'RB211-524', sub: 'Rolls-Royce' },
+  ],
+  'Boeing 777': [
+    { label: 'GE90', sub: 'GE Aviation · Most common' },
+    { label: 'Trent 800', sub: 'Rolls-Royce' },
+    { label: 'PW4090', sub: 'Pratt & Whitney' },
+  ],
+  'Airbus A350': [
+    { label: 'Trent XWB-84', sub: 'A350-900' },
+    { label: 'Trent XWB-97', sub: 'A350-1000' },
+  ],
+  'ATR 42/72': [
+    { label: 'PW127M', sub: 'ATR 72-600' },
+    { label: 'PW127G', sub: 'ATR 42-600' },
+  ],
+  'Dash 8 / Q400': [
+    { label: 'PW150A', sub: 'All Q400 variants' },
+  ],
+};
+
+const allEngines = [
+  { label: 'CFM56 Series', sub: 'CFM International' },
+  { label: 'V2500 Series', sub: 'IAE International Aero Engines' },
+  { label: 'GE90 Series', sub: 'GE Aviation' },
+  { label: 'Trent Series', sub: 'Rolls-Royce' },
+  { label: 'PW4000 Series', sub: 'Pratt & Whitney' },
+  { label: 'LEAP Series', sub: 'CFM International · New generation' },
+  { label: 'GTF / PW1000G', sub: 'Pratt & Whitney · New generation' },
+];
+
+function EngineDropdown({ selectedAircraft, onSelect }: { selectedAircraft: string; onSelect: (v: string) => void }) {
+  const [query, setQuery] = useState('');
+  const engines = selectedAircraft && enginesByAircraft[selectedAircraft]
+    ? enginesByAircraft[selectedAircraft]
+    : allEngines;
+
+  const filtered = engines.filter((e) => e.label.toLowerCase().includes(query.toLowerCase()));
+
+  return (
+    <div style={{ width: 340, backgroundColor: '#fff', borderRadius: 12, boxShadow: '0 8px 32px rgba(0,0,0,0.16)' }}>
+      {selectedAircraft && enginesByAircraft[selectedAircraft] && (
+        <div className="px-4 py-2.5 flex items-center gap-2" style={{ backgroundColor: TEAL_BG, borderBottom: `1px solid ${BORDER}` }}>
+          <Plane size={13} color={TEAL} />
+          <span style={{ fontSize: 12, color: TEAL, fontWeight: 500 }}>
+            Compatible with {selectedAircraft}
+          </span>
+        </div>
+      )}
+
+      <div className="flex items-center gap-2 h-11 px-4" style={{ borderBottom: `1px solid ${BORDER}` }}>
+        <Search size={16} color={MUTED} />
+        <input
+          autoFocus
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search engine type..."
+          className="flex-1 text-[13px] outline-none bg-transparent"
+          style={{ color: NAVY }}
+        />
+      </div>
+
+      <div className="px-2 py-2 flex flex-col gap-0.5">
+        {!selectedAircraft && <SectionLabel>ALL ENGINE TYPES</SectionLabel>}
+        {filtered.map((e) => (
+          <button
+            key={e.label}
+            onClick={() => onSelect(e.label)}
+            className="w-full flex items-center gap-3 h-[42px] px-3 rounded-lg text-left transition-colors hover:bg-[#F5F7FA]"
+          >
+            <Cog size={16} color={MUTED} />
+            <div className="flex flex-col flex-1 gap-0.5">
+              <span style={{ fontSize: 14, fontWeight: 500, color: NAVY }}>{e.label}</span>
+              <span style={{ fontSize: 11, color: MUTED }}>{e.sub}</span>
+            </div>
+          </button>
+        ))}
+        {filtered.length === 0 && (
+          <p className="px-3 py-4 text-[13px] text-center" style={{ color: MUTED }}>No engines found</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Date Dropdown ────────────────────────────────────────────────────────────
 
-// Availability per day (null = outside month, 'available'|'booked'|undefined = normal)
+type DateMode = 'range' | 'flexible';
 type DayStatus = 'available' | 'booked' | null | undefined;
 
 const weeks: { day: number | null; status: DayStatus }[][] = [
@@ -328,109 +430,184 @@ const weeks: { day: number | null; status: DayStatus }[][] = [
   ],
 ];
 
-function DateDropdown({ onSelect }: { onSelect: (v: string) => void }) {
-  const [selected, setSelected] = useState<number | null>(9);
-  const [flexible, setFlexible] = useState(false);
+const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-  function cellStyle(w: { day: number | null; status: DayStatus }) {
-    if (w.day === null) return {};
-    if (w.day === selected) return { backgroundColor: TEAL_BG, border: `2px solid ${TEAL}`, borderRadius: 8 };
-    if (w.status === 'booked') return { backgroundColor: '#FEF2F2', borderRadius: 8 };
-    if (w.status === 'available') return { backgroundColor: '#F0FDF4', borderRadius: 8 };
+function buildFlexMonths() {
+  const months: string[] = [];
+  let m = 4; let y = 2026;
+  for (let i = 0; i < 24; i++) {
+    months.push(`${MONTH_NAMES[m - 1]} ${y}`);
+    m++;
+    if (m > 12) { m = 1; y++; }
+  }
+  return months;
+}
+const flexMonths = buildFlexMonths();
+
+function DateDropdown({ onSelect }: { onSelect: (v: string) => void }) {
+  const [mode, setMode] = useState<DateMode>('range');
+  const [rangeStart, setRangeStart] = useState<number | null>(null);
+  const [rangeEnd, setRangeEnd] = useState<number | null>(null);
+  const [flexMonth, setFlexMonth] = useState<string | null>(null);
+
+  function handleDayClick(day: number, status: DayStatus) {
+    if (status === 'booked' || status === null) return;
+    if (!rangeStart || (rangeStart && rangeEnd)) {
+      setRangeStart(day);
+      setRangeEnd(null);
+    } else if (day > rangeStart) {
+      setRangeEnd(day);
+    } else {
+      setRangeStart(day);
+      setRangeEnd(null);
+    }
+  }
+
+  function dayInRange(day: number) {
+    if (!rangeStart || !rangeEnd) return false;
+    return day > rangeStart && day < rangeEnd;
+  }
+
+  function cellStyle(cell: { day: number | null; status: DayStatus }) {
+    const { day, status } = cell;
+    if (!day) return {};
+    if (day === rangeStart || day === rangeEnd) return { backgroundColor: TEAL, borderRadius: 8 };
+    if (dayInRange(day)) return { backgroundColor: TEAL_BG, borderRadius: 8 };
+    if (status === 'booked') return { backgroundColor: '#FEF2F2', borderRadius: 8 };
+    if (status === 'available') return { backgroundColor: '#F0FDF4', borderRadius: 8 };
     return {};
   }
 
-  function cellTextColor(w: { day: number | null; status: DayStatus }) {
-    if (w.day === selected) return TEAL;
-    if (w.status === 'booked') return '#EF4444';
-    if (w.status === 'available') return '#16A34A';
-    if (w.status === null) return 'transparent';
+  function cellTextColor(cell: { day: number | null; status: DayStatus }) {
+    const { day, status } = cell;
+    if (!day) return 'transparent';
+    if (day === rangeStart || day === rangeEnd) return '#FFFFFF';
+    if (dayInRange(day)) return TEAL;
+    if (status === 'booked') return '#EF4444';
+    if (status === 'available') return '#16A34A';
+    if (status === null) return 'transparent';
     return SECONDARY;
   }
 
-  function cellFontWeight(w: { day: number | null; status: DayStatus }) {
-    if (w.day === selected) return 700;
-    if (w.status !== null && w.status !== undefined) return 500;
-    return 400;
+  function apply() {
+    if (mode === 'range' && rangeStart) {
+      const label = rangeEnd
+        ? `Apr ${rangeStart} – Apr ${rangeEnd}, 2026`
+        : `Apr ${rangeStart}, 2026`;
+      onSelect(label);
+    } else if (mode === 'flexible' && flexMonth) {
+      onSelect(flexMonth);
+    }
   }
 
-  const apply = () => {
-    if (selected) onSelect(`Apr ${selected}, 2026`);
-  };
-
   return (
-    <div style={{ width: 380, backgroundColor: '#fff', borderRadius: 12, boxShadow: '0 8px 32px rgba(0,0,0,0.16)' }}>
-      {/* Month nav */}
-      <div className="flex items-center justify-between h-12 px-4" style={{ borderBottom: `1px solid ${BORDER}` }}>
-        <button className="hover:opacity-60 transition-opacity"><ChevronLeft size={20} color={SECONDARY} /></button>
-        <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>April 2026</span>
-        <button className="hover:opacity-60 transition-opacity"><ChevronRight size={20} color={SECONDARY} /></button>
+    <div style={{ width: 400, backgroundColor: '#fff', borderRadius: 12, boxShadow: '0 8px 32px rgba(0,0,0,0.16)' }}>
+      {/* Mode tabs */}
+      <div className="flex" style={{ borderBottom: `1px solid ${BORDER}` }}>
+        {(['range', 'flexible'] as DateMode[]).map((m) => (
+          <button
+            key={m}
+            onClick={() => setMode(m)}
+            className="flex-1 h-11 text-[13px] font-semibold transition-colors"
+            style={{
+              color: mode === m ? TEAL : SECONDARY,
+              borderBottom: mode === m ? `2px solid ${TEAL}` : '2px solid transparent',
+              marginBottom: -1,
+            }}
+          >
+            {m === 'range' ? 'Specific Dates' : 'Flexible Month'}
+          </button>
+        ))}
       </div>
 
-      {/* Calendar */}
-      <div className="px-3 py-2 flex flex-col gap-1">
-        {/* Day headers */}
-        <div className="grid grid-cols-7 h-8">
-          {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => (
-            <div key={d} className="flex items-center justify-center" style={{ fontSize: 11, fontWeight: 600, color: MUTED }}>{d}</div>
-          ))}
-        </div>
+      {mode === 'range' && (
+        <>
+          {/* Month nav */}
+          <div className="flex items-center justify-between h-12 px-4" style={{ borderBottom: `1px solid ${BORDER}` }}>
+            <button className="hover:opacity-60 transition-opacity"><ChevronLeft size={20} color={SECONDARY} /></button>
+            <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>April 2026</span>
+            <button className="hover:opacity-60 transition-opacity"><ChevronRight size={20} color={SECONDARY} /></button>
+          </div>
 
-        {/* Weeks */}
-        {weeks.map((week, wi) => (
-          <div key={wi} className="grid grid-cols-7 gap-0.5" style={{ height: 36 }}>
-            {week.map((cell, di) => (
+          {rangeStart && (
+            <div className="px-4 py-2 text-xs font-medium" style={{ color: TEAL, backgroundColor: TEAL_BG }}>
+              {rangeEnd
+                ? `Selected: Apr ${rangeStart} – Apr ${rangeEnd}, 2026`
+                : `From Apr ${rangeStart} · Select end date`}
+            </div>
+          )}
+
+          {/* Calendar */}
+          <div className="px-3 py-2 flex flex-col gap-1">
+            <div className="grid grid-cols-7 h-8">
+              {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => (
+                <div key={d} className="flex items-center justify-center" style={{ fontSize: 11, fontWeight: 600, color: MUTED }}>{d}</div>
+              ))}
+            </div>
+
+            {weeks.map((week, wi) => (
+              <div key={wi} className="grid grid-cols-7 gap-0.5" style={{ height: 36 }}>
+                {week.map((cell, di) => (
+                  <button
+                    key={di}
+                    disabled={!cell.day || cell.status === 'booked' || cell.status === null}
+                    onClick={() => cell.day && handleDayClick(cell.day, cell.status)}
+                    className="flex items-center justify-center text-[13px] transition-colors"
+                    style={{
+                      ...cellStyle(cell),
+                      fontWeight: cell.day === rangeStart || cell.day === rangeEnd ? 700 : 500,
+                      color: cellTextColor(cell),
+                    }}
+                  >
+                    {cell.day ?? ''}
+                  </button>
+                ))}
+              </div>
+            ))}
+          </div>
+
+          <div style={{ height: 1, backgroundColor: BORDER }} />
+
+          <div className="flex items-center gap-4 px-4 py-2.5">
+            {[
+              { color: '#22C55E', label: 'Available' },
+              { color: '#EF4444', label: 'Booked' },
+              { color: TEAL, label: 'Selected' },
+            ].map(({ color, label }) => (
+              <div key={label} className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
+                <span style={{ fontSize: 11, fontWeight: 500, color: SECONDARY }}>{label}</span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {mode === 'flexible' && (
+        <div className="p-4">
+          <p className="text-[12px] mb-3" style={{ color: MUTED }}>Select a full month for your induction window</p>
+          <div className="grid grid-cols-3 gap-2 max-h-[240px] overflow-y-auto pr-1">
+            {flexMonths.map((m) => (
               <button
-                key={di}
-                disabled={!cell.day || cell.status === 'booked' || cell.status === null}
-                onClick={() => { if (cell.day) setSelected(cell.day); }}
-                className="flex items-center justify-center text-[13px] transition-colors"
-                style={{ ...cellStyle(cell), fontWeight: cellFontWeight(cell), color: cellTextColor(cell) }}
+                key={m}
+                onClick={() => setFlexMonth(m)}
+                className="h-10 rounded-lg text-[12px] font-medium transition-colors"
+                style={{
+                  backgroundColor: flexMonth === m ? TEAL : LIGHT_BG,
+                  color: flexMonth === m ? '#FFFFFF' : SECONDARY,
+                  border: `1px solid ${flexMonth === m ? TEAL : BORDER}`,
+                }}
               >
-                {cell.day ?? ''}
+                {m}
               </button>
             ))}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
 
       <div style={{ height: 1, backgroundColor: BORDER }} />
 
-      {/* Legend */}
-      <div className="flex items-center gap-4 px-4 py-2.5">
-        {[
-          { color: '#22C55E', label: 'Available' },
-          { color: '#EF4444', label: 'Booked' },
-        ].map(({ color, label }) => (
-          <div key={label} className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
-            <span style={{ fontSize: 11, fontWeight: 500, color: SECONDARY }}>{label}</span>
-          </div>
-        ))}
-        <div className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded" style={{ border: `2px solid ${TEAL}` }} />
-          <span style={{ fontSize: 11, fontWeight: 500, color: SECONDARY }}>Selected</span>
-        </div>
-      </div>
-
-      <div style={{ height: 1, backgroundColor: BORDER }} />
-
-      {/* Flexible toggle + Apply */}
-      <div className="px-4 py-3 flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-0.5">
-            <span style={{ fontSize: 13, fontWeight: 600, color: NAVY }}>Flexible dates?</span>
-            <span style={{ fontSize: 11, color: MUTED }}>Show MROs with slots within ±3 days</span>
-          </div>
-          <button
-            onClick={() => setFlexible(!flexible)}
-            className="flex items-center p-0.5 rounded-full transition-colors shrink-0"
-            style={{ width: 40, height: 22, backgroundColor: flexible ? TEAL : '#CBD5E1', justifyContent: flexible ? 'flex-end' : 'flex-start' }}
-          >
-            <span className="w-[18px] h-[18px] rounded-full bg-white block" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.2)' }} />
-          </button>
-        </div>
-
+      <div className="px-4 py-3">
         <button
           onClick={apply}
           className="w-full h-10 rounded-lg text-sm font-semibold text-white transition-colors"
@@ -447,18 +624,14 @@ function DateDropdown({ onSelect }: { onSelect: (v: string) => void }) {
 
 // ─── SearchBar ────────────────────────────────────────────────────────────────
 
-type Field = 'location' | 'service' | 'aircraft' | 'date' | null;
+// Field order per feedback: Date → Aircraft → Engine → Service → Location
+type Field = 'date' | 'aircraft' | 'engine' | 'service' | 'location' | null;
 
 const FIELDS: { key: Field; icon: (active: boolean) => ReactNode; defaultLabel: string }[] = [
   {
-    key: 'location',
-    icon: (a) => <MapPin size={18} color={a ? TEAL : MUTED} />,
-    defaultLabel: 'Location',
-  },
-  {
-    key: 'service',
-    icon: (a) => <Wrench size={18} color={a ? TEAL : MUTED} />,
-    defaultLabel: 'Service Type',
+    key: 'date',
+    icon: (a) => <Calendar size={18} color={a ? TEAL : MUTED} />,
+    defaultLabel: 'Date',
   },
   {
     key: 'aircraft',
@@ -466,18 +639,36 @@ const FIELDS: { key: Field; icon: (active: boolean) => ReactNode; defaultLabel: 
     defaultLabel: 'Aircraft Type',
   },
   {
-    key: 'date',
-    icon: (a) => <Calendar size={18} color={a ? TEAL : MUTED} />,
-    defaultLabel: 'Date',
+    key: 'engine',
+    icon: (a) => <Cog size={18} color={a ? TEAL : MUTED} />,
+    defaultLabel: 'Engine Type',
+  },
+  {
+    key: 'service',
+    icon: (a) => <Wrench size={18} color={a ? TEAL : MUTED} />,
+    defaultLabel: 'Service Type',
+  },
+  {
+    key: 'location',
+    icon: (a) => <MapPin size={18} color={a ? TEAL : MUTED} />,
+    defaultLabel: 'Location',
   },
 ];
+
+// Dropdown horizontal offsets (5 fields, approximate per-field width ~17%)
+const dropdownOffset: Record<string, React.CSSProperties> = {
+  date: { left: 0 },
+  aircraft: { left: '17%' },
+  engine: { left: '34%' },
+  service: { left: '51%' },
+  location: { right: 80 },
+};
 
 export default function SearchBar({ onSearch }: { onSearch?: () => void }) {
   const [open, setOpen] = useState<Field>(null);
   const [values, setValues] = useState<Record<string, string>>({});
   const ref = useRef<HTMLDivElement>(null);
 
-  // Close on outside click
   useEffect(() => {
     function handler(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) {
@@ -503,7 +694,7 @@ export default function SearchBar({ onSearch }: { onSearch?: () => void }) {
       display: 'flex',
       alignItems: 'center',
       gap: 8,
-      padding: '0 16px',
+      padding: '0 12px',
       flex: 1,
       cursor: 'pointer',
       transition: 'all 0.15s',
@@ -514,6 +705,7 @@ export default function SearchBar({ onSearch }: { onSearch?: () => void }) {
     if (key === 'location') return <LocationDropdown onSelect={(v) => select('location', v)} />;
     if (key === 'service') return <ServiceDropdown onSelect={(v) => select('service', v)} />;
     if (key === 'aircraft') return <AircraftDropdown onSelect={(v) => select('aircraft', v)} />;
+    if (key === 'engine') return <EngineDropdown selectedAircraft={values['aircraft'] || ''} onSelect={(v) => select('engine', v)} />;
     if (key === 'date') return <DateDropdown onSelect={(v) => select('date', v)} />;
     return null;
   }
@@ -542,7 +734,7 @@ export default function SearchBar({ onSearch }: { onSearch?: () => void }) {
                 </span>
               </button>
               {active && (
-                <div style={{ position: 'absolute', top: 'calc(100% + 4px)', left: 0, maxWidth: 400, width: 'calc(100vw - 32px)', zIndex: 100 }}>
+                <div style={{ position: 'absolute', top: 'calc(100% + 4px)', left: 0, maxWidth: 420, width: 'calc(100vw - 32px)', zIndex: 100 }}>
                   {renderDropdown(key)}
                 </div>
               )}
@@ -565,7 +757,7 @@ export default function SearchBar({ onSearch }: { onSearch?: () => void }) {
       <div className="hidden sm:block overflow-x-auto">
         <div
           className="flex items-center"
-          style={{ backgroundColor: '#fff', borderRadius: 12, padding: 8, minWidth: 560 }}
+          style={{ backgroundColor: '#fff', borderRadius: 12, padding: 8, minWidth: 620 }}
         >
           {FIELDS.map(({ key, icon, defaultLabel }, i) => {
             const active = open === key;
@@ -579,7 +771,7 @@ export default function SearchBar({ onSearch }: { onSearch?: () => void }) {
                   {icon(active || hasValue)}
                   <span
                     style={{
-                      fontSize: 14,
+                      fontSize: 13,
                       fontWeight: hasValue ? 500 : 400,
                       color: active || hasValue ? NAVY : MUTED,
                       whiteSpace: 'nowrap',
@@ -597,10 +789,9 @@ export default function SearchBar({ onSearch }: { onSearch?: () => void }) {
             );
           })}
 
-          {/* Search button */}
           <button
             onClick={onSearch}
-            className="flex items-center gap-2 h-12 px-8 text-[15px] font-semibold text-white shrink-0 transition-colors"
+            className="flex items-center gap-2 h-12 px-6 text-[14px] font-semibold text-white shrink-0 transition-colors"
             style={{ backgroundColor: TEAL, borderRadius: 8 }}
             onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}
             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = TEAL)}
@@ -611,7 +802,7 @@ export default function SearchBar({ onSearch }: { onSearch?: () => void }) {
         </div>
       </div>
 
-      {/* Desktop dropdown panel — outside the overflow wrapper */}
+      {/* Desktop dropdown panel */}
       {open && (
         <div
           className="hidden sm:block"
@@ -619,7 +810,7 @@ export default function SearchBar({ onSearch }: { onSearch?: () => void }) {
             position: 'absolute',
             top: 'calc(100% + 8px)',
             zIndex: 50,
-            ...(open === 'location' ? { left: 0 } : open === 'service' ? { left: '25%' } : open === 'aircraft' ? { left: '50%' } : { right: 80 }),
+            ...dropdownOffset[open!],
           }}
         >
           {renderDropdown(open)}
