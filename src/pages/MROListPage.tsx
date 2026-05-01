@@ -78,12 +78,21 @@ const FACILITIES = ['All Facilities', 'Frankfurt FRA', 'London LHR', 'Amsterdam 
 
 // ── Props ───────────────────────────────────────────────────────────
 
+export interface MROListItem {
+  name: string;
+  facility: string;
+  facilityCode: string;
+  type: string;
+  bays: number;
+  parking: number;
+}
+
 interface Props {
   onDashboard?: () => void;
   onFacilities?: () => void;
   onChats?: () => void;
   onBookings?: () => void;
-  onViewBays?: () => void;
+  onViewBays?: (mro: MROListItem) => void;
 }
 
 // ── Page ────────────────────────────────────────────────────────────
@@ -286,7 +295,7 @@ function DesktopLayout({ onDashboard, onFacilities, onChats, onBookings, onViewB
                   key={row.name}
                   className="flex items-center"
                   style={{ padding: '0 20px', height: 56, borderBottom: i < filtered.length - 1 ? `1px solid ${BORDER}` : 'none', cursor: 'pointer' }}
-                  onClick={onViewBays}
+                  onClick={() => onViewBays?.(row)}
                 >
                   {/* MRO Name */}
                   <div className="flex items-center gap-2" style={{ width: COL.name, flexShrink: 0 }}>
@@ -319,7 +328,7 @@ function DesktopLayout({ onDashboard, onFacilities, onChats, onBookings, onViewB
                   </div>
                   {/* Actions */}
                   <div className="flex items-center gap-1" style={{ width: COL.actions, flexShrink: 0 }}>
-                    <button style={{ padding: 6, borderRadius: 6, border: 'none', backgroundColor: 'transparent', cursor: 'pointer' }} onClick={(e) => { e.stopPropagation(); onViewBays?.(); }}>
+                    <button style={{ padding: 6, borderRadius: 6, border: 'none', backgroundColor: 'transparent', cursor: 'pointer' }} onClick={(e) => { e.stopPropagation(); onViewBays?.(row); }}>
                       <Pencil size={15} color={TEXT_MUTED} />
                     </button>
                     <button style={{ padding: 6, borderRadius: 6, border: 'none', backgroundColor: 'transparent', cursor: 'pointer' }} onClick={(e) => e.stopPropagation()}>
@@ -389,7 +398,6 @@ function MobileLayout({ onDashboard, onFacilities, onChats, onBookings, onViewBa
       <div style={{ backgroundColor: NAVY, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 20px 16px' }}>
         <span style={{ color: '#FFFFFF', fontSize: 22, fontWeight: 700 }}>MRO Manager</span>
         <button
-          onClick={onViewBays}
           style={{ display: 'flex', alignItems: 'center', gap: 6, backgroundColor: TEAL, color: '#FFFFFF', border: 'none', borderRadius: 8, padding: '8px 12px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
         >
           <Plus size={14} />
@@ -422,7 +430,7 @@ function MobileLayout({ onDashboard, onFacilities, onChats, onBookings, onViewBa
           return (
             <button
               key={row.name}
-              onClick={onViewBays}
+              onClick={() => onViewBays?.(row)}
               style={{ width: '100%', textAlign: 'left', backgroundColor: '#FFFFFF', borderRadius: 12, border: `1px solid ${BORDER}`, padding: 16, display: 'flex', flexDirection: 'column', gap: 12, cursor: 'pointer' }}
             >
               {/* Top: name + status */}

@@ -7,15 +7,17 @@ import MRODashboardPage from './pages/MRODashboardPage';
 import MROChatsPage from './pages/MROChatsPage';
 import BookingDetailPage from './pages/BookingDetailPage';
 import MROManagerPage from './pages/MROManagerPage';
-import MROListPage from './pages/MROListPage';
+import MROListPage, { type MROListItem } from './pages/MROListPage';
+import BayManagerPage from './pages/BayManagerPage';
 import BookingsPage from './pages/BookingsPage';
 import FacilitiesPage from './pages/FacilitiesPage';
 import FacilitiesListPage from './pages/FacilitiesListPage';
 
-type Page = 'home' | 'search' | 'profile' | 'chat' | 'dashboard' | 'mro-chats' | 'booking-detail' | 'mro-manager' | 'mro-list' | 'bookings' | 'facilities' | 'facilities-list';
+type Page = 'home' | 'search' | 'profile' | 'chat' | 'dashboard' | 'mro-chats' | 'booking-detail' | 'mro-manager' | 'mro-list' | 'bay-manager' | 'bookings' | 'facilities' | 'facilities-list';
 
 export default function App() {
   const [page, setPage] = useState<Page>('home');
+  const [selectedMRO, setSelectedMRO] = useState<MROListItem | undefined>(undefined);
 
   // Simple in-memory router for demo purposes
   const nav: Record<Page, string> = {
@@ -28,6 +30,7 @@ export default function App() {
     'booking-detail': 'Booking Detail',
     'mro-manager': 'Bay Manager',
     'mro-list':    'MRO List',
+    'bay-manager': 'Bay Manager (MRO)',
     'bookings':         'Bookings',
     'facilities':       'Facility Detail',
     'facilities-list':  'Facilities',
@@ -85,7 +88,23 @@ export default function App() {
           onFacilities={() => setPage('facilities-list')}
           onChats={() => setPage('mro-chats')}
           onBookings={() => setPage('bookings')}
-          onViewBays={() => setPage('mro-manager')}
+          onViewBays={(mro) => { setSelectedMRO(mro); setPage('bay-manager'); }}
+        />
+      </>
+    );
+  }
+
+  if (page === 'bay-manager') {
+    return (
+      <>
+        {fullViewportSwitcher}
+        <BayManagerPage
+          mro={selectedMRO}
+          onBack={() => setPage('mro-list')}
+          onDashboard={() => setPage('dashboard')}
+          onFacilities={() => setPage('facilities-list')}
+          onChats={() => setPage('mro-chats')}
+          onBookings={() => setPage('bookings')}
         />
       </>
     );
