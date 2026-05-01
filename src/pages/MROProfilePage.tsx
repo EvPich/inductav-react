@@ -106,7 +106,7 @@ const calServiceOptions = ['Any Service', ...serviceOptions];
 
 type OpenField = 'service' | 'aircraft' | 'earliest' | 'latest' | null;
 
-export default function MROProfilePage({ onHome, onRequestSlot, onSearchResults }: { onHome?: () => void; onRequestSlot?: () => void; onSearchResults?: () => void }) {
+export default function MROProfilePage({ onHome, onRequestSlot, onSearchResults, onDashboard }: { onHome?: () => void; onRequestSlot?: () => void; onSearchResults?: () => void; onDashboard?: () => void }) {
   const [serviceType, setServiceType] = useState('Base Maintenance');
   const [aircraftType, setAircraftType] = useState('Boeing 737-800');
   const [openField, setOpenField] = useState<OpenField>(null);
@@ -219,7 +219,7 @@ export default function MROProfilePage({ onHome, onRequestSlot, onSearchResults 
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <Navbar onHome={onHome} />
+      <Navbar onHome={onHome} onDashboard={onDashboard} />
 
       {/* Breadcrumb */}
       <div className="hidden md:flex max-w-[1360px] mx-auto px-4 md:px-8 lg:px-10 h-12 items-center gap-2 text-[13px]">

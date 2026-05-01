@@ -35,7 +35,7 @@ function formatPrice(val: number) {
   return `$${Math.round(val / 1000)}K`;
 }
 
-export default function SearchResultsPage({ onHome, onViewProfile }: { onHome?: () => void; onViewProfile?: () => void }) {
+export default function SearchResultsPage({ onHome, onViewProfile, onDashboard }: { onHome?: () => void; onViewProfile?: () => void; onDashboard?: () => void }) {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [availFromMonth, setAvailFromMonth] = useState('May');
   const [availFromYear, setAvailFromYear] = useState('2026');
@@ -66,7 +66,7 @@ export default function SearchResultsPage({ onHome, onViewProfile }: { onHome?: 
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#F5F7FA' }}>
-      <Navbar onHome={onHome} />
+      <Navbar onHome={onHome} onDashboard={onDashboard} />
 
       {/* Mobile filter bar */}
       <div className="flex sm:hidden items-center justify-between px-4 py-3 border-b border-slate-200 bg-white">

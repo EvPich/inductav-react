@@ -57,9 +57,9 @@ export default function App() {
         ))}
       </div>
 
-      {page === 'home' && <HomePage onSearch={() => setPage('search')} onHome={() => setPage('home')} onViewProfile={() => setPage('profile')} />}
-      {page === 'search' && <SearchResultsPage onHome={() => setPage('home')} onViewProfile={() => setPage('profile')} />}
-      {page === 'profile' && <MROProfilePage onHome={() => setPage('home')} onRequestSlot={() => setPage('chat')} onSearchResults={() => setPage('search')} />}
+      {page === 'home' && <HomePage onSearch={() => setPage('search')} onHome={() => setPage('home')} onViewProfile={() => setPage('profile')} onDashboard={() => setPage('dashboard')} />}
+      {page === 'search' && <SearchResultsPage onHome={() => setPage('home')} onViewProfile={() => setPage('profile')} onDashboard={() => setPage('dashboard')} />}
+      {page === 'profile' && <MROProfilePage onHome={() => setPage('home')} onRequestSlot={() => setPage('chat')} onSearchResults={() => setPage('search')} onDashboard={() => setPage('dashboard')} />}
       {page === 'chat' && <RequestSlotChatPage onHome={() => setPage('home')} onBack={() => setPage('profile')} />}
     </div>
   );

@@ -20,9 +20,11 @@ const roles: { key: Role; label: string; desc: string }[] = [
 export default function SignInModal({
   onClose,
   onSwitchToSignUp,
+  onSuccess,
 }: {
   onClose: () => void;
   onSwitchToSignUp: () => void;
+  onSuccess?: () => void;
 }) {
   const [role, setRole] = useState<Role>('operator');
   const [showPass, setShowPass] = useState(false);
@@ -152,6 +154,7 @@ export default function SignInModal({
 
         {/* CTA */}
         <button
+          onClick={() => { onClose(); onSuccess?.(); }}
           className="w-full flex items-center justify-center gap-2 h-[46px] text-white font-bold rounded-[10px] transition-colors"
           style={{ fontSize: 15, backgroundColor: TEAL }}
           onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}

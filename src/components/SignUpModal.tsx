@@ -26,9 +26,11 @@ const textFields = [
 export default function SignUpModal({
   onClose,
   onSwitchToSignIn,
+  onSuccess,
 }: {
   onClose: () => void;
   onSwitchToSignIn: () => void;
+  onSuccess?: () => void;
 }) {
   const [role, setRole] = useState<Role>('operator');
   const [showPass, setShowPass] = useState(false);
@@ -163,6 +165,7 @@ export default function SignUpModal({
 
         {/* CTA */}
         <button
+          onClick={() => { onClose(); onSuccess?.(); }}
           className="w-full flex items-center justify-center h-[46px] text-white font-bold rounded-[10px] transition-colors"
           style={{ fontSize: 15, backgroundColor: TEAL }}
           onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = TEAL_HOVER)}

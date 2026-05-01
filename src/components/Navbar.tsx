@@ -9,7 +9,7 @@ type AuthModal = 'signin' | 'signup' | null;
 
 const navLinks = ['Services', 'MRO Network', 'How It Works', 'Pricing', 'About'];
 
-export default function Navbar({ onHome }: { onHome?: () => void }) {
+export default function Navbar({ onHome, onDashboard }: { onHome?: () => void; onDashboard?: () => void }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [authModal, setAuthModal] = useState<AuthModal>(null);
 
@@ -122,6 +122,7 @@ export default function Navbar({ onHome }: { onHome?: () => void }) {
         <SignInModal
           onClose={() => setAuthModal(null)}
           onSwitchToSignUp={() => setAuthModal('signup')}
+          onSuccess={onDashboard}
         />,
         document.body
       )}
@@ -129,6 +130,7 @@ export default function Navbar({ onHome }: { onHome?: () => void }) {
         <SignUpModal
           onClose={() => setAuthModal(null)}
           onSwitchToSignIn={() => setAuthModal('signin')}
+          onSuccess={onDashboard}
         />,
         document.body
       )}
