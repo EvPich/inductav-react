@@ -1,6 +1,7 @@
+import { useState, useRef, useEffect } from 'react';
 import {
   LayoutDashboard, CalendarDays, MessageCircle, Plane, Settings,
-  ArrowLeft, Check, Timer, Calendar, Clock3, CircleCheck,
+  ArrowLeft, Check, Timer, Calendar, Clock3, CircleCheck, ChevronDown,
 } from 'lucide-react';
 
 const NAVY = '#1C2B4A';
@@ -12,6 +13,21 @@ const BORDER = '#E2E8F0';
 const TEXT_PRIMARY = '#1E293B';
 const TEXT_SECONDARY = '#475569';
 const TEXT_MUTED = '#94A3B8';
+
+const BOOKING_STATUS_OPTIONS = [
+  { value: 'Confirmed',   bg: '#E0F2FE', color: '#0369A1' },
+  { value: 'In Progress', bg: '#E0F2FE', color: '#0369A1' },
+  { value: 'Completed',   bg: '#F1F5F9', color: '#64748B' },
+  { value: 'Cancelled',   bg: '#FEE2E2', color: '#DC2626' },
+  { value: 'Upcoming',    bg: '#FEF3C7', color: '#D97706' },
+];
+
+const PAYMENT_STATUS_OPTIONS = [
+  { value: 'Paid',    bg: '#F0FDF4', color: '#16A34A' },
+  { value: 'Pending', bg: '#FEF3C7', color: '#D97706' },
+  { value: 'Overdue', bg: '#FEE2E2', color: '#DC2626' },
+  { value: 'Partial', bg: '#E0F2FE', color: '#0369A1' },
+];
 
 type NavKey = 'dashboard' | 'manager' | 'chats' | 'bookings' | 'settings';
 
@@ -66,6 +82,9 @@ const REQUIREMENTS = [
 // ── Component ─────────────────────────────────────────────────────────
 
 export default function BookingDetailPage({ onBack, onChats, onBookings }: { onBack?: () => void; onChats?: () => void; onBookings?: () => void }) {
+  const [bookingStatus, setBookingStatus] = useState('In Progress');
+  const [paymentStatus, setPaymentStatus] = useState('Paid');
+
   return (
     <div className="flex overflow-hidden" style={{ height: '100vh', backgroundColor: BG_LIGHT }}>
 
@@ -177,7 +196,15 @@ export default function BookingDetailPage({ onBack, onChats, onBookings }: { onB
                       }}
                     >
                       <span style={{ fontFamily: 'Inter', fontSize: 13, fontWeight: 500, color: TEXT_MUTED }}>{row.label}</span>
-                      <span style={{ fontFamily: 'Inter', fontSize: 13, fontWeight: 600, color: row.color }}>{row.value}</span>
+                      {row.label === 'Status' ? (
+                        <StatusDropdown
+                          value={bookingStatus}
+                          options={BOOKING_STATUS_OPTIONS}
+                          onChange={setBookingStatus}
+                        />
+                      ) : (
+                        <span style={{ fontFamily: 'Inter', fontSize: 13, fontWeight: 600, color: row.color }}>{row.value}</span>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -316,9 +343,11 @@ export default function BookingDetailPage({ onBack, onChats, onBookings }: { onB
                 {/* Payment Status */}
                 <div className="flex items-center justify-between">
                   <span style={{ fontFamily: 'Inter', fontSize: 13, fontWeight: 600, color: TEXT_PRIMARY }}>Payment Status</span>
-                  <div style={{ padding: '4px 12px', borderRadius: 20, backgroundColor: '#F0FDF4' }}>
-                    <span style={{ fontFamily: 'Inter', fontSize: 11, fontWeight: 600, color: '#16A34A' }}>Paid</span>
-                  </div>
+                  <StatusDropdown
+                    value={paymentStatus}
+                    options={PAYMENT_STATUS_OPTIONS}
+                    onChange={setPaymentStatus}
+                  />
                 </div>
               </Card>
 
@@ -345,9 +374,14 @@ export default function BookingDetailPage({ onBack, onChats, onBookings }: { onB
               <Card>
                 <div className="flex items-center justify-between">
                   <span style={{ fontFamily: 'Inter', fontSize: 15, fontWeight: 700, color: TEXT_PRIMARY }}>Booking Summary</span>
-                  <div style={{ padding: '4px 12px', borderRadius: 999, backgroundColor: '#E0F2FE' }}>
-                    <span style={{ fontFamily: 'Inter', fontSize: 11, fontWeight: 600, color: '#0369A1' }}>In Progress</span>
-                  </div>
+                  {(() => {
+                    const opt = BOOKING_STATUS_OPTIONS.find(o => o.value === bookingStatus) ?? BOOKING_STATUS_OPTIONS[0];
+                    return (
+                      <div style={{ padding: '4px 12px', borderRadius: 999, backgroundColor: opt.bg }}>
+                        <span style={{ fontFamily: 'Inter', fontSize: 11, fontWeight: 600, color: opt.color }}>{bookingStatus}</span>
+                      </div>
+                    );
+                  })()}
                 </div>
                 <div style={{ padding: 16, borderRadius: 10, backgroundColor: BG_LIGHT, border: `1px solid ${BORDER}` }}>
                   {[
@@ -386,6 +420,82 @@ function Card({ title, children }: { title?: string; children: React.ReactNode }
     <div className="flex flex-col" style={{ gap: 16, padding: 24, borderRadius: 12, backgroundColor: '#FFFFFF', border: `1px solid ${BORDER}` }}>
       {title && <span style={{ fontFamily: 'Inter', fontSize: 15, fontWeight: 700, color: TEXT_PRIMARY }}>{title}</span>}
       {children}
+    </div>
+  );
+}
+
+// ── StatusDropdown ────────────────────────────────────────────────────
+
+function StatusDropdown({
+  value, options, onChange,
+}: {
+  value: string;
+  options: { value: string; bg: string; color: string }[];
+  onChange: (v: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const current = options.find(o => o.value === value) ?? options[0];
+
+  useEffect(() => {
+    if (!open) return;
+    function onMouseDown(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener('mousedown', onMouseDown);
+    return () => document.removeEventListener('mousedown', onMouseDown);
+  }, [open]);
+
+  return (
+    <div ref={ref} style={{ position: 'relative' }}>
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{
+          display: 'flex', alignItems: 'center', gap: 6,
+          padding: '4px 10px 4px 12px', borderRadius: 20,
+          backgroundColor: current.bg, border: 'none', cursor: 'pointer',
+        }}
+      >
+        <span style={{ fontFamily: 'Inter', fontSize: 12, fontWeight: 600, color: current.color }}>{value}</span>
+        <ChevronDown
+          size={13}
+          color={current.color}
+          style={{ transition: 'transform 0.15s', transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
+        />
+      </button>
+
+      {open && (
+        <div style={{
+          position: 'absolute', top: 'calc(100% + 6px)', right: 0, zIndex: 200,
+          backgroundColor: '#FFFFFF', border: `1px solid ${BORDER}`, borderRadius: 10,
+          boxShadow: '0 8px 24px rgba(0,0,0,0.10)', overflow: 'hidden', minWidth: 168,
+        }}>
+          {options.map((opt, i) => {
+            const isSelected = opt.value === value;
+            return (
+              <button
+                key={opt.value}
+                onClick={() => { onChange(opt.value); setOpen(false); }}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 10,
+                  width: '100%', padding: '10px 14px',
+                  borderTop: i > 0 ? `1px solid ${BORDER}` : 'none',
+                  border: 'none', backgroundColor: isSelected ? opt.bg : 'transparent',
+                  cursor: 'pointer', textAlign: 'left',
+                }}
+                onMouseEnter={e => { if (!isSelected) e.currentTarget.style.backgroundColor = BG_LIGHT; }}
+                onMouseLeave={e => { e.currentTarget.style.backgroundColor = isSelected ? opt.bg : 'transparent'; }}
+              >
+                <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: opt.color, flexShrink: 0 }} />
+                <span style={{ fontFamily: 'Inter', fontSize: 13, fontWeight: isSelected ? 600 : 500, color: isSelected ? opt.color : TEXT_PRIMARY, flex: 1 }}>
+                  {opt.value}
+                </span>
+                {isSelected && <Check size={13} color={opt.color} />}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

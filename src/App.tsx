@@ -8,8 +8,10 @@ import MROChatsPage from './pages/MROChatsPage';
 import BookingDetailPage from './pages/BookingDetailPage';
 import MROManagerPage from './pages/MROManagerPage';
 import BookingsPage from './pages/BookingsPage';
+import MRODashboardMobilePage from './pages/MRODashboardMobilePage';
+import MROManagerMobilePage from './pages/MROManagerMobilePage';
 
-type Page = 'home' | 'search' | 'profile' | 'chat' | 'dashboard' | 'mro-chats' | 'booking-detail' | 'mro-manager' | 'bookings';
+type Page = 'home' | 'search' | 'profile' | 'chat' | 'dashboard' | 'mro-chats' | 'booking-detail' | 'mro-manager' | 'bookings' | 'dashboard-mobile' | 'manager-mobile';
 
 export default function App() {
   const [page, setPage] = useState<Page>('home');
@@ -25,6 +27,8 @@ export default function App() {
     'booking-detail': 'Booking Detail',
     'mro-manager': 'MRO Manager',
     'bookings':    'Bookings',
+    'dashboard-mobile': 'Dashboard Mobile',
+    'manager-mobile':   'Manager Mobile',
   };
 
   const fullViewportSwitcher = (
@@ -93,6 +97,33 @@ export default function App() {
           onChats={() => setPage('mro-chats')}
           onManager={() => setPage('mro-manager')}
           onViewBooking={() => setPage('booking-detail')}
+        />
+      </>
+    );
+  }
+
+  if (page === 'dashboard-mobile') {
+    return (
+      <>
+        {fullViewportSwitcher}
+        <MRODashboardMobilePage
+          onDashboard={() => setPage('dashboard-mobile')}
+          onChats={() => setPage('mro-chats')}
+          onBookings={() => setPage('bookings')}
+        />
+      </>
+    );
+  }
+
+  if (page === 'manager-mobile') {
+    return (
+      <>
+        {fullViewportSwitcher}
+        <MROManagerMobilePage
+          onDashboard={() => setPage('dashboard-mobile')}
+          onChats={() => setPage('mro-chats')}
+          onViewBooking={() => setPage('booking-detail')}
+          onBookings={() => setPage('bookings')}
         />
       </>
     );
